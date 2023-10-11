@@ -1,6 +1,6 @@
 micronaut:
   application:
-    name: mn4-rest-exemplar
+    name: MNRestExemplar
   router:
     static-resources:
       swagger:
@@ -9,6 +9,21 @@ micronaut:
       swagger-ui:
         paths: classpath:META-INF/swagger/views/swagger-ui
         mapping: /swagger-ui/**
+  codec:
+    json:
+      additional-types: 'application/problem+json'
+
+netty:
+  default:
+    allocator:
+      max-order: 3
+
+liquibase:
+  datasources:
+    default:
+      enabled: true
+      change-log: classpath:db/liquibase-changelog.xml
+
 datasources:
   default:
     url: jdbc:mysql://localhost:3306/db
@@ -17,7 +32,28 @@ datasources:
     driver-class-name: com.mysql.cj.jdbc.Driver
     db-type: mysql
     dialect: MYSQL
-liquibase:
-  datasources:
-    default:
-      change-log: classpath:db/liquibase-changelog.xml
+
+endpoints:
+  health:
+    enabled: true
+    sensitive: false              # TODO Change to make secure
+    details-visible: ANONYMOUS
+  info:
+    enabled: true
+    sensitive: false              # TODO Change to make secure
+    build:
+      enabled: true
+  routes:
+    enabled: true
+    sensitive: false              # TODO Change to make secure
+  refresh:
+    enabled: true
+    sensitive: false              # TODO Change to make secure
+  loggers:
+    enabled: true
+    sensitive: false              # TODO Change to make secure
+    write-sensitive: false
+#  metrics:
+#    enabled: true                 # TODO Change to make secure
+#    sensitive: false
+

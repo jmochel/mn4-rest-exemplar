@@ -3,6 +3,7 @@ plugins {
     id("io.micronaut.application") version "4.0.4"
     id("org.openrewrite.rewrite") version "5.12.0"
     id("io.micronaut.aot") version "4.0.4"
+    id("io.freefair.lombok") version "8.4"
 }
 
 version = "0.1"
@@ -13,12 +14,15 @@ repositories {
 }
 
 dependencies {
+
     annotationProcessor("org.projectlombok:lombok")
     annotationProcessor("io.micronaut.data:micronaut-data-processor")
     annotationProcessor("io.micronaut:micronaut-http-validation")
     annotationProcessor("io.micronaut.openapi:micronaut-openapi")
     annotationProcessor("io.micronaut.serde:micronaut-serde-processor")
     annotationProcessor("io.micronaut.validation:micronaut-validation-processor")
+    annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
+
     implementation("io.micronaut:micronaut-http-client")
     implementation("io.micronaut:micronaut-management")
     implementation("io.micronaut:micronaut-retry")
@@ -32,14 +36,26 @@ dependencies {
     implementation("io.micronaut.validation:micronaut-validation")
     implementation("io.swagger.core.v3:swagger-annotations")
     implementation("jakarta.validation:jakarta.validation-api")
-    compileOnly("org.projectlombok:lombok")
+    implementation("org.junit.jupiter:junit-jupiter-api")
+    implementation("io.micronaut.xml:micronaut-jackson-xml")
+
+    implementation("org.javatuples:javatuples:1.2")
+    implementation("org.mapstruct:mapstruct:1.5.5.Final")
+    implementation("com.google.guava:guava:32.1.2-jre")
+    implementation("org.projectlombok:lombok")
     runtimeOnly("ch.qos.logback:logback-classic")
     runtimeOnly("mysql:mysql-connector-java")
     runtimeOnly("org.yaml:snakeyaml")
+
+
+    testAnnotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
+    testAnnotationProcessor("io.micronaut:micronaut-inject-java")
+
     testImplementation("io.micronaut.test:micronaut-test-rest-assured")
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:mysql")
     testImplementation("org.testcontainers:testcontainers")
+
     rewrite("org.openrewrite.recipe:rewrite-micronaut:1.15.1")
 }
 

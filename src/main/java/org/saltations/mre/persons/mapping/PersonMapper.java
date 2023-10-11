@@ -1,0 +1,49 @@
+package org.saltations.mre.persons.mapping;
+
+import jakarta.inject.Singleton;
+import org.mapstruct.BeanMapping;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.saltations.mre.core.EntityMapper;
+import org.saltations.mre.persons.model.PersonCore;
+import org.saltations.mre.persons.model.PersonEntity;
+
+
+@Singleton
+@Mapper(componentModel = "jsr330")
+public interface PersonMapper extends EntityMapper<Long, PersonCore, PersonEntity>
+{
+    /**
+     * Maps a (PersonCore) prototype to an entity.
+     *
+     * @param proto prototype with core attributes to create an PersonEntity.
+     *
+     * @return Valid PersonEntity
+     */
+
+    @Mapping(target = "id",  ignore = true)
+    @Mapping(target = "created",  ignore = true)
+    @Mapping(target = "updated",  ignore = true)
+    PersonEntity createEntity(PersonCore proto);
+
+    /**
+     * Patches the entity with non-null values from the patch object
+     *
+     * @param patch object with core attributes used to update the entity.
+     * @param entity object to be updated
+     *
+     * @return Patched entity
+     */
+
+    @Mapping(target = "id",  ignore = true)
+    @Mapping(target = "created",  ignore = true)
+    @Mapping(target = "updated",  ignore = true)
+    @Mapping(target = "withId",  ignore = true)
+    @Mapping(target = "withCreated",  ignore = true)
+    @Mapping(target = "withUpdated",  ignore = true)
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    PersonEntity patchEntity(PersonCore patch, @MappingTarget PersonEntity entity);
+
+}
