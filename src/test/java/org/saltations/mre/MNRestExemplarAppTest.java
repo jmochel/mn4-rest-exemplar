@@ -70,10 +70,10 @@ class MNRestExemplarAppTest
         parms.put("\"force\"","true");
 
         var result = spec.
-                when().
+            when().
                 body(parms).
                 post("/refresh").
-                then().
+            then().
                 statusCode(HttpStatus.OK.getCode()).
                 extract().asString();
 

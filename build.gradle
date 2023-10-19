@@ -37,7 +37,8 @@ dependencies {
     implementation("io.swagger.core.v3:swagger-annotations")
     implementation("jakarta.validation:jakarta.validation-api")
     implementation("org.junit.jupiter:junit-jupiter-api")
-    implementation("io.micronaut.xml:micronaut-jackson-xml")
+    implementation("com.github.java-json-tools:json-patch:1.13")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
 
     implementation("org.javatuples:javatuples:1.2")
     implementation("org.mapstruct:mapstruct:1.5.5.Final")
@@ -47,9 +48,9 @@ dependencies {
     runtimeOnly("mysql:mysql-connector-java")
     runtimeOnly("org.yaml:snakeyaml")
 
-
     testAnnotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
     testAnnotationProcessor("io.micronaut:micronaut-inject-java")
+    testAnnotationProcessor("io.micronaut.serde:micronaut-serde-processor")
 
     testImplementation("io.micronaut.test:micronaut-test-rest-assured")
     testImplementation("org.testcontainers:junit-jupiter")
@@ -59,16 +60,17 @@ dependencies {
     rewrite("org.openrewrite.recipe:rewrite-micronaut:1.15.1")
 }
 
-
 application {
     mainClass.set("org.saltations.mre.Application")
 }
+
 java {
     sourceCompatibility = JavaVersion.toVersion("17")
     targetCompatibility = JavaVersion.toVersion("17")
 }
 
 graalvmNative.toolchainDetection = false
+
 micronaut {
     runtime("netty")
     testRuntime("junit5")
@@ -88,7 +90,6 @@ micronaut {
         optimizeNetty = true
     }
 }
-
 
 rewrite {
     activeRecipe("org.openrewrite.java.micronaut.Micronaut2to3Migration")

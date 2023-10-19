@@ -1,5 +1,6 @@
 package org.saltations.mre.persons.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.saltations.mre.core.EntityService;

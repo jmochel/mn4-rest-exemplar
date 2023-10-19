@@ -1,11 +1,15 @@
 package org.saltations.mre.core;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import io.micronaut.core.annotation.NonNull;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.saltations.mre.core.errors.CannotCreateEntity;
 import org.saltations.mre.core.errors.CannotDeleteEntity;
+import org.saltations.mre.core.errors.CannotPatchEntity;
 import org.saltations.mre.core.errors.CannotUpdateEntity;
 
 import java.util.Optional;
@@ -28,6 +32,8 @@ public abstract class EntityService<ID, IC, C extends IC, E extends Entity<ID>, 
 
     private final EntityMapper<ID,C,E> mapper;
 
+    private final ObjectMapper jacksonMapper;
+
     /**
      * Primary constructor
      *
@@ -40,6 +46,9 @@ public abstract class EntityService<ID, IC, C extends IC, E extends Entity<ID>, 
         this.repo = repo;
         this.clazz = clazz;
         this.mapper = mapper;
+
+        this.jacksonMapper = new ObjectMapper();
+        this.jacksonMapper.registerModule(new JavaTimeModule());
     }
 
     /**
@@ -61,7 +70,7 @@ public abstract class EntityService<ID, IC, C extends IC, E extends Entity<ID>, 
      * @return Mono for the boolean result.
      */
     @NonNull
-    public Boolean existsById(@NotNull ID id)
+    public Boolean exists(@NotNull ID id)
     {
         return repo.existsById(id);
     }
@@ -74,7 +83,7 @@ public abstract class EntityService<ID, IC, C extends IC, E extends Entity<ID>, 
      * @return Possible result. {@link Optional#empty()} if no entity matching the id is find.
      */
 
-    public Optional<E> findById(@NotNull ID id)
+    public Optional<E> find(@NotNull ID id)
     {
         return repo.findById(id);
     }
@@ -117,7 +126,7 @@ public abstract class EntityService<ID, IC, C extends IC, E extends Entity<ID>, 
      * @throws CannotUpdateEntity If the entity could not be updated for any reason
      */
 
-    @Transactional(Transactional.TxType.MANDATORY)
+    @Transactional(Transactional.TxType.REQUIRED)
     public E update(@NotNull @Valid E update) throws CannotUpdateEntity
     {
         try
@@ -130,6 +139,45 @@ public abstract class EntityService<ID, IC, C extends IC, E extends Entity<ID>, 
         }
     }
 
+    @Transactional(Transactional.TxType.REQUIRED)
+    public E patch(@NotNull ID id, @NotNull JsonMergePatch mergePatch) throws CannotUpdateEntity, CannotPatchEntity
+    {
+        try
+        {
+            var retrieved = repo.findById(id).get();
+
+            var retrievedAsString = jacksonMapper.writeValueAsString(retrieved);
+            var retrievedAsJsonNode = jacksonMapper.readTree(retrievedAsString);
+
+            var patchedAsJsonNode = mergePatch.apply(retrievedAsJsonNode);
+            var patchedAsString = jacksonMapper.writeValueAsString(patchedAsJsonNode);
+
+            var patched = jacksonMapper.readValue(patchedAsString, clazz);
+
+            return repo.update(patched);
+        }
+        catch (Exception e)
+        {
+            throw new CannotPatchEntity(e, resourceTypeName(), (Long) id);
+        }
+    }
+
+    /*
+        var objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+
+        var retrievedAsString = objectMapper.writeValueAsString(retrieved);
+        var retrievedAsJsonNode = objectMapper.readTree(retrievedAsString);
+
+        var mergePatchAsString = "{ \"first_name\" : \"Sandama\"  }";
+        var mergePatch = objectMapper.readValue(mergePatchAsString, JsonMergePatch.class);
+
+        var patchedAsJsonNode = mergePatch.apply(retrievedAsJsonNode);
+        var patchedAsString = objectMapper.writeValueAsString(patchedAsJsonNode);
+
+        var patched = objectMapper.readValue(patchedAsString, PersonEntity.class);
+     */
+
     /**
      * Deletes an entity of type E with the given ID.
      *
@@ -138,7 +186,7 @@ public abstract class EntityService<ID, IC, C extends IC, E extends Entity<ID>, 
      * @throws CannotDeleteEntity If the entity could not be deleted for any reason
      */
 
-    @Transactional(Transactional.TxType.MANDATORY)
+    @Transactional(Transactional.TxType.REQUIRED)
     public void delete(@NotNull ID id) throws CannotDeleteEntity
     {
         try

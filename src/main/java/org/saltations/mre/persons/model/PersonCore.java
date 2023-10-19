@@ -1,5 +1,6 @@
 package org.saltations.mre.persons.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.micronaut.core.annotation.Introspected;
 import io.micronaut.serde.annotation.Serdeable;
 import io.micronaut.serde.config.naming.SnakeCaseStrategy;
@@ -32,15 +33,29 @@ import org.saltations.mre.core.annotations.StdEmailAddress;
 @SuperBuilder(builderMethodName = "of", buildMethodName = "done", toBuilder = true)
 public class PersonCore implements Person
 {
-    @Setter(onParam_={@NotNull,@Min(12L)})
+    @NotNull
+    @Min(value = 12L)
+    @Setter(onParam_={@NotNull,@Min(value = 12L)})
     private Integer age;
 
+    @NotNull
+    @NotBlank
+    @Size(max = 50)
+    @JsonProperty("first_name")
     @Setter(onParam_={@NotNull,@NotBlank,@Size(max = 50)})
     private String firstName;
 
+    @NotNull
+    @NotBlank
+    @Size(max = 50)
+    @JsonProperty("last_name")
     @Setter(onParam_={@NotNull,@NotBlank,@Size(max = 50)})
     private String lastName;
 
+    @NotNull
+    @NotBlank
+    @StdEmailAddress
+    @JsonProperty("email_address")
     @Setter(onParam_={@NotNull,@NotBlank,@StdEmailAddress})
     private String emailAddress;
 }

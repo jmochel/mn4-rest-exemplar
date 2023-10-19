@@ -35,6 +35,10 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
                 "permissions to perform the operation for this resource.",
         content = @Content(mediaType = "application/problem+json",schema = @Schema(allOf = ProblemSchema.class))
 )
+@ApiResponse(responseCode = "415",
+        description = "Unsupported media type. You have provided something other than JSON as a media type.",
+        content = @Content(mediaType = "application/problem+json",schema = @Schema(allOf = ProblemSchema.class))
+)
 @ApiResponse(responseCode = "500",
         description = "Some other error.",
         content = @Content(mediaType = "application/problem+json",schema = @Schema(allOf = ProblemSchema.class))
