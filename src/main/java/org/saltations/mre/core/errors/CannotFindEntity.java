@@ -13,17 +13,19 @@ import java.text.MessageFormat;
 @Serdeable
 public class CannotFindEntity extends DomainProblemBase
 {
-    private static final String TITLE = "Cannot find {0}";
+    private static final String PROBLEM_TYPE = "cannot-find-entity";
+
+    private static final String TITLE_TEMPLATE = "Cannot find {0}";
 
     public CannotFindEntity(String resourceTypeName, Object id)
     {
-        super(MessageFormat.format(TITLE, resourceTypeName),"Cannot find a {0} with id {1}", resourceTypeName, id.toString());
+        super(PROBLEM_TYPE, MessageFormat.format(TITLE_TEMPLATE, resourceTypeName),"Cannot find a {0} with id {1}", resourceTypeName, id.toString());
         setStatusType(new HttpStatusType(HttpStatus.NOT_FOUND));
     }
 
     public CannotFindEntity(Throwable e, String resourceTypeName, Object id)
     {
-        super(e, MessageFormat.format(TITLE, resourceTypeName),"Cannot find a {0} with id {1}", resourceTypeName, id.toString());
+        super(e, PROBLEM_TYPE, MessageFormat.format(TITLE_TEMPLATE, resourceTypeName),"Cannot find a {0} with id {1}", resourceTypeName, id.toString());
         setStatusType(new HttpStatusType(HttpStatus.NOT_FOUND));
     }
 

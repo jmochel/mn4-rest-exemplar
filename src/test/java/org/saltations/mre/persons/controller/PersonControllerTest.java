@@ -13,19 +13,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.saltations.mre.core.ReplaceBDDCamelCase;
-import org.saltations.mre.core.errors.CannotCreateEntity;
-import org.saltations.mre.core.errors.CannotDeleteEntity;
-import org.saltations.mre.core.errors.CannotFindEntity;
-import org.saltations.mre.core.errors.CannotUpdateEntity;
-import org.saltations.mre.persons.mapping.PersonMapper;
 import org.saltations.mre.persons.model.PersonEntity;
 import org.saltations.mre.persons.model.PersonOracle;
 import org.saltations.mre.persons.repo.PersonRepo;
-import org.saltations.mre.persons.service.PersonService;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -52,7 +42,7 @@ public class PersonControllerTest
     {
         // Create
 
-        var proto = oracle.corePrototype();
+        var proto = oracle.coreExemplar();
         var protoPayload = objMapper.writeValueAsString(proto);
 
         var created = spec.
@@ -82,7 +72,7 @@ public class PersonControllerTest
 
         // Replace
 
-        var alteredCore = oracle.modifiedCore();
+        var alteredCore = oracle.refurbishCore();
         var updatePayload = objMapper.writeValueAsString(alteredCore);
 
         var replace = spec.
@@ -112,7 +102,7 @@ public class PersonControllerTest
     {
         // Create
 
-        var proto = oracle.corePrototype();
+        var proto = oracle.coreExemplar();
         var protoPayload = objMapper.writeValueAsString(proto);
 
         var created = spec.

@@ -49,7 +49,7 @@ public class PersonServiceTest
     {
         // Save
 
-        var prototype = oracle.corePrototype();
+        var prototype = oracle.coreExemplar();
         var saved = service.create(prototype);
         assertNotNull(saved);
         assertNotNull(saved.getId());
@@ -63,7 +63,7 @@ public class PersonServiceTest
 
         // Update
 
-        var alteredCore = oracle.modifiedCore();
+        var alteredCore = oracle.refurbishCore();
         var modified = modelMapper.patchEntity(alteredCore, retrieved);
         service.update(modified);
 
@@ -86,7 +86,7 @@ public class PersonServiceTest
 
         // Save
 
-        var prototype = oracle.corePrototype();
+        var prototype = oracle.coreExemplar();
         var saved = service.create(prototype);
         assertNotNull(saved);
         assertNotNull(saved.getId());

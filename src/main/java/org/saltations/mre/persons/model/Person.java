@@ -10,7 +10,7 @@ import jakarta.validation.constraints.Size;
 import org.saltations.mre.core.annotations.StdEmailAddress;
 
 /**
- * Common interface with the core attributes describing a person.
+ * Interface with the core attributes describing a person.
  */
 
 @Introspected

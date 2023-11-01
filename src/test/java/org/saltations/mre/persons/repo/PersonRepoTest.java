@@ -43,7 +43,7 @@ class PersonRepoTest
     @Order(2)
     void canInsertFindAndDeleteAnEntity()
     {
-        var prototype = mapper.createEntity(oracle.corePrototype());
+        var prototype = mapper.createEntity(oracle.coreExemplar());
 
         // Save and validate
 
@@ -65,11 +65,11 @@ class PersonRepoTest
     {
         // Given a saved entity
 
-        var saved = repo.save(mapper.createEntity(oracle.corePrototype()));
+        var saved = repo.save(mapper.createEntity(oracle.coreExemplar()));
 
         // When updated
 
-        var update = mapper.patchEntity(oracle.modifiedCore(), saved);
+        var update = mapper.patchEntity(oracle.refurbishCore(), saved);
         var updated = repo.update(update);
 
         // Then

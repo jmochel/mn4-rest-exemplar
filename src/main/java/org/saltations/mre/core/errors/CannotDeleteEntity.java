@@ -13,17 +13,19 @@ import java.text.MessageFormat;
 @Serdeable
 public class CannotDeleteEntity extends DomainProblemBase
 {
-    private static final String TITLE = "Cannot delete {0}";
+    private static final String PROBLEM_TYPE = "cannot-delete-entity";
+
+    private static final String TITLE_TEMPLATE = "Cannot delete {0}";
 
     public CannotDeleteEntity(String resourceTypeName, Object id)
     {
-        super(MessageFormat.format(TITLE, resourceTypeName),"Cannot delete a {0} with id {1}", resourceTypeName, id.toString());
+        super(PROBLEM_TYPE, MessageFormat.format(TITLE_TEMPLATE, resourceTypeName),"Cannot delete a {0} with id {1}", resourceTypeName, id.toString());
         setStatusType(new HttpStatusType(HttpStatus.INTERNAL_SERVER_ERROR));
     }
 
     public CannotDeleteEntity(Throwable e, String resourceTypeName, Object id)
     {
-        super(e, MessageFormat.format(TITLE, resourceTypeName),"Cannot delete a {0} with id {1}", resourceTypeName, id.toString());
+        super(e, PROBLEM_TYPE, MessageFormat.format(TITLE_TEMPLATE, resourceTypeName),"Cannot delete a {0} with id {1}", resourceTypeName, id.toString());
         setStatusType(new HttpStatusType(HttpStatus.INTERNAL_SERVER_ERROR));
     }
 

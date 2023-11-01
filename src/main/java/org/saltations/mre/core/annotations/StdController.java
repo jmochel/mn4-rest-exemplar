@@ -15,6 +15,10 @@ import java.lang.annotation.Target;
 
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
+/**
+ * Meta annotation for standard controllers. Used to specify common controller behavior such as standard error responses
+ */
+
 @Inherited
 @Documented
 @Retention(RUNTIME)

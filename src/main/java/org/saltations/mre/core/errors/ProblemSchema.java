@@ -10,6 +10,10 @@ import lombok.NoArgsConstructor;
 import java.net.URI;
 import java.util.UUID;
 
+/**
+ * POJO used for specifying RFC 7807 Problem schema in the OpenAPI docs.
+ */
+
 @Data
 @Serdeable
 @Introspected

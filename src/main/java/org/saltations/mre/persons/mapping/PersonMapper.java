@@ -16,6 +16,16 @@ import org.saltations.mre.persons.model.PersonEntity;
 public interface PersonMapper extends EntityMapper<Long, PersonCore, PersonEntity>
 {
     /**
+     * Creates a copy of a PersonCore
+     *
+     * @param source <em>core object</em> to be copied
+     *
+     * @return Valid PersonCore
+     */
+
+    PersonCore copyCore(PersonCore source);
+
+    /**
      * Maps a (PersonCore) prototype to an entity.
      *
      * @param proto prototype with core attributes to create an PersonEntity.
@@ -29,9 +39,9 @@ public interface PersonMapper extends EntityMapper<Long, PersonCore, PersonEntit
     PersonEntity createEntity(PersonCore proto);
 
     /**
-     * Patches the entity with non-null values from the patch object
+     * Patches the <em>entity</em> with non-null values from the patch object
      *
-     * @param patch object with core attributes used to update the entity.
+     * @param patch <em>core object</em> with core attributes used to update the <em>entity</em>.
      * @param entity object to be updated
      *
      * @return Patched entity

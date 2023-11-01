@@ -1,62 +1,63 @@
 package org.saltations.mre.persons.model;
 
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.saltations.mre.core.EntityOracleBase;
-import org.saltations.mre.persons.model.Person;
-import org.saltations.mre.persons.model.PersonCore;
-import org.saltations.mre.persons.model.PersonEntity;
-
-import java.time.OffsetDateTime;
+import org.saltations.mre.persons.mapping.PersonMapper;
 
 /**
- * Provides exemplar instances of a Person.
+ * Provides exemplars of Person cores and entities.
  */
 
 @Singleton
 public class PersonOracle extends EntityOracleBase<Person, PersonCore, PersonEntity>
 {
-    public PersonOracle()
+    private final PersonMapper mapper;
+
+    @Inject
+    public PersonOracle(PersonMapper mapper)
     {
-        super(PersonCore.class, PersonEntity.class, Person.class);
+        super(PersonCore.class, PersonEntity.class, Person.class, 1L);
+        this.mapper = mapper;
     }
 
     @Override
-    public PersonCore corePrototype()
+    public PersonCore coreExemplar(long sharedInitialValue, int offset)
     {
-         return PersonCore.of()
-                    .age(22)
-                    .firstName("Samuel")
-                    .lastName("Clemens")
-                    .emailAddress("shmoil@agiga.com")
-                    .done();
+        int currIndex = (int) sharedInitialValue + offset;
+
+        return PersonCore.of()
+            .age(12 + currIndex)
+            .firstName("Samuel")
+            .lastName("Clemens")
+            .emailAddress("shmoil" + currIndex + "@agiga.com")
+            .done();
     }
 
     @Override
-    public PersonCore modifiedCore() {
-        return corePrototype().toBuilder()
-                .age(121)
-                .firstName("Frank")
-                .lastName("Adams")
-                .emailAddress("fad@adams.net")
-                .done();
+    public PersonEntity entityExemplar(long sharedInitialValue, int offset)
+    {
+        var currIndex = initialSharedValue + offset;
+
+        var core = coreExemplar(initialSharedValue, offset);
+        var entity = mapper.createEntity(core);
+
+        entity.setId(currIndex);
+
+        return entity;
     }
 
     @Override
-    public PersonEntity entityPrototype() {
+    public PersonCore refurbishCore(PersonCore original)
+    {
+        var refurb = mapper.copyCore(original);
 
-        var core = corePrototype();
-        var dts = OffsetDateTime.now();
+        refurb.setAge(original.getAge()+1);
+        refurb.setFirstName(original.getFirstName()+"A");
+        refurb.setLastName(original.getLastName()+"B");
+        refurb.setEmailAddress("mod"+ original.getEmailAddress());
 
-        return PersonEntity.of()
-                .id(1L)
-                .age(core.getAge())
-                .firstName(core.getFirstName())
-                .lastName(core.getLastName())
-                .created(dts)
-                .updated(dts)
-                .done();
+        return original;
     }
-
-
 
 }

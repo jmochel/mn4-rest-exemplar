@@ -13,17 +13,19 @@ import java.text.MessageFormat;
 @Serdeable
 public class CannotUpdateEntity extends DomainProblemBase
 {
-    private static final String TITLE = "Cannot update {0}";
+    private static final String PROBLEM_TYPE = "cannot-update-entity";
+
+    private static final String TITLE_TEMPLATE = "Cannot update {0}";
 
     public CannotUpdateEntity(String resourceTypeName, Object prototype)
     {
-        super(MessageFormat.format(TITLE, resourceTypeName),"Cannot update a {0} with contents {1}", resourceTypeName, prototype.toString());
+        super(PROBLEM_TYPE, MessageFormat.format(TITLE_TEMPLATE, resourceTypeName),"Cannot update a {0} with contents {1}", resourceTypeName, prototype.toString());
         setStatusType(new HttpStatusType(HttpStatus.BAD_REQUEST));
     }
 
     public CannotUpdateEntity(Throwable e, String resourceTypeName, Object prototype)
     {
-        super(e, MessageFormat.format(TITLE, resourceTypeName),"Cannot update a {0} with contents {1}", resourceTypeName, prototype.toString());
+        super(e, PROBLEM_TYPE, MessageFormat.format(TITLE_TEMPLATE, resourceTypeName),"Cannot update a {0} with contents {1}", resourceTypeName, prototype.toString());
         setStatusType(new HttpStatusType(HttpStatus.BAD_REQUEST));
     }
 

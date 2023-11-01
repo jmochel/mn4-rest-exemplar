@@ -13,17 +13,19 @@ import java.text.MessageFormat;
 @Serdeable
 public class CannotCreateEntity extends DomainProblemBase
 {
-    private static final String TITLE = "Cannot create {0}";
+    private static final String PROBLEM_TYPE = "cannot-create-entity";
+
+    private static final String TITLE_TEMPLATE = "Cannot create {0}";
 
     public CannotCreateEntity(String resourceTypeName, Object prototype)
     {
-        super(MessageFormat.format(TITLE, resourceTypeName),"Cannot create a {0} with contents {1}", resourceTypeName, prototype.toString());
+        super(PROBLEM_TYPE, MessageFormat.format(TITLE_TEMPLATE, resourceTypeName),"Cannot create a {0} with contents {1}", resourceTypeName, prototype.toString());
         setStatusType(new HttpStatusType(HttpStatus.BAD_REQUEST));
     }
 
     public CannotCreateEntity(Throwable e, String resourceTypeName, Object prototype)
     {
-        super(e, MessageFormat.format(TITLE, resourceTypeName),"Cannot create a {0} with contents {1}", resourceTypeName, prototype.toString());
+        super(e, PROBLEM_TYPE, MessageFormat.format(TITLE_TEMPLATE, resourceTypeName),"Cannot create a {0} with contents {1}", resourceTypeName, prototype.toString());
         setStatusType(new HttpStatusType(HttpStatus.BAD_REQUEST));
     }
 

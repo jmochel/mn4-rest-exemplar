@@ -19,7 +19,7 @@ import org.saltations.mre.core.Entity;
 import java.time.OffsetDateTime;
 
 /**
- * Represents Person as an identifiable/trackable entity
+ *  Identifiable, persistable Person
  */
 
 @Getter

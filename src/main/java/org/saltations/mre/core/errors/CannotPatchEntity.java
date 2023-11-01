@@ -13,17 +13,19 @@ import java.text.MessageFormat;
 @Serdeable
 public class CannotPatchEntity extends DomainProblemBase
 {
-    private static final String TITLE = "Cannot patch {0}";
+    private static final String PROBLEM_TYPE = "cannot-patch-entity";
+
+    private static final String TITLE_TEMPLATE = "Cannot patch {0}";
 
     public CannotPatchEntity(String resourceTypeName, Long id)
     {
-        super(MessageFormat.format(TITLE, resourceTypeName),"Cannot patch a {0} with id {1}", resourceTypeName, id);
+        super(PROBLEM_TYPE, MessageFormat.format(TITLE_TEMPLATE, resourceTypeName),"Cannot patch a {0} with id {1}", resourceTypeName, id);
         setStatusType(new HttpStatusType(HttpStatus.BAD_REQUEST));
     }
 
     public CannotPatchEntity(Throwable e, String resourceTypeName, Long id)
     {
-        super(e, MessageFormat.format(TITLE, resourceTypeName),"Cannot patch a {0} with id {1}", resourceTypeName, id);
+        super(e, PROBLEM_TYPE, MessageFormat.format(TITLE_TEMPLATE, resourceTypeName),"Cannot patch a {0} with id {1}", resourceTypeName, id);
         setStatusType(new HttpStatusType(HttpStatus.BAD_REQUEST));
     }
 

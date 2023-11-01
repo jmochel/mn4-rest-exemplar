@@ -1,35 +1,24 @@
 package org.saltations.mre.persons.mapping;
 
-import io.micronaut.core.annotation.AnnotationValue;
 import io.micronaut.core.beans.BeanProperty;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import io.micronaut.validation.validator.Validator;
 import jakarta.inject.Inject;
 
 import jakarta.validation.constraints.Min;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.javatuples.Pair;
-import org.javatuples.Triplet;
 import org.junit.jupiter.api.DisplayNameGeneration;
-import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.function.Executable;
 import org.saltations.mre.core.ReplaceBDDCamelCase;
 import org.saltations.mre.persons.model.Person;
+import org.saltations.mre.persons.model.PersonCore;
+import org.saltations.mre.persons.model.PersonEntity;
 import org.saltations.mre.persons.model.PersonOracle;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -41,93 +30,72 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @MicronautTest(transactional = false)
 @DisplayNameGeneration(ReplaceBDDCamelCase.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class PersonValidationTest
+class PersonValidationTest extends ValidationTest<Person, PersonCore, PersonEntity>
 {
-    @Inject
-    private PersonOracle oracle;
+    private final Validator validator;
 
     @Inject
-    private Validator validator;
-
-//    private static Map<String, ValidationParam> nameToParams;
-//
-//    static {
-//
-//        List<ValidationParam> params = Lists.newArrayList(
-//                new ValidationParam("jakarta.validation.constraints.NotEmpty","", "not empty"),
-//                new ValidationParam("jakarta.validation.constraints.NotBlank"," ", "not blank"),
-//                new ValidationParam("jakarta.validation.constraints.NotNull",null, "not null")
-//        );
-//
-//        nameToParams = params.stream().collect(Collectors.toMap(
-//                e -> e.annotSimpleName(),
-//                e -> e
-//        ));
-//    }
-
-    boolean hasValidationAnnotation(BeanProperty<Person, Object> bp)
+    public PersonValidationTest(PersonOracle oracle, Validator validator)
     {
-        return bp.getAnnotationNames().stream().anyMatch(an -> an.contains("jakarta.validation.constraints"));
+        super(Person.class, oracle);
+
+        this.validator = validator;
     }
 
-    String minNumericTestName(BeanProperty<Person, Object> beanProperty, AnnotationValue<?> wrappedAnnotation)
+    String minNumericTestName(BeanProperty<Person, Object> beanProperty)
     {
-        var annotation = wrappedAnnotation.getValue(Min.class).get();
-        return beanProperty.getName() + " property has a value below " + annotation.value();
+        var annotation = beanProperty.getAnnotation(Min.class);
+        var minimumValue = annotation.intValue().getAsInt();
+
+        return beanProperty.getName() + " property has a value below " + minimumValue;
     }
 
-    Person invalidProtoWithInvalidMin(BeanProperty<Person, Object> beanProperty, AnnotationValue<?> wrappedAnnotation)
+    Person exemplarWithInvalidMin(BeanProperty<Person, Object> beanProperty)
     {
-        var annotation = wrappedAnnotation.getValue(Min.class).get();
-        var constraintValue = (int) annotation.value();
+        var annotation = beanProperty.getAnnotation(Min.class);
+        var minimumValue = annotation.intValue().getAsInt();
 
-        var invalidValue = constraintValue-1;
-        var prototype = oracle.corePrototype();
-        beanProperty.set(prototype, invalidValue);
+        var invalidValue = minimumValue-1;
 
-        return prototype;
+        var exemplar = entityOracle.coreExemplar();
+        beanProperty.set(exemplar, invalidValue);
+
+        return exemplar;
     }
 
-    Executable minNumericTestExecutable(Person invalidProto, BeanProperty<Person, Object> beanProperty)
+    Executable minNumericTestExecutable(Person invalidExemplar, BeanProperty<Person, Object> beanProperty)
     {
-        // Code to test the violation
 
-        var violations = validator.validateProperty(invalidProto, beanProperty.getName());
+        var violations = validator.validateProperty(invalidExemplar, beanProperty.getName());
 
         return () ->  {
-            assertEquals(1, validator.validateProperty(invalidProto, beanProperty.getName()).size(),
-                () -> "Property " + beanProperty.getName() + " should have a violation for 'being below the minimum of '" + (long) 1);
+            assertEquals(1, violations.size(), () -> minNumericTestName(beanProperty));
         };
     }
 
     @Test
-    void basicExample()
+    void basicExample() throws Throwable
     {
-        var constrainedProperties = oracle.extractProperties()
-                .filter(this::hasValidationAnnotation)
+        var constrainedProperties = entityOracle.extractCoreProperties().stream()
+                .filter(ValidationType::hasConstraints)
                 .collect(Collectors.toList());
 
-        var pairedPropertyConstraint = oracle.extractProperties()
-                .filter(this::hasValidationAnnotation)
-                .collect(Collectors.toList());
-
-        var property = constrainedProperties.stream().filter(bp -> bp.getName().equals("age")).findFirst().get();
+        var property = constrainedProperties.stream()
+                .filter(bp -> bp.getName().equals("age"))
+                .findFirst().get();
 
         // Code to set the invalid value in(prop, proto,
 
         var annotation = property.getAnnotation(Min.class);
 
-            // Create invalid value (depends on datatype) input [annotation or annotation class, datatype]
+        // Create invalid value (depends on datatype) input [annotation or annotation class, datatype]
 
-            var annotationValue = (int) (long) annotation.getValue(Long.class).get();
-            var invalidValue = annotationValue-1;
-            var prototype = oracle.corePrototype();
-            property.set(prototype, invalidValue);
+        var exemplar = exemplarWithInvalidMin(property);
 
         // Code to test the violation
 
-        var violations = validator.validateProperty(prototype, property.getName());
-        assertEquals(1, violations.size(), () -> "Property " + property.getName() + " should have a violation for 'being below the minimum of '" + (long) 1);
+        var executeable = minNumericTestExecutable(exemplar,property);
+        executeable.execute();
     }
 
     /**

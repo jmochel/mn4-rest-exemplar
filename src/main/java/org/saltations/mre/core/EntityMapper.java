@@ -3,12 +3,11 @@ package org.saltations.mre.core;
 import org.mapstruct.MappingTarget;
 
 /**
- * Represents standard mapping between core business objects and entities
+ * Provides standard mapping functionality between <em>core objects</em>, and their corresponding <em>entities</em>
  *
- * @param <ID>
- * @param <C> Class of the business item
- * @param <E> Class of the persistable business item entity. Contains all the same data as C but supports additional
- *           entity specific meta-data.
+ * @param <ID> Type of the <em>entity</em> identifier
+ * @param <C> Class of the <em>core</em> business item
+ * @param <E> Class of the <em>entity</em>.
  */
 
 public interface EntityMapper<ID, C, E extends Entity<ID>>
@@ -22,8 +21,6 @@ public interface EntityMapper<ID, C, E extends Entity<ID>>
      */
 
     E createEntity(C proto);
-
-//    C createCore(E source);
 
     /**
      * Patches the entity with non-null values from the patch object

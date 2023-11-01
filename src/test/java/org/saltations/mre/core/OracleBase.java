@@ -14,9 +14,13 @@ public abstract class OracleBase<T> implements Oracle<T>
     @Getter
     private final Class<T> clazz;
 
-    public OracleBase(Class<T> clazz)
+    @Getter
+    private final int initialSharedValue;
+
+    public OracleBase(Class<T> clazz, int initialSharedValue)
     {
         this.clazz = clazz;
+        this.initialSharedValue = initialSharedValue;
     }
 
 }

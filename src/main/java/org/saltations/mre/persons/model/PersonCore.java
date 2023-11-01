@@ -17,10 +17,7 @@ import lombok.experimental.SuperBuilder;
 import org.saltations.mre.core.annotations.StdEmailAddress;
 
 /**
- * Represents the core attributes of a Person without any tracking metadata
- * <p>
- * Used as input for REST (create/patch/replace) operations
- * </p>
+ * Core object for a Person
  */
 
 @Introspected

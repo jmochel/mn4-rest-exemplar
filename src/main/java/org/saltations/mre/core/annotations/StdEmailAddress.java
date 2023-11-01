@@ -9,7 +9,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Meta-annotation
+ * Meta annotation for email data type.
  */
 
 @Email

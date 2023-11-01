@@ -33,7 +33,7 @@ class PersonMapperTest
     @Order(2)
     void canCreateAnEntityFromAPrototype()
     {
-        var prototype = oracle.corePrototype();
+        var prototype = oracle.coreExemplar();
         var created = mapper.createEntity(prototype);
         oracle.hasSameCoreContent(prototype, created);
     }
@@ -42,11 +42,11 @@ class PersonMapperTest
     @Order(4)
     void canPatchAnEntityFromAPrototype()
     {
-        var prototype = oracle.corePrototype();
+        var prototype = oracle.coreExemplar();
         var created = mapper.createEntity(prototype);
         oracle.hasSameCoreContent(prototype, created);
 
-        var patch = oracle.modifiedCore();
+        var patch = oracle.refurbishCore();
         var updated = mapper.patchEntity(patch, created);
 
         oracle.hasSameCoreContent(patch, updated);
@@ -55,11 +55,11 @@ class PersonMapperTest
     @Test
     void doesNotPatchNulls()
     {
-        var prototype = oracle.corePrototype();
+        var prototype = oracle.coreExemplar();
         var created = mapper.createEntity(prototype);
         oracle.hasSameCoreContent(prototype, created);
 
-        var patch = oracle.modifiedCore();
+        var patch = oracle.refurbishCore();
         patch.setLastName(null);
 
         var updated = mapper.patchEntity(patch, created);

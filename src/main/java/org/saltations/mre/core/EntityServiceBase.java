@@ -15,20 +15,21 @@ import org.saltations.mre.core.errors.CannotUpdateEntity;
 import java.util.Optional;
 
 /**
- *  Generic service for processing entities; An object uniquely identified by a single identity attribute
+ * Generic service for creating, finding, replacing, patching and deleting <em>entities</em>
  *
- * @param <ID> Type of the unique identifier .
- * @param <IC> Interface of the business item being represented
- * @param <E> Class of the persistable business item entity. Contains all the same data as C but supports additional
- *           entity specific meta-data.
- * @param <R> Type of the repository used by the service
+ * @param <ID> Type of the <em>entity</em> identifier .
+ * @param <IC> Interface of the <em>core</em> business concept
+ * @param <C> Class of the <em>core object</em>
+ * @param <E> Class of the <em>entity</em>.
+ * @param <ER> Type of the <em>entity repository</em> used by the service
+ * @param <EM> Type of the <em>entity mapper</em> used by the service
  */
 
-public abstract class EntityService<ID, IC, C extends IC, E extends Entity<ID>,  R extends EntityRepo<ID,E>, M extends EntityMapper<ID,C,E>>
+public abstract class EntityServiceBase<ID, IC, C extends IC, E extends Entity<ID>,  ER extends EntityRepoBase<ID,E>, EM extends EntityMapper<ID,C,E>>
 {
     private final Class<E> clazz;
 
-    private final R repo;
+    private final ER repo;
 
     private final EntityMapper<ID,C,E> mapper;
 
@@ -41,7 +42,7 @@ public abstract class EntityService<ID, IC, C extends IC, E extends Entity<ID>, 
      * @param repo  Repository for persistence of entities
      */
 
-    public EntityService(Class<E> clazz, R repo, EntityMapper<ID,C,E> mapper)
+    public EntityServiceBase(Class<E> clazz, ER repo, EntityMapper<ID,C,E> mapper)
     {
         this.repo = repo;
         this.clazz = clazz;

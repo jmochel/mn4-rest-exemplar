@@ -11,7 +11,7 @@ import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Stream;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -19,10 +19,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * Generates example core objects and entities that implement the core interface (IC)
  *
- * @param <IC> Interface of the business item being represented
+ * @param <IC> Interface of the core business item being represented
  * @param <C> Class of the business item
  * @param <E> Class of the persistable business item entity. Contains all the same data as C but Supports additional
- *           entity specific meta-data.
+ *           entity specific meta-data (especially the Id).
  */
 
 @SuppressWarnings("ClassHasNoToStringMethod")
@@ -38,17 +38,22 @@ public abstract class EntityOracleBase<IC, C extends IC, E extends IC>
     @Getter
     private final Class<IC> coreInterfaceClass;
 
+    @Getter
+    protected final long initialSharedValue;
+
     private final BeanIntrospection<IC> introspection;
+
     private final Collection<BeanProperty<IC, Object>> beanProperties;
 
-    public EntityOracleBase(Class<C> coreClass, Class<E> entityClass, Class<IC> coreInterfaceClass)
+    public EntityOracleBase(Class<C> coreClass, Class<E> entityClass, Class<IC> coreInterfaceClass, long initialSharedValue)
     {
         this.coreClass = coreClass;
         this.entityClass = entityClass;
         this.coreInterfaceClass = coreInterfaceClass;
+        this.initialSharedValue = initialSharedValue;
 
-        introspection = BeanIntrospection.getIntrospection(this.coreInterfaceClass);
-        beanProperties = introspection.getBeanProperties();
+        this.introspection = BeanIntrospection.getIntrospection(this.coreInterfaceClass);
+        this.beanProperties = introspection.getBeanProperties();
     }
 
     @Override
@@ -65,20 +70,15 @@ public abstract class EntityOracleBase<IC, C extends IC, E extends IC>
         assertAll(coreInterfaceClass.getSimpleName(), assertions);
     }
 
-    public Stream<BeanProperty<IC,Object>> extractProperties()
+    @Override
+    public List<BeanProperty<IC,Object>> extractCoreProperties()
     {
-        return beanProperties.stream();
+        return beanProperties.stream().collect(Collectors.toList());
     }
 
     private Pair<AnnotationValue<Annotation>,BeanProperty<IC,Object>> pairUp(String annotationName, BeanProperty<IC,Object> beanProperty)
     {
         return Pair.with(beanProperty.getAnnotation(annotationName), beanProperty);
-    }
-
-
-    private boolean hasValidationConstraints(BeanProperty<IC,Object> property)
-    {
-        return property.getDeclaredAnnotationNames().stream().anyMatch(name -> name.contains("constraint"));
     }
 
 }

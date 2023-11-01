@@ -1,13 +1,12 @@
 package org.saltations.mre.persons.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.web.router.RouteBuilder;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
-import org.saltations.mre.core.EntityController;
+import org.saltations.mre.core.EntityControllerBase;
 import org.saltations.mre.core.annotations.StdController;
 import org.saltations.mre.persons.mapping.PersonMapper;
 import org.saltations.mre.persons.model.Person;
@@ -24,7 +23,7 @@ import org.saltations.mre.persons.service.PersonService;
 @StdController
 @Controller(value = "/persons", produces = MediaType.APPLICATION_JSON, consumes = MediaType.APPLICATION_JSON)
 @Tag(name="Persons", description = "People's names and contact info")
-public class PersonController extends EntityController<Long, Person, PersonCore, PersonEntity, PersonRepo, PersonMapper, PersonService>
+public class PersonController extends EntityControllerBase<Long, Person, PersonCore, PersonEntity, PersonRepo, PersonMapper, PersonService>
 {
     @Inject
     public PersonController(RouteBuilder.UriNamingStrategy uriNaming, PersonService service)
@@ -32,4 +31,9 @@ public class PersonController extends EntityController<Long, Person, PersonCore,
         super(uriNaming, PersonEntity.class, service);
     }
 
+    @Override
+    public String getResourceName()
+    {
+        return "person";
+    }
 }
