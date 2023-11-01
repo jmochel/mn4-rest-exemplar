@@ -40,23 +40,29 @@ import java.net.URI;
  */
 
 @Slf4j
-public class EntityControllerBase<ID,IC, C extends IC,E extends Entity<ID>, ER extends EntityRepoBase<ID,E>, EM extends EntityMapper<ID,C,E>, ES extends EntityServiceBase<ID,IC,C,E, ER, EM>>
+public class EntityControllerBase<ID,IC,
+        C  extends IC,
+        E  extends Entity<ID>,
+        ER extends EntityRepoBase<ID,E>,
+        EM extends EntityMapper<C,E>,
+        ES extends EntityServiceBase<ID,IC,C,E, ER, EM>>
         implements EntityController<ID, IC, C, E, ER, EM, ES>
 {
     private final RouteBuilder.UriNamingStrategy uriNaming;
 
     @Getter
-    private final Class<E> entityClazz;
+    private final Class<E> entityClass;
 
     @Getter
     private final ES entityService;
 
+    @Getter
     private final ObjectMapper jacksonMapper;
 
-    public EntityControllerBase(RouteBuilder.UriNamingStrategy uriNaming, Class<E> entityClazz, ES entityService)
+    public EntityControllerBase(RouteBuilder.UriNamingStrategy uriNaming, Class<E> entityClass, ES entityService)
     {
         this.uriNaming = uriNaming;
-        this.entityClazz = entityClazz;
+        this.entityClass = entityClass;
         this.entityService = entityService;
 
         this.jacksonMapper = new ObjectMapper();

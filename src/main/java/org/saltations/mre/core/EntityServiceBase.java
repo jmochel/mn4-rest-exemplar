@@ -25,42 +25,38 @@ import java.util.Optional;
  * @param <EM> Type of the <em>entity mapper</em> used by the service
  */
 
-public abstract class EntityServiceBase<ID, IC, C extends IC, E extends Entity<ID>,  ER extends EntityRepoBase<ID,E>, EM extends EntityMapper<ID,C,E>>
+public abstract class EntityServiceBase<ID, IC, C extends IC, E extends Entity<ID>,
+                                                ER extends EntityRepoBase<ID,E>,
+                                                EM extends EntityMapper<C,E>>
 {
-    private final Class<E> clazz;
+    private final Class<E> entityClass;
 
-    private final ER repo;
+    private final ER entityRepo;
 
-    private final EntityMapper<ID,C,E> mapper;
+    private final EntityMapper<C,E> entityMapper;
 
     private final ObjectMapper jacksonMapper;
 
     /**
      * Primary constructor
      *
-     * @param clazz Type of the entity
-     * @param repo  Repository for persistence of entities
+     * @param entityClass Type of the entity
+     * @param entityRepo  Repository for persistence of entities
      */
 
-    public EntityServiceBase(Class<E> clazz, ER repo, EntityMapper<ID,C,E> mapper)
+    public EntityServiceBase(Class<E> entityClass, ER entityRepo, EntityMapper<C,E> entityMapper)
     {
-        this.repo = repo;
-        this.clazz = clazz;
-        this.mapper = mapper;
+        this.entityRepo = entityRepo;
+        this.entityClass = entityClass;
+        this.entityMapper = entityMapper;
 
         this.jacksonMapper = new ObjectMapper();
         this.jacksonMapper.registerModule(new JavaTimeModule());
     }
 
-    /**
-     *      * {@return {@code true} if and only if this class has
-     *      * the synthetic modifier bit set}
-     * @return the simple name of the entity type
-     */
-
     protected String resourceTypeName()
     {
-        return clazz.getSimpleName();
+        return entityClass.getSimpleName();
     }
 
     /**
@@ -73,7 +69,7 @@ public abstract class EntityServiceBase<ID, IC, C extends IC, E extends Entity<I
     @NonNull
     public Boolean exists(@NotNull ID id)
     {
-        return repo.existsById(id);
+        return entityRepo.existsById(id);
     }
 
     /**
@@ -86,7 +82,7 @@ public abstract class EntityServiceBase<ID, IC, C extends IC, E extends Entity<I
 
     public Optional<E> find(@NotNull ID id)
     {
-        return repo.findById(id);
+        return entityRepo.findById(id);
     }
 
     /**
@@ -105,9 +101,9 @@ public abstract class EntityServiceBase<ID, IC, C extends IC, E extends Entity<I
 
         try
         {
-            var toBeCreated = mapper.createEntity(prototype);
+            var toBeCreated = entityMapper.createEntity(prototype);
 
-            created = repo.save(toBeCreated);
+            created = entityRepo.save(toBeCreated);
         }
         catch (Exception e)
         {
@@ -132,7 +128,7 @@ public abstract class EntityServiceBase<ID, IC, C extends IC, E extends Entity<I
     {
         try
         {
-            return repo.update(update);
+            return entityRepo.update(update);
         }
         catch (Exception e)
         {
@@ -145,7 +141,7 @@ public abstract class EntityServiceBase<ID, IC, C extends IC, E extends Entity<I
     {
         try
         {
-            var retrieved = repo.findById(id).get();
+            var retrieved = entityRepo.findById(id).get();
 
             var retrievedAsString = jacksonMapper.writeValueAsString(retrieved);
             var retrievedAsJsonNode = jacksonMapper.readTree(retrievedAsString);
@@ -153,9 +149,9 @@ public abstract class EntityServiceBase<ID, IC, C extends IC, E extends Entity<I
             var patchedAsJsonNode = mergePatch.apply(retrievedAsJsonNode);
             var patchedAsString = jacksonMapper.writeValueAsString(patchedAsJsonNode);
 
-            var patched = jacksonMapper.readValue(patchedAsString, clazz);
+            var patched = jacksonMapper.readValue(patchedAsString, entityClass);
 
-            return repo.update(patched);
+            return entityRepo.update(patched);
         }
         catch (Exception e)
         {
@@ -192,7 +188,7 @@ public abstract class EntityServiceBase<ID, IC, C extends IC, E extends Entity<I
     {
         try
         {
-            repo.deleteById(id);
+            entityRepo.deleteById(id);
         }
         catch (Exception e)
         {

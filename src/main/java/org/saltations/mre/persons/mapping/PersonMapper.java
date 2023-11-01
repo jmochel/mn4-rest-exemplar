@@ -13,7 +13,7 @@ import org.saltations.mre.persons.model.PersonEntity;
 
 @Singleton
 @Mapper(componentModel = "jsr330")
-public interface PersonMapper extends EntityMapper<Long, PersonCore, PersonEntity>
+public interface PersonMapper extends EntityMapper<PersonCore, PersonEntity>
 {
     /**
      * Creates a copy of a PersonCore

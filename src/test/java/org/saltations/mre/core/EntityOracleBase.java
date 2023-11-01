@@ -21,12 +21,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  *
  * @param <IC> Interface of the core business item being represented
  * @param <C> Class of the business item
- * @param <E> Class of the persistable business item entity. Contains all the same data as C but Supports additional
+ * @param <E> Class of the persistable business item entity. Contains all the same data as C but supports additional
  *           entity specific meta-data (especially the Id).
  */
 
 @SuppressWarnings("ClassHasNoToStringMethod")
-public abstract class EntityOracleBase<IC, C extends IC, E extends IC>
+public abstract class EntityOracleBase<IC, C extends IC, E extends C>
         implements EntityOracle<IC, C, E>
 {
     @Getter

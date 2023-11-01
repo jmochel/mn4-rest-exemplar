@@ -10,7 +10,7 @@ import org.mapstruct.MappingTarget;
  * @param <E> Class of the <em>entity</em>.
  */
 
-public interface EntityMapper<ID, C, E extends Entity<ID>>
+public interface EntityMapper<C, E>
 {
     /**
      * Maps a (Core) prototype to an Entity.

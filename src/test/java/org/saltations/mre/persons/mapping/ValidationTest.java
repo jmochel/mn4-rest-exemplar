@@ -27,7 +27,7 @@ import java.util.stream.Stream;
  * Collaborates with // TODO Document ValidationTest collaborators, if any
  */
 
-public class ValidationTest<IC, C extends IC, E extends IC>
+public class ValidationTest<IC, C extends IC, E extends C>
 {
     protected final Class<IC> coreInterfaceClass;
 

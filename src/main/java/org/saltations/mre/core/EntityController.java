@@ -6,7 +6,7 @@ package org.saltations.mre.core;
 
 public interface EntityController<ID, IC, C extends IC, E extends Entity<ID>,
                                           ER extends EntityRepoBase<ID, E>,
-                                          EM extends EntityMapper<ID, C, E>,
+                                          EM extends EntityMapper<C, E>,
                                           ES extends EntityServiceBase<ID, IC, C, E, ER, EM>>
 {
     /**
@@ -16,10 +16,10 @@ public interface EntityController<ID, IC, C extends IC, E extends Entity<ID>,
 
     default String getResourceName()
     {
-        return getEntityClazz().getSimpleName();
+        return getEntityClass().getSimpleName();
     }
 
-    Class<E> getEntityClazz();
+    Class<E> getEntityClass();
 
     ES getEntityService();
 

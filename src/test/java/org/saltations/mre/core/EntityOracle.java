@@ -30,7 +30,7 @@ import java.util.stream.IntStream;
  *   <dt>Offset</dt>
  *   <dd>numeric offset from the initial shared value for that particular prototype being generated.</dd>
  *   <dt>Refurb</dt>
- *   <dd>A exemplar that has had all of its attributes modified from the original exemplar</dd>
+ *   <dd>An exemplar that has had all of its attributes modified from the original exemplar</dd>
  * </dl>
  * <p>
  * <em>Notes</em>
@@ -44,7 +44,7 @@ import java.util.stream.IntStream;
  *             Contains all the same data as C but supports additional entity specific meta-data.
  */
 
-public interface EntityOracle<IC, C extends IC, E extends IC>
+public interface EntityOracle<IC, C extends IC, E extends C>
 {
     /**
      * Provides the initial shared value for all objects of class T
