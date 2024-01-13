@@ -5,7 +5,6 @@ import org.mapstruct.MappingTarget;
 /**
  * Provides standard mapping functionality between <em>core objects</em>, and their corresponding <em>entities</em>
  *
- * @param <ID> Type of the <em>entity</em> identifier
  * @param <C> Class of the <em>core</em> business item
  * @param <E> Class of the <em>entity</em>.
  */

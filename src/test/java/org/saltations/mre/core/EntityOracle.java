@@ -8,35 +8,6 @@ import java.util.stream.IntStream;
 
 /**
  * Generates example core objects and entities that implement the core interface (IC)
- * <p>
- * Domain Glossary
- * <dl>
- *   <dt>Exemplar</dt>
- *   <dd>An exemplar is an object with typical values for the usage of its class</dd>
- *   <dt>Core Object</dt>
- *   <dd>An object that contains all of the <em>core</em> content attributes needed to represent the domain concept and
- *   implements a <em>core interface</em> that allows getting and modifying the value of those attributes</dd>
- *   <dt>Entity</dt>
- *   <dd>An object contains all of the <em>core</em> content attributes needed to represent a domain concept AND the
- *   meta data needed to identify and track this particular object (At the very least a single unique ID)</dd>
- *   <dt>Core Exemplar</dt>
- *   <dd>an exemplar of a core object that contains all attributes needed to create a corresponding entity. It should be ready to persist</dd>
- *   <dt>Entity Exemplar</dt>
- *   <dd>an exemplar of an entity that contains all attributes as iof the entity had been persisted</dd>
- *   <dt>Initial Shared Value</dt>
- *   <dd>common numeric value that all objects of the class use as a starting name space for its values. So if Person was
- *   a domain object, the PersonOracle would use the same starting Initial value for all generated Persons.
- *   </dd>
- *   <dt>Offset</dt>
- *   <dd>numeric offset from the initial shared value for that particular prototype being generated.</dd>
- *   <dt>Refurb</dt>
- *   <dd>An exemplar that has had all of its attributes modified from the original exemplar</dd>
- * </dl>
- * <p>
- * <em>Notes</em>
- * Each exemplar is newly instantiated So no, two instances of the exemplar should point to the same object.
- * And all exemplars created with the same initial Shared value and offset, should have identical values.
- * </p>
  *
  * @param <IC> Interface of the core domain item being represented
  * @param <C>  Class of the core domain item

@@ -14,9 +14,6 @@ import org.saltations.mre.persons.model.PersonOracle;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-/**
- * Unit test for the Person Repository
- */
 
 @SuppressWarnings("ClassHasNoToStringMethod")
 @MicronautTest(transactional = false)

@@ -8,12 +8,21 @@ public class ReplaceBDDCamelCase extends DisplayNameGenerator.Standard
 {
     @Override
     public String generateDisplayNameForClass(Class<?> testClass) {
+
         return splitCamelCase(testClass.getSimpleName().replaceAll("[Tt]est$",""));
     }
 
     @Override
     public String generateDisplayNameForNestedClass(Class<?> nestedClass) {
-        return splitCamelCase(nestedClass.getSimpleName());
+
+        return splitCamelCase(nestedClass.getSimpleName().replaceAll("[Tt]est$",""))
+                .toLowerCase()
+                .replaceAll("^and", "AND ")
+                .replaceAll("^given", "GIVEN ")
+                .replaceAll(" when ", "WHEN ")
+                .replaceAll(" then ", " THEN ")
+                .replaceAll("  ", " ")
+                .trim();
     }
 
     @Override
