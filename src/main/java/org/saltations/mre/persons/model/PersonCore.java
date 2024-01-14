@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.micronaut.core.annotation.Introspected;
 import io.micronaut.serde.annotation.Serdeable;
 import io.micronaut.serde.config.naming.SnakeCaseStrategy;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -28,6 +29,7 @@ import org.saltations.mre.core.annotations.StdEmailAddress;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder(builderMethodName = "of", buildMethodName = "done", toBuilder = true)
+@Schema(name = "PersonCore", description = "Represents a person's basic contact info", allOf = Person.class)
 public class PersonCore implements Person
 {
     @NotNull

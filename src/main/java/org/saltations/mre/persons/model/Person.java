@@ -14,20 +14,20 @@ import org.saltations.mre.core.annotations.StdEmailAddress;
  */
 
 @Introspected
-@Schema(name = "person", description = "Represents a person's basic contact info")
+@Schema(name = "Person", description = "Represents a person's basic contact info")
 public interface Person
 {
-    @Schema(description = "The age of the person")
+    @Schema(description = "The age of the person", example = "14")
     Integer getAge();
 
     void setAge(@NotNull @Min(12L) Integer age);
 
-    @Schema(description = "The first name of the person")
+    @Schema(description = "The first name of the person", example = "James")
     String getFirstName();
 
     void setFirstName(@NotNull @NotBlank @Size(max = 50) String firstName);
 
-    @Schema(description = "The last name of the person")
+    @Schema(description = "The last name of the person", example = "Cricket")
     String getLastName();
 
     void setLastName(@NotNull @NotBlank @Size(max = 50) String lastName);
