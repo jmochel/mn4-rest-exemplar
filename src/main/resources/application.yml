@@ -18,6 +18,10 @@ netty:
     allocator:
       max-order: 3
 
+problem:
+  enabled: true
+  stack-trace: false
+
 liquibase:
   datasources:
     default:

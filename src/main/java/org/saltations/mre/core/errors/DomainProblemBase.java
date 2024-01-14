@@ -103,7 +103,6 @@ public class DomainProblemBase extends Exception implements DomainProblem
         this.detail = format(detailTemplate, args);
 
         extensionPropertiesByName.put("trace_id", UUID.randomUUID().toString());
-        extensionPropertiesByName.put("problem-type", problemType);
     }
 
     /**

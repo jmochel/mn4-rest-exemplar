@@ -126,6 +126,20 @@ public class EntityControllerBase<ID,IC,
 
     }
 
+    /**
+     * Provides partial update of id'd resource using a JSON Merge Patch
+     * <p>Uses <a href="https://datatracker.ietf.org/doc/html/rfc7386">JSON Merge Patch</a> to do partial updates of the
+     * identified resource including explicit nulls.
+     *
+     * <p>TODO Description(1 lines sentences,) References generic parameters with  {@code <T>} and uses 'b','em', dl, ul, ol tags
+     *
+     * @param id the identifier for the resource. Not null.
+     * @param mergePatchAsString the string containing the <em>RFC 7386</em> JSON merge Patch.
+     *
+     * @return Patched resource
+     * @throws CannotPatchEntity if TODO ?
+     */
+
     @Patch("/{id}")
     public Mono<MutableHttpResponse<?>> patch(@NotNull ID id, @NotNull @NotBlank @Body String mergePatchAsString)
             throws CannotPatchEntity

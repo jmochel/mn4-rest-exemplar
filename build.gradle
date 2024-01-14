@@ -55,6 +55,8 @@ dependencies {
     testAnnotationProcessor("io.micronaut.serde:micronaut-serde-processor")
 
     testImplementation("io.micronaut.test:micronaut-test-rest-assured")
+    testImplementation("io.rest-assured:json-schema-validator")
+
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:mysql")
     testImplementation("org.testcontainers:testcontainers")
