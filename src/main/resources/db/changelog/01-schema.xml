@@ -5,14 +5,18 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
-    <changeSet id="origin-schema" author="jmochel">
+
+    <property name="uuid_type" value="uuid" dbms="postgresql"/>
+    <property name="uuid_function" value="gen_random_uuid()" dbms="postgresql"/>
+
+    <changeSet id="origin-person" author="jmochel">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="person"/>
             </not>
         </preConditions>
         <createTable tableName="person">
-            <column name="id" type="int" remarks="Age of the person" autoIncrement="true" >
+            <column name="id" type="int" remarks="Id of the person" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_person"/>
             </column>
             <column name="age" type="tinyint" remarks="Age of the person"/>
@@ -22,5 +26,27 @@
             <column name="created" type="timestamp" remarks="Date and time when person record was created"/>
             <column name="updated" type="timestamp" remarks="Date and time when person record was updated"/>
         </createTable>
+    </changeSet>
+    <changeSet id="origin-place" author="jmochel">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="place"/>
+            </not>
+        </preConditions>
+        <createTable tableName="place">
+            <column name="id" type="uuid" defaultValueComputed="uuid_generate_v4()" remarks="Id of the place">
+                <constraints  primaryKey="true" unique="true" nullable="false" primaryKeyName="pk_place"/>
+            </column>
+            <column name="name" type="varchar(50)" remarks="Name of the place"/>
+            <column name="street1" type="varchar(50)" remarks="Place street address 1"/>
+            <column name="street2" type="varchar(50)" remarks="Place street address 2"/>
+            <column name="city" type="varchar(50)" remarks="Place city"/>
+            <column name="state" type="varchar(2)" remarks="Place state"/>
+            <column name="created" type="timestamp" remarks="Date and time when person record was created"/>
+            <column name="updated" type="timestamp" remarks="Date and time when person record was updated"/>
+        </createTable>
+        <modifySql dbms="postgresql">
+            <prepend value="CREATE EXTENSION IF NOT EXISTS &quot;uuid-ossp&quot; ;"  />
+        </modifySql>
     </changeSet>
 </databaseChangeLog>

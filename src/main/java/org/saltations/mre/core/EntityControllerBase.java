@@ -69,6 +69,13 @@ public class EntityControllerBase<ID,IC,
         this.jacksonMapper.registerModule(new JavaTimeModule());
     }
 
+    /**
+     * Get for given id
+     *
+     * @param id the identifier for the resource. Not null.
+     * @return populated resource
+     */
+
     @Get("/{id}")
     public Mono<MutableHttpResponse<E>> get(@NotNull ID id)
     {
@@ -86,6 +93,15 @@ public class EntityControllerBase<ID,IC,
         return Mono.just(HttpResponse.ok(found));
     }
 
+    /**
+     *
+     * Create from provided payload
+     *
+     * @param toBeCreated DTO containing the info needed to create an resource
+     *
+     * @return populated resource
+     */
+
     @Post
     public Mono<MutableHttpResponse<E>> create(@NotNull @Valid @Body final C toBeCreated)
     {
@@ -102,6 +118,16 @@ public class EntityControllerBase<ID,IC,
 
         return Mono.just(HttpResponse.ok(created));
     }
+
+    /**
+     *
+     * Replace with provided payload
+     *
+     * @param id the identifier for the resource. Not null.
+     * @param replacement Payload resource to be used to replace the id'd resource
+     *
+     * @return populated resource
+     */
 
     @Put("/{id}")
     public Mono<MutableHttpResponse<?>> replace(@NotNull ID id, @NotNull @Valid @Body E replacement)
@@ -127,11 +153,10 @@ public class EntityControllerBase<ID,IC,
     }
 
     /**
-     * Provides partial update of id'd resource using a JSON Merge Patch
+     * Modify using a JSON Merge Patch
+     *
      * <p>Uses <a href="https://datatracker.ietf.org/doc/html/rfc7386">JSON Merge Patch</a> to do partial updates of the
      * identified resource including explicit nulls.
-     *
-     * <p>TODO Description(1 lines sentences,) References generic parameters with  {@code <T>} and uses 'b','em', dl, ul, ol tags
      *
      * @param id the identifier for the resource. Not null.
      * @param mergePatchAsString the string containing the <em>RFC 7386</em> JSON merge Patch.
@@ -140,7 +165,7 @@ public class EntityControllerBase<ID,IC,
      * @throws CannotPatchEntity if TODO ?
      */
 
-    @Patch("/{id}")
+    @Patch(value = "/{id}", consumes = {"application/merge-patch+json"})
     public Mono<MutableHttpResponse<?>> patch(@NotNull ID id, @NotNull @NotBlank @Body String mergePatchAsString)
             throws CannotPatchEntity
     {
@@ -169,6 +194,12 @@ public class EntityControllerBase<ID,IC,
         return Mono.just(HttpResponse.ok(patched));
     }
 
+    /**
+     * Delete for id
+     *
+     * @param id the identifier for the resource. Not null.
+     */
+
     @Delete("/{id}")
     public HttpResponse<?> delete(@NotNull ID id)
     {
@@ -183,6 +214,7 @@ public class EntityControllerBase<ID,IC,
 
         return HttpResponse.ok();
     }
+
 
     @NonNull
     private MutableHttpResponse<E> created(@NonNull E entity) {

@@ -1,3 +1,20 @@
+# Micronaut Exemmplar 
+
+## To Do 
+
+* Example of GUIDs as resource ids.
+* Add optimistic locking support (PUT)
+* Add example of POST returning link in HEADER for created resource [zalando](https://opensource.zalando.com/restful-api-guidelines/#http-requests) 
+* Add example of POST of multiple elements returning a 207  [zalando](https://opensource.zalando.com/restful-api-guidelines/#http-requests)
+* Add example of Async GET call
+* Add example Async POST creation call
+* Add example Async PUT call
+* Add example Async PATCH call
+* Add example PATCH using [JSON Patch](https://tools.ietf.org/html/rfc6902)
+* Add example sophisticated query , filter and search
+* Add swagger or other does for Standard client and server errors, e.g. 401 (unauthenticated), 403 (unauthorized), 404 (not found), 500 (internal server error), or 503 (service unavailable)
+* 
+
 # Micronaut 4.1.4 Documentation
 
 - [User Guide](https://docs.micronaut.io/4.1.4/guide/index.html)
