@@ -1,6 +1,8 @@
 package org.saltations.mre.core;
 
+import io.micronaut.core.annotation.NonNull;
 import io.micronaut.data.repository.CrudRepository;
+import jakarta.validation.Valid;
 
 /**
  * Repository for entities of type E.

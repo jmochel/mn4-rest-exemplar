@@ -1,7 +1,6 @@
-package org.saltations.mre.persons.controller;
+package org.saltations.mre.places.controller;
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.serde.ObjectMapper;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
@@ -15,36 +14,36 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.saltations.mre.core.ReplaceBDDCamelCase;
-import org.saltations.mre.persons.mapping.PersonMapper;
-import org.saltations.mre.persons.model.PersonEntity;
-import org.saltations.mre.persons.model.PersonOracle;
-import org.saltations.mre.persons.repo.PersonRepo;
 import org.saltations.mre.places.mapping.PlaceMapper;
+import org.saltations.mre.places.model.PlaceEntity;
+import org.saltations.mre.places.model.PlaceOracle;
+import org.saltations.mre.places.repo.PlaceRepo;
+
+import java.util.UUID;
 
 import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
-import static org.hamcrest.Matchers.hasItems;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @MicronautTest
 @DisplayNameGeneration(ReplaceBDDCamelCase.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class PersonControllerTest
+public class PlaceControllerTest
 {
-    public static final String RESOURCE_ENDPOINT = "/persons/";
-    public static final String VALID_JSON_MERGE_PATCH_STRING = "{ \"first_name\" : \"Srinivas\", \"last_name\" : null   }";
-    public static final Class<PersonEntity> ENTITY_CLASS = PersonEntity.class;
+    public static final String RESOURCE_ENDPOINT = "/places/";
+    public static final Class<PlaceEntity> ENTITY_CLASS = PlaceEntity.class;
+
 
     @Inject
-    private PersonOracle oracle;
+    private PlaceOracle oracle;
 
     @Inject
-    private PersonMapper modelMapper;
+    private PlaceMapper modelMapper;
 
+
+    /**
+     * Confirms that the patched resource matches the {@code VALID_JSON_MERGE_PATCH_STRING}
+     */
 
 
     @Test
@@ -71,7 +70,6 @@ public class PersonControllerTest
         assertNotNull(created);
         oracle.hasSameCoreContent(proto, created);
 
-
         // Read
 
         var retrieved = spec.
@@ -91,12 +89,12 @@ public class PersonControllerTest
 
         var replaced = spec.
                 when().
-                contentType(ContentType.JSON).
-                body(updatePayload).
-                put(RESOURCE_ENDPOINT + created.getId()).
+                    contentType(ContentType.JSON).
+                    body(updatePayload).
+                    put(RESOURCE_ENDPOINT + created.getId()).
                 then().
-                statusCode(HttpStatus.OK.getCode()).
-                extract().as(ENTITY_CLASS);
+                    statusCode(HttpStatus.OK.getCode()).
+                    extract().as(ENTITY_CLASS);
 
         oracle.hasSameCoreContent(altered, replaced);
 
@@ -146,12 +144,10 @@ public class PersonControllerTest
 
         oracle.hasSameCoreContent(created, retrieved);
 
-        // Replace
+        // Patch with valid values
 
         var jacksonMapper = new com.fasterxml.jackson.databind.ObjectMapper();
         jacksonMapper.registerModule(new JavaTimeModule());
-
-        // Patch with valid values
 
         var refurb = oracle.refurbishCore();
         var patch = jacksonMapper.writeValueAsString(refurb);
@@ -160,10 +156,8 @@ public class PersonControllerTest
                 when().
                     contentType(ContentType.JSON).
                     body(patch).
-                    log().all().
                     patch(RESOURCE_ENDPOINT + created.getId()).
                 then().
-                    log().all().
                     statusCode(HttpStatus.OK.getCode()).
                     extract().as(ENTITY_CLASS);
 
@@ -193,11 +187,13 @@ public class PersonControllerTest
     @Order(22)
     void whenGettingNonexistentResourceReturnsProblemDetails(RequestSpecification spec) throws Exception
     {
+        var id = new UUID(11111L,22222L);
+
         //@formatter:off
         var retrieved = spec.
                 when().
                     contentType(ContentType.JSON).
-                    get("/persons/" + 274).
+                    get("/places/" + id).
                 then().
                     statusCode(HttpStatus.NOT_FOUND.getCode()).
                     assertThat().body(matchesJsonSchemaInClasspath("json-schema/cannot-find-resource.schema.json"));
@@ -226,8 +222,7 @@ public class PersonControllerTest
         // Replace
 
         var alteredCore = oracle.refurbishCore();
-
-        alteredCore.setAge(0);
+        alteredCore.setName(null);
 
         var updatePayload = objMapper.writeValueAsString(alteredCore);
 

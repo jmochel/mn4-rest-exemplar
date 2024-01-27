@@ -9,7 +9,7 @@
         </encoder>
     </appender>
 
-    <logger name="io.micronaut.data.query" level="TRACE"/>
+    <!--  <logger name="io.micronaut.data.query" level="TRACE"/>-->
 
     <root level="info">
         <appender-ref ref="STDOUT"/>

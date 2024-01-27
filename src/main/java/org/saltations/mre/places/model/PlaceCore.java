@@ -46,11 +46,9 @@ public class PlaceCore implements Place
     @Setter(onParam_={@NotNull,@NotBlank,@Size(max = 50)})
     private String street1;
 
-    @NotNull
-    @NotBlank
     @Size(max = 50)
     @JsonProperty("street2")
-    @Setter(onParam_={@NotNull,@NotBlank,@Size(max = 50)})
+    @Setter(onParam_={@Size(max = 50)})
     private String street2;
 
     @NotNull
@@ -61,7 +59,6 @@ public class PlaceCore implements Place
     private String city;
 
     @NotNull
-    @NotBlank
     @JsonProperty("state")
     @Setter(onParam_={@NotNull})
     private USState state;

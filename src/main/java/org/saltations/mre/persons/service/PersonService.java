@@ -1,5 +1,6 @@
 package org.saltations.mre.persons.service;
 
+import io.micronaut.validation.validator.Validator;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.saltations.mre.core.EntityServiceBase;
@@ -13,8 +14,8 @@ import org.saltations.mre.persons.repo.PersonRepo;
 public class PersonService extends EntityServiceBase<Long, Person, PersonCore, PersonEntity, PersonRepo, PersonMapper>
 {
     @Inject
-    public PersonService(PersonRepo repo, PersonMapper mapper)
+    public PersonService(PersonRepo repo, PersonMapper mapper, Validator validator)
     {
-        super(PersonEntity.class, repo, mapper);
+        super(PersonEntity.class, repo, mapper, validator);
     }
 }

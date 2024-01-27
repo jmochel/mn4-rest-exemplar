@@ -1,5 +1,6 @@
 package org.saltations.mre.places.model;
 
+import io.micronaut.data.annotation.AutoPopulated;
 import io.micronaut.data.annotation.DateCreated;
 import io.micronaut.data.annotation.DateUpdated;
 import io.micronaut.data.annotation.GeneratedValue;
@@ -36,7 +37,7 @@ import java.util.UUID;
 public class PlaceEntity extends PlaceCore implements Entity<UUID>
 {
     @Id
-    @GeneratedValue
+    @AutoPopulated
     private UUID id;
 
     @DateCreated

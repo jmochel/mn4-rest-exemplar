@@ -1,4 +1,4 @@
-package org.saltations.mre.persons.service;
+package org.saltations.mre.places.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -18,30 +18,34 @@ import org.saltations.mre.core.errors.CannotDeleteEntity;
 import org.saltations.mre.core.errors.CannotFindEntity;
 import org.saltations.mre.core.errors.CannotPatchEntity;
 import org.saltations.mre.core.errors.CannotUpdateEntity;
-import org.saltations.mre.persons.mapping.PersonMapper;
-import org.saltations.mre.persons.model.PersonOracle;
+import org.saltations.mre.places.mapping.PlaceMapper;
+import org.saltations.mre.places.model.PlaceOracle;
+import org.saltations.mre.places.model.USState;
+import org.saltations.mre.places.service.PlaceService;
 
 import java.io.IOException;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @MicronautTest
 @DisplayNameGeneration(ReplaceBDDCamelCase.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class PersonServiceTest
+public class PlaceServiceTest
 {
     @Inject
-    private PersonOracle oracle;
+    private PlaceOracle oracle;
 
     @Inject
-    private PersonMapper modelMapper;
+    private PlaceMapper modelMapper;
 
     @Inject
-    private PersonService service;
+    private PlaceService service;
 
     @Test
     @Order(2)
@@ -103,6 +107,8 @@ public class PersonServiceTest
         var refurb = oracle.refurbishCore();
         var mergePatch = jacksonMapper.readValue(jacksonMapper.writeValueAsString(refurb), JsonMergePatch.class);
         var patched = service.patch(saved.getId(), mergePatch);
+
+        oracle.hasSameCoreContent(refurb, patched);
 
         // Delete
 

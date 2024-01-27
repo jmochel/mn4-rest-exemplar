@@ -37,7 +37,9 @@
             <column name="id" type="uuid" defaultValueComputed="uuid_generate_v4()" remarks="Id of the place">
                 <constraints  primaryKey="true" unique="true" nullable="false" primaryKeyName="pk_place"/>
             </column>
-            <column name="name" type="varchar(50)" remarks="Name of the place"/>
+            <column name="name" type="varchar(50)" remarks="Name of the place">
+                <constraints nullable="false"/>
+            </column>
             <column name="street1" type="varchar(50)" remarks="Place street address 1"/>
             <column name="street2" type="varchar(50)" remarks="Place street address 2"/>
             <column name="city" type="varchar(50)" remarks="Place city"/>

@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import io.micronaut.core.annotation.NonNull;
+import io.micronaut.validation.validator.Validator;
 import jakarta.transaction.Transactional;
+import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.saltations.mre.core.errors.CannotCreateEntity;
@@ -13,6 +15,9 @@ import org.saltations.mre.core.errors.CannotPatchEntity;
 import org.saltations.mre.core.errors.CannotUpdateEntity;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.joining;
 
 /**
  * Generic service for creating, finding, replacing, patching and deleting <em>entities</em>
@@ -37,6 +42,8 @@ public abstract class EntityServiceBase<ID, IC, C extends IC, E extends Entity<I
 
     private final ObjectMapper jacksonMapper;
 
+    private final Validator validator;
+
     /**
      * Primary constructor
      *
@@ -44,11 +51,12 @@ public abstract class EntityServiceBase<ID, IC, C extends IC, E extends Entity<I
      * @param entityRepo  Repository for persistence of entities
      */
 
-    public EntityServiceBase(Class<E> entityClass, ER entityRepo, EntityMapper<C,E> entityMapper)
+    public EntityServiceBase(Class<E> entityClass, ER entityRepo, EntityMapper<C,E> entityMapper, Validator validator)
     {
         this.entityRepo = entityRepo;
         this.entityClass = entityClass;
         this.entityMapper = entityMapper;
+        this.validator = validator;
 
         this.jacksonMapper = new ObjectMapper();
         this.jacksonMapper.registerModule(new JavaTimeModule());
@@ -151,11 +159,24 @@ public abstract class EntityServiceBase<ID, IC, C extends IC, E extends Entity<I
 
             var patched = jacksonMapper.readValue(patchedAsString, entityClass);
 
+            // Because update does not require a valid POJO We validate it ahead of time
+
+            var violations = validator.validate(patched);
+
+            if (!violations.isEmpty())
+            {
+                var violationsAsStr = violations.stream().map(v -> v.getMessage())
+                        .collect(joining(",", "[","]"));
+
+                throw new ConstraintViolationException(violations);
+            }
+
+
             return entityRepo.update(patched);
         }
         catch (Exception e)
         {
-            throw new CannotPatchEntity(e, resourceTypeName(), (Long) id);
+            throw new CannotPatchEntity(e, resourceTypeName(), id);
         }
     }
 

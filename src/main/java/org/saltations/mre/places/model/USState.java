@@ -2,5 +2,5 @@ package org.saltations.mre.places.model;
 
 public enum USState
 {
-    MA,NH,ME
+    MA,NH,ME,NY
 }
