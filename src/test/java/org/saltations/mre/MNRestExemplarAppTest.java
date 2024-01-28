@@ -2,10 +2,13 @@ package org.saltations.mre;
 
 import io.micronaut.http.HttpStatus;
 import io.micronaut.runtime.EmbeddedApplication;
+import io.micronaut.serde.annotation.Serdeable;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
+import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 import jakarta.inject.Inject;
+import lombok.Data;
 import org.junit.jupiter.api.ClassOrderer;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.MethodOrderer;
@@ -14,13 +17,17 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestClassOrder;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.saltations.mre.core.ReplaceBDDCamelCase;
+import org.testcontainers.shaded.org.apache.commons.lang3.reflect.TypeLiteral;
 
+import java.time.ZonedDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @MicronautTest
@@ -139,6 +146,53 @@ class MNRestExemplarAppTest
                 then().
                 statusCode(HttpStatus.OK.getCode()).
                 body("configuredLevel", is("ERROR"));
+    }
+
+
+    @Test
+    @Order(20)
+    final void canCheckLiquibaseChangelog(RequestSpecification spec)
+    {
+        var result = spec.
+                when().
+                    get("/liquibase").
+                then().
+                    statusCode(HttpStatus.OK.getCode()).
+                    extract().as(new TypeRef<List<LiquibaseReport>>() {}
+                );
+
+        assertNotNull(result);
+    }
+
+    @Data
+    @Serdeable
+    static class LiquibaseReport {
+
+        private String name;
+
+        private List<ChangeSet> changeSets;
+
+    }
+
+    @Data
+    @Serdeable
+    static class ChangeSet {
+
+        private String author;
+        private String changeLog;
+        private String comments;
+        private ZonedDateTime dateExecuted;
+        private String deploymentId;
+        private String description;
+        private String execType;
+        private String id;
+        private String storedChangeLog;
+        private String checksum;
+        private Integer orderExecuted;
+        private String tag;
+        private List<String> labels;
+        private List<String> contexts;
+
     }
 
 }

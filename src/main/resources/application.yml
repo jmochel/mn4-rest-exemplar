@@ -60,4 +60,6 @@ endpoints:
 #  metrics:
 #    enabled: true                 # TODO Change to make secure
 #    sensitive: false
-
+  liquibase:
+    enabled: true
+    sensitive: false
