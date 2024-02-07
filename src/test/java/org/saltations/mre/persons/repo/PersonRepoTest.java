@@ -12,6 +12,7 @@ import org.saltations.mre.core.ReplaceBDDCamelCase;
 import org.saltations.mre.persons.mapping.PersonMapper;
 import org.saltations.mre.persons.model.PersonOracle;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 
@@ -74,4 +75,14 @@ class PersonRepoTest
         oracle.hasSameCoreContent(update, updated);
     }
 
+    @Test
+    @Order(6)
+    void canInsertACollection()
+    {
+        var protos = oracle.coreExemplars(1,20);
+
+        var saved = repo.saveAll(mapper.createEntities(protos));
+        
+        assertEquals(protos.size(), saved.size(), "Created the expected amount");
+    }
 }

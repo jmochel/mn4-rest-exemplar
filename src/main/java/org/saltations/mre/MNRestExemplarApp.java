@@ -12,11 +12,11 @@ import io.swagger.v3.oas.annotations.info.Info;
                 title = "mn4-rest-exemplar",
                 description = "API for a Micronaut exemplar application",
                 contact = @Contact(name = "Jim Mochel", email = "jmochel@saltations.org"),
-                version = "0.0.0"
+                version = "0.0.1"
         ),
         extensions = @Extension(
                         properties = {
-                                @ExtensionProperty(name="api-id", value = "org.saltations.exemplar-01"),
+                                @ExtensionProperty(name="api-id", value = "exemplar"),
                                 @ExtensionProperty(name="audience", value = "company-internal")
                         }
         )

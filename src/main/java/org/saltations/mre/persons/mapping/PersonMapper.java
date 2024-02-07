@@ -10,6 +10,8 @@ import org.saltations.mre.core.EntityMapper;
 import org.saltations.mre.persons.model.PersonCore;
 import org.saltations.mre.persons.model.PersonEntity;
 
+import java.util.List;
+
 
 @Singleton
 @Mapper(componentModel = "jsr330")
@@ -37,6 +39,19 @@ public interface PersonMapper extends EntityMapper<PersonCore, PersonEntity>
     @Mapping(target = "created",  ignore = true)
     @Mapping(target = "updated",  ignore = true)
     PersonEntity createEntity(PersonCore proto);
+
+    /**
+     * Maps a list of (PersonCore) prototypes to a list of entities.
+     *
+     * @param protos prototypes with core attributes to create an PersonEntity.
+     *
+     * @return List of valid PersonEntity
+     */
+
+    @Mapping(target = "id",  ignore = true)
+    @Mapping(target = "created",  ignore = true)
+    @Mapping(target = "updated",  ignore = true)
+    List<PersonEntity> createEntities(List<PersonCore> protos);
 
     /**
      * Patches the <em>entity</em> with non-null values from the patch object
