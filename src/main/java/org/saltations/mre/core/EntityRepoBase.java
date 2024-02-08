@@ -4,6 +4,8 @@ import io.micronaut.core.annotation.NonNull;
 import io.micronaut.data.repository.CrudRepository;
 import jakarta.validation.Valid;
 
+import java.util.List;
+
 /**
  * Repository for entities of type E.
  *
@@ -13,4 +15,7 @@ import jakarta.validation.Valid;
 
 public abstract class EntityRepoBase<ID,E extends Entity<ID>> implements CrudRepository<E,ID>
 {
+    public abstract List<E> findAllByIdIn(Iterable<ID> ids);
+
+    public abstract void deleteByIdIn(Iterable<ID> ids);
 }

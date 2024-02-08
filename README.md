@@ -62,7 +62,41 @@ The controller layer is responsible for
 The EntityControllerBase provides us with CRUD semantics for most of the domain and CRUD semantics alone are 
 likely to be insufficient for a real world application
 
+Default methods
+
+  1. POST to create one
+  2. POST to create many
+  3. PUT to replace one
+  4. PUT to replace many
+  5. PATCH to modify one
+  6. 
+
 The default entity controller will expose the following CRUD REST operations
+
+### Service Layer
+
+The service layer is responsible for 
+
+  1. Business operations in the language of the business domain.
+  2. Transactional boundaries
+  3. Providing the business domain semantics 
+
+### Repo Layer
+
+  1. X Count of all
+  2. X Insert one
+  2. X Insert many
+  3. X Update one
+  4. X Update many
+  5. X Exists by id
+  5. X Find one by id
+  6. X Find many by ids
+  7. Find many by criteria
+  7. X Delete by id
+  8. Delete by entity
+  8. Delete by entities
+  9. X Delete by ids
+  10. X Delete all
 
 #### Resource Naming 
 
@@ -104,14 +138,14 @@ The following are the common error code returns
 
 #### `GET ../[resource]/{id}`
 * With no request payload, only query parameters
-* Content Type of "application/merge-patch+json"
+* Content Type of "application/json"
 * Returns 
   * 200 and updated instance of the resource
   * 404 If resource does not exist
 
 #### `GET ../[resource]?q=xxx&fields=id,name,description&sort=+id,-name
 * With no request payload, only query parameters
-* Content Type of "application/merge-patch+json"
+* Content Type of "application/json"
 * Returns
   * 200 and a collection of the resources
   * 200 if collection empty
@@ -136,11 +170,11 @@ The following are the common error code returns
 * Add swagger or other does for Standard client and server errors, e.g. 401 (unauthenticated), 403 (unauthorized), 404 (not found), 500 (internal server error), or 503 (service unavailable)
 * 
 
-# Micronaut 4.1.4 Documentation
+# Micronaut 4.3.0 Documentation
 
-- [User Guide](https://docs.micronaut.io/4.1.4/guide/index.html)
-- [API Reference](https://docs.micronaut.io/4.1.4/api/index.html)
-- [Configuration Reference](https://docs.micronaut.io/4.1.4/guide/configurationreference.html)
+- [User Guide](https://docs.micronaut.io/4.3.0/guide/index.html)
+- [API Reference](https://docs.micronaut.io/4.3.0/api/index.html)
+- [Configuration Reference](https://docs.micronaut.io/4.3.0/guide/configurationreference.html)
 - [Micronaut Guides](https://guides.micronaut.io/index.html)
 ---
 

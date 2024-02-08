@@ -7,8 +7,12 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.saltations.mre.core.EntityMapper;
+import org.saltations.mre.persons.model.PersonCore;
+import org.saltations.mre.persons.model.PersonEntity;
 import org.saltations.mre.places.model.PlaceCore;
 import org.saltations.mre.places.model.PlaceEntity;
+
+import java.util.List;
 
 
 @Singleton
@@ -37,6 +41,19 @@ public interface PlaceMapper extends EntityMapper<PlaceCore, PlaceEntity>
     @Mapping(target = "created",  ignore = true)
     @Mapping(target = "updated",  ignore = true)
     PlaceEntity createEntity(PlaceCore proto);
+
+    /**
+     * Maps a list of (PlaceCore) prototypes to a list of entities.
+     *
+     * @param protos prototypes with core attributes to create an PlaceEntity.
+     *
+     * @return List of valid PlaceEntity
+     */
+
+    @Mapping(target = "id",  ignore = true)
+    @Mapping(target = "created",  ignore = true)
+    @Mapping(target = "updated",  ignore = true)
+    List<PlaceEntity> createEntities(List<PlaceCore> protos);
 
     /**
      * Patches the <em>entity</em> with non-null values from the patch object

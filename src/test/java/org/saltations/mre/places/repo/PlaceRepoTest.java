@@ -15,7 +15,12 @@ import org.saltations.mre.persons.repo.PersonRepo;
 import org.saltations.mre.places.mapping.PlaceMapper;
 import org.saltations.mre.places.model.PlaceOracle;
 
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 @SuppressWarnings("ClassHasNoToStringMethod")
@@ -52,6 +57,7 @@ class PlaceRepoTest
 
         // Retrieve and validate
 
+        assertTrue(repo.existsById(saved.getId()),"It does exist");
         var retrieved = repo.findById(saved.getId()).get();
         oracle.hasSameCoreContent(saved, retrieved);
 
@@ -77,4 +83,44 @@ class PlaceRepoTest
         oracle.hasSameCoreContent(update, updated);
     }
 
+    @Test
+    @Order(6)
+    void canInsertAndUpdateACollection()
+    {
+        var protos = oracle.coreExemplars(1,20);
+
+        var saved = repo.saveAll(mapper.createEntities(protos));
+        assertEquals(protos.size(), saved.size(), "Created the expected amount");
+
+        var modified = saved.stream().map(x -> {
+                    var modifiedCore = oracle.refurbishCore(x);
+                    return mapper.patchEntity(modifiedCore, x);
+                }
+        ).collect(Collectors.toList());
+
+        var updated = repo.updateAll(modified);
+        assertEquals(modified.size(), updated.size(), "Updated the expected amount");
+
+        IntStream.range(0,20).forEach(i -> oracle.hasSameCoreContent(modified.get(i), updated.get(i)));
+    }
+
+    @Test
+    @Order(8)
+    void canInsertAndFindACollectionByIds()
+    {
+        var protos = oracle.coreExemplars(1,20);
+
+        var saved = repo.saveAll(mapper.createEntities(protos));
+        assertEquals(protos.size(), saved.size(), "Created the expected amount");
+
+        var ids = saved.stream().map(e -> e.getId()).collect(Collectors.toList());
+
+        var retrieved = repo.findAllByIdIn(ids);
+        assertEquals(ids.size(), retrieved.size(), "Retrieved the expected amount");
+
+        IntStream.range(0,20).forEach(i -> oracle.hasSameCoreContent(saved.get(i), retrieved.get(i)));
+
+        repo.deleteByIdIn(ids);
+        assertEquals(0, repo.count(),"They should be gone");
+    }
 }
