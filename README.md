@@ -1,10 +1,13 @@
-# Micronaut Exemmplar 
+# Micronaut Exemplar
 
-## Functional naming
+The Hard Thing : Naming 
+========================
+
+# Functional naming
 
 A “FUNCTIONAL NAME” describes an object’s purpose and tends to create a mental image of the object in the operator’s mind
 
-### GUIDELINES:
+# GUIDELINES:
 
 1. Functional names are brief, simple, and familiar to the operator.
 2. Don’t use similar sounding words that can be confused with other equipment.
@@ -24,11 +27,8 @@ Variables are nouns
 
 * created_at rather than created
 
-
 Function is an action so the name should contain at least one verb and should allow the code
 to read as a sentence
-
-
 
 * `write(filename)` means write to file
 * `reloadTableData()` means to reload table data
@@ -46,32 +46,84 @@ A function
 
 Make your code short, concise and read as interesting stories
 
-## The layers and the Why of the layers
 
-### Controller Layer
+
+REST Nouns, Verbs, protocols 
+===========
+
+
+## Nouns (Resources)
+
+Plurals for Aggregates and Standalone entities
+
+```
+/users
+/users/{userId}`
+```
+
+Sub collections for VOs
+
+/users/{userId}/phones
+/users/{userId}/phones/1
+/users/{userId}/emails
+
+For example, the process of setting up a new customer in a banking domain can be modeled as a resource. CRUD is just a minimal business process applicable to almost any resource. This allows us to model business processes as true resources which can be tracked in their own right.
+
+It is very important to distinguish between resources in REST API and domain entities in a domain driven design. Domain driven design applies to the implementation side of things (including API implementation) while resources in REST API drive the API design and contract. API resource selection should not depend on the underlying domain implementation details
+
+Use of PUT for complex state transitions can lead to synchronous cruddy CRUD
+
+Controller Layer
+===========
 
 The controller layer is responsible for
 
-  1. Authentication/Authorization of operations
-     2. In general permissions look like `app-id.resource-id.permission` so we could have `exemplar.person.read` or `exemplar.person.write`
-     3. APIs should stick to component specific permissions without resource extension to avoid the complexity of too many fine grained permissions. For the majority of use cases, restricting access for specific API endpoints using read or write is sufficient.
-  2. Mapping incoming values such as JSON into the appropriate domain objects
-  1. Providing the correct REST semantics POST,PUT,PATCH,GET, and DELETE
-  1. Exposing the domain model in a way that reflects the nouns and verbs of the domain. 
+1. Authentication/Authorization of operations
+    2. In general permissions look like `app-id.resource-id.permission` so we could have `exemplar.person.read` or `exemplar.person.write`
+    3. APIs should stick to component specific permissions without resource extension to avoid the complexity of too many fine grained permissions. For the majority of use cases, restricting access for specific API endpoints using read or write is sufficient.
+2. Mapping incoming values such as JSON into the appropriate domain objects
+1. Providing the correct REST semantics POST,PUT,PATCH,GET, and DELETE
+1. Exposing the domain model in a way that reflects the nouns and verbs of the domain.
 
-The EntityControllerBase provides us with CRUD semantics for most of the domain and CRUD semantics alone are 
+The EntityControllerBase provides us with CRUD semantics for most of the domain and CRUD semantics alone are
 likely to be insufficient for a real world application
 
-Default methods
-
-  1. POST to create one
-  2. POST to create many
-  3. PUT to replace one
-  4. PUT to replace many
-  5. PATCH to modify one
-  6. 
-
 The default entity controller will expose the following CRUD REST operations
+
+
+* PUT Replace resource(s)
+  * PUT /users/1
+    * BODY single resource
+    * RESP 200 or 201
+    * PAYLOAD updated resource 
+  * PUT /users
+    * BODY multiple resource
+    * RESP 207
+    * PAYLOAD multiple updated resource
+  * PUT /users/1?name=changed&age=21
+    * BODY updated resource
+    * RESP 200 or 201
+    * PAYLOAD updated resource
+
+* PATCH Modify resource(s) 
+    * BODY RFC 7396 Merge Patch
+    * RESP 200 or 201
+    * PAYLOAD updated resource
+
+* GET  Fetch resource(s)
+    * GET /users/1   - Fetch User 1
+    * GET /users      - Fetch many
+
+* DELETE Delete a resource
+  * DELETE /users/1
+    * RESP 200 or 201
+
+* HEAD fetch meta-info as a header
+  * HEAD /users
+
+* OPTIONS Fetch all verbs that are allowed for the endpoint
+  * OPTIONS /users
+
 
 ### Service Layer
 

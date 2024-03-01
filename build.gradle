@@ -36,6 +36,7 @@ dependencies {
     implementation("io.micronaut.validation:micronaut-validation")
     implementation("io.swagger.core.v3:swagger-annotations")
     implementation("jakarta.validation:jakarta.validation-api")
+    implementation("jakarta.persistence:jakarta.persistence-api")
 
     implementation("com.github.java-json-tools:json-patch:1.13")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
