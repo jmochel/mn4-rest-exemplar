@@ -1,6 +1,8 @@
 package org.saltations.mre.core.control;
 
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.junit.jupiter.api.ClassOrderer;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.MethodOrderer;
@@ -26,10 +28,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @TestClassOrder(ClassOrderer.OrderAnnotation.class)
 public class ResultAndFailureTest
 {
-    enum ExemplarFailure {
-        UNKNOWN,
-        POTENTIALLY_FATAL,
-        NOT_REALLY_SO_BAD
+    @Getter
+    @AllArgsConstructor
+    enum ExemplarFailure implements FailureType {
+
+        GENERAL("Uncategorized error",""),
+        POTENTIALLY_FATAL("Potentially Fatal error of some sort", ""),
+        NOT_REALLY_SO_BAD("Not so bad problem", "Happened in widget [{}]");
+
+        private final String title;
+        private final String detailTemplate;
     }
 
     @Nested
@@ -115,6 +123,27 @@ public class ResultAndFailureTest
         }
 
         @Test
+        @Order(3)
+        void canCreateFailureWithTypeAndFormattedDetail()
+        {
+            var detail = "Sinister";
+            var result = Results.formattedFailure(ExemplarFailure.NOT_REALLY_SO_BAD, detail);
+
+            assertAll("Result",
+                    () -> assertFalse(result.isSuccess(),"Is Not Success"),
+                    () -> assertTrue(result.isFailure(),"Is Failure"),
+                    () -> assertNull(result.getValue(), "Value")
+            );
+
+            assertAll("Failure",
+                    () -> assertEquals(ExemplarFailure.NOT_REALLY_SO_BAD, result.getFailure().getType(), "Type"),
+                    () -> assertTrue(result.getFailure().getDetail().contains("[Sinister]"), "Detail contains expanded arg"),
+                    () -> assertFalse(result.getFailure().hasCause(), "Has Cause"),
+                    () -> assertNull(result.getFailure().getCause(), "Cause")
+            );
+        }
+
+        @Test
         @Order(20)
         void canCreateFailureWithException()
         {
@@ -140,7 +169,7 @@ public class ResultAndFailureTest
         void canCreateFailureWithExceptionAndType()
         {
             var cause = new Exception();
-            var result = Results.failure(ExemplarFailure.POTENTIALLY_FATAL, cause);
+            var result = Results.failure(cause, ExemplarFailure.POTENTIALLY_FATAL);
 
             assertAll("Result",
                     () -> assertFalse(result.isSuccess(),"Is Not Success"),
@@ -162,7 +191,7 @@ public class ResultAndFailureTest
         {
             var cause = new Exception();
             var detail = "This went really bad";
-            var result = Results.failure(ExemplarFailure.POTENTIALLY_FATAL, detail, cause);
+            var result = Results.failure(cause, ExemplarFailure.POTENTIALLY_FATAL, detail);
 
             assertAll("Result",
                     () -> assertFalse(result.isSuccess(),"Is Not Success"),
@@ -184,7 +213,7 @@ public class ResultAndFailureTest
         {
             var cause = new Exception();
             var detail = "This went really bad";
-            var result = Results.failure(detail, cause);
+            var result = Results.failure(cause, detail);
 
             assertAll("Result",
                     () -> assertFalse(result.isSuccess(),"Is Not Success"),
@@ -199,6 +228,29 @@ public class ResultAndFailureTest
                     () -> assertNotNull(result.getFailure().getCause(), "Cause")
             );
         }
+
+        @Test
+        @Order(28)
+        void canCreateFailureWithExceptionAndTypeAndFormattedDetail()
+        {
+            var cause = new Exception();
+            var aDetail = "Sinister";
+            var result = Results.formattedFailure(cause, ExemplarFailure.NOT_REALLY_SO_BAD, aDetail);
+
+            assertAll("Result",
+                    () -> assertFalse(result.isSuccess(),"Is Not Success"),
+                    () -> assertTrue(result.isFailure(),"Is Failure"),
+                    () -> assertNull(result.getValue(), "Value")
+            );
+
+            assertAll("Failure",
+                    () -> assertEquals(ExemplarFailure.NOT_REALLY_SO_BAD, result.getFailure().getType(), "Type"),
+                    () -> assertTrue(result.getFailure().getDetail().contains("[Sinister]"), "Detail has expanded arg"),
+                    () -> assertTrue(result.getFailure().hasCause(), "Has Cause"),
+                    () -> assertNotNull(result.getFailure().getCause(), "Cause")
+            );
+        }
+
     }
 
 }

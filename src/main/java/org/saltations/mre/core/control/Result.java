@@ -13,7 +13,7 @@ import java.util.function.Consumer;
  * @param <FT> the type of the potential contained failure code
  */
 
-public interface Result<VT, FT extends Enum<?>>
+public interface Result<VT, FT extends FailureType>
 {
     default boolean isSuccess()
     {

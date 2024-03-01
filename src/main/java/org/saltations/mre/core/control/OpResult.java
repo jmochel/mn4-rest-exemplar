@@ -15,7 +15,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-class OpResult<VT, FT extends Enum<?>> implements Result<VT, FT>
+class OpResult<VT, FT extends FailureType> implements Result<VT, FT>
 {
     private VT value;
     private Failure<FT> failure;

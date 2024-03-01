@@ -15,7 +15,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-class OpFailure<FT extends Enum<?>> implements Failure<FT>
+class OpFailure<FT extends FailureType> implements Failure<FT>
 {
     private final FT type;
     private final Exception cause;
