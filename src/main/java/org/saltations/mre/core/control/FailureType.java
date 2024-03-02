@@ -1,5 +1,7 @@
 package org.saltations.mre.core.control;
 
+import java.util.regex.Pattern;
+
 /**
  *
  *
@@ -18,5 +20,18 @@ public interface FailureType
     default String formatDetail(Object...args)
     {
         return org.slf4j.helpers.MessageFormatter.basicArrayFormat(getDetailTemplate(), args);
+    }
+
+    default long detailTemplateParamCounts()
+    {
+        return Pattern.compile("\\{\\}") // Pattern
+                                             .matcher(getDetailTemplate()) // Mather
+                                             .results()
+                                             .count();
+    }
+
+    default boolean detailTemplateTakesParams()
+    {
+        return getDetailTemplate().contains("{}");
     }
 }

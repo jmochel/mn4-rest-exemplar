@@ -1,6 +1,12 @@
 package org.saltations.mre.core.control;
 
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * An operation result where the absence of a failure indicates success.
@@ -44,5 +50,22 @@ public interface Result<VT, FT extends FailureType>
 
         return getValue();
     }
+
+    /**
+     * Suppplies a new value if the current result is success;
+     *
+     * @param supplier An action to execute.
+     *
+     * @return A result of the executed action, or the current result if it failed.
+     */
+    default Result<VT,FT> ifSuccess(Supplier<Result<VT,FT>> supplier) {
+
+        requireNonNull(supplier);
+
+        if (isSuccess()) {
+            return supplier.get();
+        }
+        return this;
+   }
 
 }

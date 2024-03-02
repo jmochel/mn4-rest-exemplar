@@ -1,4 +1,19 @@
-# Results, OK Results and Error Results
+# Operation Result Pattern
+
+Intention is to identify success or failure of an operation is a compact, and hopefully typsesafe,
+representation that allows us to
+
+* Give easy access to the values returned including complex results
+* Transform a failure in the called operation to a success in our current operations
+* Transform a success in the called operation to a failure in our current operations
+* Play well with code that uses java Exceptions as part of their flow control.
+
+A failure in any result that is not a success in the context of the method.  
+
+. If your not sure if something should be an exception or a failure you could ask yourself “Would the user understand what to do with this failure message?” 
+Typically a user doesn’t know what to do with exception messages, they are intended for a technical person to do a more in depth troubleshooting of
+the problem. Business failure messages however, could be interpreted by a person and they should be able to act on them.
+
 
 # Success, Failure and Errors
 
@@ -9,6 +24,13 @@ Outcomes in apis can be broken up into Successes, Failures, and Error.
 * Error - Mechanism failed
   * Potentially Recoverable - Network dropped, Server didn’t answer , etc..
   * Unrecoverable - JVM Ran out of RAM, hardware failed..
+
+Wrap and invoke functions that might blow up and catch their errors
+Be able to map from one success type to another across data boundaries, ie from domain to presentation
+Be able to map errors from one type to another, perhaps converting a Throwable to something more useful to the presentation layer
+Handle both success and failure whenever we want
+Ideally, we’d be able to chain or combine a bunch of these operations together, and only handle the error state at the end of the computation
+
 
 # We want a model that is
 
