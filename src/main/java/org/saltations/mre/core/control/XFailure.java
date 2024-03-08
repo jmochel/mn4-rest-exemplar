@@ -7,6 +7,10 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Arrays;
+import java.util.Optional;
+import java.util.function.Supplier;
+
+import static java.util.Objects.requireNonNull;
 
 @Getter
 @Slf4j
@@ -76,6 +80,11 @@ public final class XFailure<VT, FT extends FailureType> implements XResult<VT, F
         return true;
     }
 
+    public boolean hasCause()
+    {
+        return cause != null;
+    }
+
     @Override
     public VT get() throws Throwable
     {
@@ -87,8 +96,14 @@ public final class XFailure<VT, FT extends FailureType> implements XResult<VT, F
         throw new XResultException(type);
     }
 
-    public boolean hasCause()
+    @Override
+    public VT orElse(VT value) {
+        return value;
+    }
+
+    @Override
+    public <X extends Exception> VT orThrow(Supplier<X> supplier) throws X
     {
-        return cause != null;
+        throw supplier.get();
     }
 }

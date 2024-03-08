@@ -1,10 +1,11 @@
 package org.saltations.mre.persons.repo;
 
-import io.micronaut.data.repository.jpa.criteria.CriteriaQueryBuilder;
+import io.micronaut.data.model.jpa.criteria.PersistentEntityCriteriaQuery;
 import io.micronaut.data.repository.jpa.criteria.QuerySpecification;
+import io.micronaut.data.runtime.criteria.RuntimeCriteriaBuilder;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
-import jakarta.persistence.criteria.CriteriaBuilder;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.MethodOrderer;
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.saltations.mre.core.ReplaceBDDCamelCase;
 import org.saltations.mre.persons.mapping.PersonMapper;
 import org.saltations.mre.persons.model.Person;
+import org.saltations.mre.persons.model.PersonEntity;
 import org.saltations.mre.persons.model.PersonOracle;
 
 import java.util.stream.Collectors;
@@ -38,6 +40,9 @@ class PersonRepoTest
 
     @Inject
     private PersonRepo repo;
+
+    @Inject
+    private RuntimeCriteriaBuilder runtimeCriteriaBuilder;
 
     @BeforeEach
     public void cleanDB()
@@ -125,19 +130,4 @@ class PersonRepoTest
         assertEquals(0, repo.count(),"They should be gone");
     }
 
-//
-//    @Test
-//    @Order(20)
-//    void canInsertAndFindByQueryCriteria()
-//    {
-//        var protos = oracle.coreExemplars(1,20);
-//
-//        var saved = repo.saveAll(mapper.createEntities(protos));
-//        assertEquals(protos.size(), saved.size(), "Created the expected amount");
-//
-//        CriteriaBuilder<Person>
-//
-//        QuerySpecification<Person> querySpec =
-//
-//    }
 }

@@ -14,8 +14,6 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.saltations.mre.core.ReplaceBDDCamelCase;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.util.function.Supplier;
-
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -25,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.saltations.mre.core.control.XResults.failure;
-import static org.saltations.mre.core.control.XResults.ofThrowable;
+import static org.saltations.mre.core.control.XResults.ofTry;
 
 
 @Testcontainers
@@ -283,7 +281,7 @@ public class XResultAndXFailureTest
         @Order(50)
         void whenUsingMethodThatCouldThrowExceptionThatReturnsValueThenTransformItToSimpleFailureWithValue()
         {
-            var result = ofThrowable(this::methodThatCouldThrowIllegalArgumentException);
+            var result = ofTry(this::methodThatCouldThrowIllegalArgumentException);
 
             assertResultIsSuccess(result);
         }
@@ -292,7 +290,7 @@ public class XResultAndXFailureTest
         @Order(51)
         void whenUsingMethodThatThrowsExceptionThenTransformItToSimpleFailureWithCause()
         {
-            var result = ofThrowable(this::methodThatThrowsIllegalArgumentException);
+            var result = ofTry(this::methodThatThrowsIllegalArgumentException);
 
             var failure = assertResultIsFailure(result);
 

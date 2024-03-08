@@ -1,12 +1,31 @@
+
+# What is a Monad?
+
+A monad is defined as any class (data type), which represents a specific calculation 
+* Yes, it encapsulated a mechanism for performing actions on results of either success or failure safely without 
+causing a null pointer exception It must implement at least these two functions:
+
+* A function to wrap any basic value, creating a new monad. Also called the return function.  ofThrowable()
+* And a function that allows you to perform operations on a wrapped data type (monad). Also called the bind function. (flatMap)
+
+
 # Operation Result Pattern
 
 Intention is to identify success or failure of an operation is a compact, and hopefully typsesafe,
 representation that allows us to
 
-* Give easy access to the values returned including complex results
+* Create exceptions with some strong domain level typing when useful
+  *  Wrap and invoke functions that might blow up and catch their errors
+* easy access to the values returned including complex results
+* Creating successes or failures from methods that throw exceptions 
+* Handle both success and failure whenever we want
 * Transform a failure in the called operation to a success in our current operations
-* Transform a success in the called operation to a failure in our current operations
+* Be able to map from one success type to another across data boundaries, ie from domain to presentation
+  * Transform a success in the called operation to a failure in our current operations
+* Be able to map errors from one type to another, perhaps converting a Throwable to something more useful to the presentation layer
 * Play well with code that uses java Exceptions as part of their flow control.
+* Ideally, we’d be able to chain or combine a bunch of these operations together, and only handle the error state at the end of the computation
+
 
 A failure in any result that is not a success in the context of the method.  
 

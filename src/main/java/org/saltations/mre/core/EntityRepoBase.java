@@ -14,7 +14,7 @@ import java.util.List;
  * @param <E> Class of the <em>entity</em>.
  */
 
-public abstract class EntityRepoBase<ID,E extends Entity<ID>> implements CrudRepository<E,ID>, JpaSpecificationExecutor<E>
+public abstract class EntityRepoBase<ID,E extends Entity<ID>> implements CrudRepository<E,ID>
 {
     public abstract List<E> findAllByIdIn(Iterable<ID> ids);
 

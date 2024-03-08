@@ -47,19 +47,30 @@ A function
 Make your code short, concise and read as interesting stories
 
 
+Layers
+===========
+
+| | | |
+|-|-|-|
+|Controller|Service|Repo|
+|`POST /resources (Req<Proto>) : Resp<Resource`|`create(Proto): Result<Entity`|`insert(Proto): Result<Entity`|
+|`POST /resources (Req<List<Proto>>) : Resp<List<Resource>`|`create(List<Proto>): Result<List<Entity>`|`insert(List<Proto>): Result<List<Entity>`|
+|`PUT /resources/1 (Req<Resource>): Resp<Resource`|`replace(Entity): Result<Entity`|`update(Entity): Result<Entity`|
+|`PUT /resources (Req<List<Resource>>) : Resp<List<Resource>`|`replace(List<Entity>): Result<List<Entity>`|`update(List<Proto>): Result<List<Entity>`|
+|`PATCH /resources/1 (Req<Patch>): Resp<Resource`|`modify(Entity): Result<Entity`|`update(Entity): Result<Entity`|
+|`PATCH /resources (Req<List<Patch>>) : Resp<List<Resource>`|`modify(List<Entity>): Result<List<Entity>`|`update(List<Proto>): Result<List<Entity>`|
+|`GET /resources/1 (): Resp<Resource`|`find(Id): Result<Entity`|`findById(Id): Result<Entity`|
+|`GET /resources/ (List<Id>): Resp<List<Resource>`|`find(List<Id>): Result<List<Entity>`|`find(List<Id>): Result<List<Entity>`|
+|`DELETE /resources/1 (): Resp<Void`|`delete(Id): Result<Void`|`delete(Id): Result<Void`|
+|`DELETE /resources/ (List<Id>): Resp<List<Resource>`|`delte(List<Id>): Result<List<Void>`|`delete(List<Id>): Result<List<Void>`|
+|`GET /resources?fld1=val,fld2<val,fld3>val&sort=+fld1,-fld2&fields=fld1,fld2`|`find(Query): Result<List<Entity>`|`find(Query): Result<List<Entity>`|
+
 
 REST Nouns, Verbs, protocols 
 ===========
 
-
 ## Nouns (Resources)
-
 Plurals for Aggregates and Standalone entities
-
-```
-/users
-/users/{userId}`
-```
 
 Sub collections for VOs
 
@@ -72,6 +83,7 @@ For example, the process of setting up a new customer in a banking domain can be
 It is very important to distinguish between resources in REST API and domain entities in a domain driven design. Domain driven design applies to the implementation side of things (including API implementation) while resources in REST API drive the API design and contract. API resource selection should not depend on the underlying domain implementation details
 
 Use of PUT for complex state transitions can lead to synchronous cruddy CRUD
+
 
 Controller Layer
 ===========
@@ -86,12 +98,20 @@ The controller layer is responsible for
 1. Exposing the domain model in a way that reflects the nouns and verbs of the domain.
 
 The EntityControllerBase provides us with CRUD semantics for most of the domain and CRUD semantics alone are
-likely to be insufficient for a real world application
+usually insufficient for a real world application
 
 The default entity controller will expose the following CRUD REST operations
 
 
 * PUT Replace resource(s)
+  * POST /users 
+    * BODY single prototype
+    * RESP 200 or 201
+    * PAYLOAD create resource
+  * POST /users (single prototype in body)
+    * BODY multiple prototypes
+    * RESP 200 or 201
+    * PAYLOAD create resources
   * PUT /users/1
     * BODY single resource
     * RESP 200 or 201

@@ -1,8 +1,7 @@
 plugins {
     id("com.github.johnrengelman.shadow") version "8.1.1"
-    id("io.micronaut.application") version "4.3.1"
-    id("io.micronaut.aot") version "4.3.1"
-    id("io.freefair.lombok") version "8.4"
+    id("io.micronaut.application") version "4.3.2"
+    id("io.micronaut.aot") version "4.3.2"
 }
 
 version = "0.2"
@@ -12,13 +11,39 @@ repositories {
     mavenCentral()
 }
 
+micronaut {
+    runtime("netty")
+    testRuntime("junit5")
+    processing {
+        incremental(true)
+        annotations("org.saltations.mre.*")
+    }
+
+//    aot {
+//        // Please review carefully the optimizations enabled below
+//        // Check https://micronaut-projects.github.io/micronaut-aot/latest/guide/ for more details
+//        optimizeServiceLoading = false
+//        convertYamlToJava = false
+//        precomputeOperations = true
+//        cacheEnvironment = true
+//        optimizeClassLoading = true
+//        deduceEnvironment = true
+//        optimizeNetty = true
+//    }
+}
+
+
 dependencies {
 
-    annotationProcessor("org.projectlombok:lombok")
-    annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
+    // Jakarta Specs
+
+    implementation("jakarta.validation:jakarta.validation-api")
+    implementation("jakarta.persistence:jakarta.persistence-api")
+
+    // Micronaut
+
     annotationProcessor("io.micronaut:micronaut-http-validation")
     annotationProcessor("io.micronaut.serde:micronaut-serde-processor")
-
     annotationProcessor("io.micronaut.data:micronaut-data-processor")
     annotationProcessor("io.micronaut.openapi:micronaut-openapi")
     annotationProcessor("io.micronaut.validation:micronaut-validation-processor")
@@ -35,23 +60,40 @@ dependencies {
     implementation("io.micronaut.sql:micronaut-jdbc-hikari")
     implementation("io.micronaut.validation:micronaut-validation")
     implementation("io.swagger.core.v3:swagger-annotations")
-    implementation("jakarta.validation:jakarta.validation-api")
-    implementation("jakarta.persistence:jakarta.persistence-api")
+    compileOnly("io.micronaut.openapi:micronaut-openapi-annotations")
 
     implementation("com.github.java-json-tools:json-patch:1.13")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
 
-    implementation 'com.leakyabstractions:result:0.15.0.0'
-    implementation("org.javatuples:javatuples:1.2")
-    implementation("org.mapstruct:mapstruct:1.5.5.Final")
-    implementation("com.google.guava:guava:32.1.3-jre")
+    runtimeOnly("org.postgresql:postgresql")
 
-    compileOnly("io.micronaut.openapi:micronaut-openapi-annotations")
-    compileOnly("org.projectlombok:lombok")
+    // Logging
 
     runtimeOnly("ch.qos.logback:logback-classic")
+
+    // YAML
+
     runtimeOnly("org.yaml:snakeyaml")
-    runtimeOnly("org.postgresql:postgresql")
+
+    // Lombok
+
+    annotationProcessor("org.projectlombok:lombok")
+    testAnnotationProcessor("org.projectlombok:lombok")
+    compileOnly("org.projectlombok:lombok")
+    testCompileOnly("org.projectlombok:lombok")
+
+    // Map Struct
+
+    annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
+    implementation("org.mapstruct:mapstruct:1.5.5.Final")
+
+    // General Abstractions
+
+    implementation 'com.leakyabstractions:result:0.15.0.0'
+    implementation("org.javatuples:javatuples:1.2")
+    implementation("com.google.guava:guava:32.1.3-jre")
+
+    // Test
 
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testImplementation("io.micronaut.test:micronaut-test-rest-assured")
@@ -64,7 +106,7 @@ dependencies {
 }
 
 application {
-    mainClass.set("org.saltations.mre.Application")
+    mainClass.set("org.saltations.mre.MNRestExemplarApp")
 }
 
 java {
@@ -72,27 +114,11 @@ java {
     targetCompatibility = JavaVersion.toVersion("21")
 }
 
+test {
+    useJUnitPlatform()
+}
 graalvmNative.toolchainDetection = false
 
-micronaut {
-    runtime("netty")
-    testRuntime("junit5")
-    processing {
-        incremental(true)
-        annotations("org.saltations.mre.*")
-    }
-    aot {
-        // Please review carefully the optimizations enabled below
-        // Check https://micronaut-projects.github.io/micronaut-aot/latest/guide/ for more details
-        optimizeServiceLoading = false
-        convertYamlToJava = false
-        precomputeOperations = true
-        cacheEnvironment = true
-        optimizeClassLoading = true
-        deduceEnvironment = true
-        optimizeNetty = true
-    }
-}
 
 
 

@@ -3,8 +3,6 @@ package org.saltations.mre.core.control;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.util.Objects;
-
 /**
  * TODO Summary(ends with '.',third person[gets the X, not Get X],do not use @link) XResults represents xxx OR XResults does xxxx.
  *
@@ -53,8 +51,7 @@ public class XResults
         return new XFailure(cause, XResults.GenericFailure.GENERAL, args);
     }
 
-
-    public static <VT,FT extends FailureType> XResult<VT, FT> ofThrowable(ThrowableSupplier<VT> supplier)
+    public static <VT,FT extends FailureType> XResult<VT, FT> ofTry(ThrowableSupplier<VT> supplier)
     {
         XResult<VT, FT> result;
 
