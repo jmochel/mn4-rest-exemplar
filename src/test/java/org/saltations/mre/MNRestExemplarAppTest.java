@@ -16,14 +16,12 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestClassOrder;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.saltations.mre.core.ReplaceBDDCamelCase;
-import org.testcontainers.shaded.org.apache.commons.lang3.reflect.TypeLiteral;
+import org.saltations.mre.fixtures.ReplaceBDDCamelCase;
 
 import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
