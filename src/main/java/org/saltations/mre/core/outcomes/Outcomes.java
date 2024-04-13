@@ -20,7 +20,6 @@ public class Outcomes
      *
      */
 
-    // TODO Make explicitly Boolean ?
     public static <FV extends Fail, SV> Outcome<FV,SV> succeed()
     {
         return (Outcome<FV, SV>) new Success<>(Boolean.TRUE);

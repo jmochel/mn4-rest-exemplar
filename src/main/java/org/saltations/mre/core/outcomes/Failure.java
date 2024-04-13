@@ -1,10 +1,6 @@
 package org.saltations.mre.core.outcomes;
 
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -16,13 +12,8 @@ import java.util.function.Supplier;
  * @param <SV>
  */
 
-@Getter
-@EqualsAndHashCode
-@AllArgsConstructor
-public final class Failure<FV extends Fail, SV> implements Outcome<FV, SV>
+public record Failure<FV extends Fail, SV>(FV fail) implements Outcome<FV, SV>
 {
-    private final FV fail;
-
     @Override
     public boolean hasSuccessValue()
     {
