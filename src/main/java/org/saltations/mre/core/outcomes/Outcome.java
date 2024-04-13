@@ -15,7 +15,7 @@ import java.util.function.Supplier;
  * @param <SV> Success payload class. Accessible in successes and partial successes.  
  */
 
-public sealed interface Outcome<FV extends XFail, SV> permits XFailure, XSuccess, XPartialSuccess
+public sealed interface Outcome<FV extends Fail, SV> permits Failure, Success, PartialSuccess
 {
     boolean hasSuccessValue();
 

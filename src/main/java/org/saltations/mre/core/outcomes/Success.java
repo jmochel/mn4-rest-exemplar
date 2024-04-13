@@ -11,7 +11,7 @@ import java.util.function.Supplier;
 @Getter
 @EqualsAndHashCode
 @AllArgsConstructor
-public final class XSuccess<FV extends XFail, SV> implements Outcome<FV, SV>
+public final class Success<FV extends Fail, SV> implements Outcome<FV, SV>
 {
     private final SV value;
 

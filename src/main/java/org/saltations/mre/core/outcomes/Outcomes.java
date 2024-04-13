@@ -21,9 +21,9 @@ public class Outcomes
      */
 
     // TODO Make explicitly Boolean ?
-    public static <FV extends XFail, SV> Outcome<FV,SV> succeed()
+    public static <FV extends Fail, SV> Outcome<FV,SV> succeed()
     {
-        return (Outcome<FV, SV>) new XSuccess<>(Boolean.TRUE);
+        return (Outcome<FV, SV>) new Success<>(Boolean.TRUE);
     }
 
     /**
@@ -42,11 +42,11 @@ public class Outcomes
      * </pre>
      *
      */
-    public static <FV extends XFail, SV> Outcome<FV,SV> succeed(SV value)
+    public static <FV extends Fail, SV> Outcome<FV,SV> succeed(SV value)
     {
         requireNonNull(value, "Result must have a non-null value to return");
 
-        return new XSuccess(value);
+        return new Success(value);
     }
 
     /**
@@ -65,12 +65,12 @@ public class Outcomes
      * </pre>
      *
      */
-    public static <FV extends XFail, SV> Outcome<FV,SV> partialSucceed(FV failureValue , SV successValue)
+    public static <FV extends Fail, SV> Outcome<FV,SV> partialSucceed(FV failureValue , SV successValue)
     {
         requireNonNull(successValue, "Result must have a non-null success value to return");
         requireNonNull(failureValue, "Result must have a non-null failure value to return");
 
-        return new XPartialSuccess<>(failureValue, successValue);
+        return new PartialSuccess<>(failureValue, successValue);
     }
 
     /**
@@ -88,11 +88,11 @@ public class Outcomes
      * }
      * </pre>
      */
-    public static <FV extends XFail, SV> Outcome<FV,SV> fail()
+    public static <FV extends Fail, SV> Outcome<FV,SV> fail()
     {
-        var type = XFail.GenericFail.GENERIC;
+        var type = Fail.GenericFail.GENERIC;
 
-        return new XFailure(XFail.of()
+        return new Failure(Fail.of()
                 .type(type)
                 .build());
     }
@@ -118,19 +118,19 @@ public class Outcomes
      * </pre>
      */
 
-    public static <FV extends XFail, SV> Outcome<FV,SV> failWithDetails(String template, Object...args)
+    public static <FV extends Fail, SV> Outcome<FV,SV> failWithDetails(String template, Object...args)
     {
         requireNonNull(template, "Failure needs a non-null template");
 
-        var failureType = XFail.GenericFail.GENERIC;
+        var failureType = Fail.GenericFail.GENERIC;
 
-        var fail = XFail.of()
+        var fail = Fail.of()
                 .type(failureType)
                 .template(template)
                 .args(args)
                 .build();
 
-        return new XFailure(fail);
+        return new Failure(fail);
     }
 
 
@@ -149,16 +149,16 @@ public class Outcomes
      * }
      * </pre>
      */
-    public static <FV extends XFail, SV> Outcome<FV,SV> titledFail(String title)
+    public static <FV extends Fail, SV> Outcome<FV,SV> titledFail(String title)
     {
-        var failureType = XFail.GenericFail.GENERIC;
+        var failureType = Fail.GenericFail.GENERIC;
 
-        var fail = XFail.of()
+        var fail = Fail.of()
                 .type(failureType)
                 .title(title)
                 .build();
 
-        return new XFailure(fail);
+        return new Failure(fail);
     }
 
 
@@ -177,26 +177,26 @@ public class Outcomes
      * }
      * </pre>
      */
-    public static <FV extends XFail, SV> Outcome<FV,SV> titledFailWithDetails(String title, String template, Object...args)
+    public static <FV extends Fail, SV> Outcome<FV,SV> titledFailWithDetails(String title, String template, Object...args)
     {
-        var failureType = XFail.GenericFail.GENERIC;
+        var failureType = Fail.GenericFail.GENERIC;
 
-        var fail = XFail.of()
+        var fail = Fail.of()
                 .type(failureType)
                 .title(title)
                 .template(template)
                 .args(args)
                 .build();
 
-        return new XFailure(fail);
+        return new Failure(fail);
     }
 
 
-    public static <FV extends XFail, SV> Outcome<FV,SV> typedFail(XFailType failureType, Object...args)
+    public static <FV extends Fail, SV> Outcome<FV,SV> typedFail(FailType failureType, Object...args)
     {
         requireNonNull(failureType, "Failure needs a non-null failure type");
 
-        var builder = XFail.of().type(failureType);
+        var builder = Fail.of().type(failureType);
 
         if (failureType.templateParameterCount() == 0 && args.length == 1)
         {
@@ -208,40 +208,40 @@ public class Outcomes
 
         var fail = builder.build();
 
-        return new XFailure(fail);
+        return new Failure(fail);
     }
 
 
-    public static <FV extends XFail, SV> Outcome<FV,SV> typedFailWithDetails(XFailType failureType, String template, Object...args)
+    public static <FV extends Fail, SV> Outcome<FV,SV> typedFailWithDetails(FailType failureType, String template, Object...args)
     {
         requireNonNull(failureType, "Failure needs a non-null failure type");
 
-        var fail = XFail.of()
+        var fail = Fail.of()
                 .type(failureType)
                 .template(template)
                 .args(args)
                 .build();
 
-        return new XFailure(fail);
+        return new Failure(fail);
     }
 
-    public static <FV extends XFail, SV> Outcome<FV,SV> causedFail(Exception cause)
+    public static <FV extends Fail, SV> Outcome<FV,SV> causedFail(Exception cause)
     {
-        var failureType = XFail.GenericFail.GENERIC;
+        var failureType = Fail.GenericFail.GENERIC;
 
-        var fail = XFail.of()
+        var fail = Fail.of()
                 .type(failureType)
                 .cause(cause)
                 .build();
 
-        return new XFailure(fail);
+        return new Failure(fail);
     }
 
-    public static <FV extends XFail, SV> Outcome<FV,SV> causedFail(Exception cause, XFailType failureType, Object...args)
+    public static <FV extends Fail, SV> Outcome<FV,SV> causedFail(Exception cause, FailType failureType, Object...args)
     {
         requireNonNull(failureType, "Failure needs a non-null failure type");
 
-        var builder = XFail.of().type(failureType).cause(cause);
+        var builder = Fail.of().type(failureType).cause(cause);
 
         if (failureType.templateParameterCount() == 0 && args.length == 1)
         {
@@ -253,21 +253,21 @@ public class Outcomes
 
         var fail = builder.build();
 
-        return new XFailure(fail);
+        return new Failure(fail);
     }
 
-    public static <FV extends XFail, SV> Outcome<FV,SV> causedFailWithDetails(Exception cause, String template, Object...args)
+    public static <FV extends Fail, SV> Outcome<FV,SV> causedFailWithDetails(Exception cause, String template, Object...args)
     {
-        var failureType = XFail.GenericFail.GENERIC;
+        var failureType = Fail.GenericFail.GENERIC;
 
-        var fail = XFail.of()
+        var fail = Fail.of()
                 .type(failureType)
                 .cause(cause)
                 .template(template)
                 .args(args)
                 .build();
 
-        return new XFailure(fail);
+        return new Failure(fail);
     }
 
 }

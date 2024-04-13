@@ -12,9 +12,9 @@ import org.slf4j.helpers.MessageFormatter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class XFail
+public class Fail
 {
-    private XFailType type;
+    private FailType type;
     private String title;
     private String detail;
     private Exception cause;
@@ -26,7 +26,7 @@ public class XFail
 
     @Getter
     @AllArgsConstructor
-    public enum GenericFail implements XFailType
+    public enum GenericFail implements FailType
     {
         GENERIC("generic-failure", "");
 
@@ -49,7 +49,7 @@ public class XFail
     {
         // Final values that get passed into the XFail.
 
-        private XFailType type = GenericFail.GENERIC;
+        private FailType type = GenericFail.GENERIC;
         private Exception cause;
 
         // Additional fields input for building
@@ -62,14 +62,14 @@ public class XFail
         {
         }
 
-        private Builder(XFail initialData)
+        private Builder(Fail initialData)
         {
             this.type = initialData.type;
             this.title = initialData.title;
             this.cause = initialData.cause;
         }
 
-        public Builder type(XFailType type)
+        public Builder type(FailType type)
         {
             this.type = type;
 
@@ -110,9 +110,9 @@ public class XFail
             return this;
         }
 
-        public XFail build()
+        public Fail build()
         {
-            return new XFail(type, title, MessageFormatter.basicArrayFormat(template, args), cause);
+            return new Fail(type, title, MessageFormatter.basicArrayFormat(template, args), cause);
         }
     }
 }

@@ -10,7 +10,7 @@ import org.junit.jupiter.api.TestClassOrder;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.saltations.mre.core.outcomes.Outcome;
 import org.saltations.mre.core.outcomes.Outcomes;
-import org.saltations.mre.core.outcomes.XFail;
+import org.saltations.mre.core.outcomes.Fail;
 import org.saltations.mre.fixtures.ReplaceBDDCamelCase;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -34,7 +34,7 @@ public class OutcomeTest
     @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
     class GivenSuccess {
 
-        private final Outcome<XFail, Long> success = Outcomes.succeed(1111L);
+        private final Outcome<Fail, Long> success = Outcomes.succeed(1111L);
 
         @Test
         @Order(10)
@@ -126,7 +126,7 @@ public class OutcomeTest
     @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
     class GivenPartialSuccess {
 
-        private final Outcome<XFail, Long> success = Outcomes.partialSucceed(XFail.of().build(),1111L);
+        private final Outcome<Fail, Long> success = Outcomes.partialSucceed(Fail.of().build(),1111L);
 
         @Test
         @Order(10)
@@ -214,7 +214,7 @@ public class OutcomeTest
     @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
     class GivenFailure {
 
-        private final Outcome<XFail, Long> failure = Outcomes.fail();
+        private final Outcome<Fail, Long> failure = Outcomes.fail();
 
         @Test
         @Order(10)

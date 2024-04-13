@@ -2,7 +2,7 @@ package org.saltations.mre.core.outcomes;
 
 import java.util.regex.Pattern;
 
-public interface XFailType
+public interface FailType
 {
     String getTitle();
     String getTemplate();
