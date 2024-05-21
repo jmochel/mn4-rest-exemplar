@@ -1,5 +1,6 @@
 package org.saltations.mre.core.outcomes;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -30,7 +31,13 @@ public record Success<FV extends FailureParticulars, SV>(SV value) implements Ou
     }
 
     @Override
-    public SV get()
+    public Optional<SV> get()
+    {
+        return Optional.ofNullable(value);
+    }
+
+    @Override
+    public SV rawGet()
     {
         return value;
     }

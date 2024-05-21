@@ -1,6 +1,7 @@
 package org.saltations.mre.core.outcomes;
 
 
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -29,7 +30,13 @@ public record Failure<FV extends FailureParticulars, SV>(FV fail) implements Out
     }
 
     @Override
-    public SV get()
+    public Optional<SV> get()
+    {
+        throw new IllegalStateException(fail.getTotalMessage());
+    }
+
+    @Override
+    public SV rawGet()
     {
         throw new IllegalStateException(fail.getTotalMessage());
     }

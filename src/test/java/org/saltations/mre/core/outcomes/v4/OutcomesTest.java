@@ -57,7 +57,7 @@ public class OutcomesTest
             var result = Outcomes.success("OK");
             assertOutcomeIsSuccess(result);
             assertAll("Success",
-                    () -> assertEquals("OK",result.get(), "Value")
+                    () -> assertEquals("OK",result.rawGet(), "Value")
             );
         }
 
@@ -70,7 +70,7 @@ public class OutcomesTest
             assertOutcomeIsSuccess(result);
 
             assertAll("Success",
-                    () -> assertEquals(Boolean.TRUE, result.get(), "Value")
+                    () -> assertEquals(Boolean.TRUE, result.rawGet(), "Value")
             );
         }
     }

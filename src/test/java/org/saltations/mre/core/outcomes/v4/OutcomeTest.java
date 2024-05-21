@@ -40,7 +40,7 @@ public class OutcomeTest
         @Order(10)
         void whenGettingValueThenReturnsSuccessValue() throws Throwable
         {
-            var value = success.get();
+            var value = success.rawGet();
             assertEquals(1111L, value, "Success Value");
         }
 
@@ -50,15 +50,15 @@ public class OutcomeTest
         void whenSupplyingOutcomeOnSuccessThenReturnsSuppliedValue() throws Throwable
         {
             var outcome = success.ifSuccess(() -> Outcomes.success(2222L));
-            assertEquals(2222L, outcome.get(), "Success Value");
+            assertEquals(2222L, outcome.rawGet(), "Success Value");
         }
 
         @Test
         @Order(30)
         void whenTransformingOutcomeOnSuccessThenReturnsTransformedOutcomeToNewSuccess() throws Throwable
         {
-            var outcome = success.ifSuccess(x -> Outcomes.success(x.get() * 3));
-            assertEquals(3333L, outcome.get(), "Transformed Outcome");
+            var outcome = success.ifSuccess(x -> Outcomes.success(x.rawGet() * 3));
+            assertEquals(3333L, outcome.rawGet(), "Transformed Outcome");
         }
 
         @Test
@@ -92,7 +92,7 @@ public class OutcomeTest
         @Order(60)
         void whenTransformingOutcomeOnFailureThenReturnsExistingSuccess() throws Throwable
         {
-            var outcome = success.ifFailure(x -> Outcomes.success(x.get() * 3));
+            var outcome = success.ifFailure(x -> Outcomes.success(x.rawGet() * 3));
             assertTrue(outcome == success, "Existing Success");
         }
 
@@ -147,7 +147,7 @@ public class OutcomeTest
         @Order(30)
         void whenTransformingOutcomeOnSuccessThenReturnsTheExistingFailure()
         {
-            var outcome = failure.ifSuccess(x -> Outcomes.success(x.get() * 3));
+            var outcome = failure.ifSuccess(x -> Outcomes.success(x.rawGet() * 3));
             assertTrue(outcome == failure, "Same failure");
         }
 
@@ -166,7 +166,7 @@ public class OutcomeTest
         void whenSupplyingValueOnFailureThenReturnsNewOutcome() throws Throwable
         {
             var outcome = failure.ifFailure(() -> Outcomes.success(2222L));
-            assertEquals(2222L, outcome.get(),"New Outcome");
+            assertEquals(2222L, outcome.rawGet(),"New Outcome");
         }
 
         @Test

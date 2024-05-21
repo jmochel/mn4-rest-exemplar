@@ -1,5 +1,6 @@
 package org.saltations.mre.core.outcomes;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -32,23 +33,41 @@ public sealed interface Outcome<FV extends FailureParticulars, SV> permits Failu
      * Return the contained success value or throw an exception if this is a failure outcome
      *
      * @return value associated with the success. May be null
+     *
      * @throws OperationNotSupportedException if this is a failure outcome
      *
-     * <p>
-     * <b>Example:</b>
-     * <pre>{@snippet :
-     *      return outcome.get();
-     * }
-     * </pre>
-     *
+     *                                        <p>
+     *                                        <b>Example:</b>
+     *                                        <pre>{@snippet :
+     *                                             return outcome.get();
+     *}
+     *                                        </pre>
      * @apiNote - Commentary, rationale, or examples pertaining to the API.
-     *
      * @implSpec - Description of what it means to be a valid default implementation (or an overridable implementation in a class), such as "throws UOE." Similarly this is where we'd describe what the default for putIfAbsent does. It is from this box that the would-be-implementer gets enough information to make a sensible decision as to whether or not to override.
-     *
      * @implNote - Informative notes about the implementation, such as performance characteristics that are specific to the implementation in this class in this JDK in this version, and might change. These things are allowed to vary across platforms, vendors and versions.
      */
 
-    SV get();
+    Optional<SV> get();
+
+    /**
+     * Return the contained success value or throw an exception if this is a failure outcome
+     *
+     * @return raw value associated with the success. May be null
+     *
+     * @throws OperationNotSupportedException if this is a failure outcome
+     *
+     *                                        <p>
+     *                                        <b>Example:</b>
+     *                                        <pre>{@snippet :
+     *                                             return outcome.get();
+     *}
+     *                                        </pre>
+     * @apiNote - Commentary, rationale, or examples pertaining to the API.
+     * @implSpec - Description of what it means to be a valid default implementation (or an overridable implementation in a class), such as "throws UOE." Similarly this is where we'd describe what the default for putIfAbsent does. It is from this box that the would-be-implementer gets enough information to make a sensible decision as to whether or not to override.
+     * @implNote - Informative notes about the implementation, such as performance characteristics that are specific to the implementation in this class in this JDK in this version, and might change. These things are allowed to vary across platforms, vendors and versions.
+     */
+
+    SV rawGet();
 
     /**
      * Provide a new outcome if there is an existing success.

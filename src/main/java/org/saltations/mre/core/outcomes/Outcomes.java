@@ -5,9 +5,9 @@ import jakarta.validation.constraints.NotNull;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Construction factory for outcomes
+ * Factory for constructing outcomes
  * <p>
- * Provides methods to construct successful and failed outcomes from various actions and data
+ * Provides methods to construct successful and failed outcomes from various actions and data.
  */
 
 public class Outcomes
@@ -46,7 +46,7 @@ public class Outcomes
      * </pre>
      */
 
-    public static <FV extends FailureParticulars, SV> Outcome<FV,SV> success(@NotNull SV value)
+    public static <FV extends FailureParticulars, SV> Outcome<FV,SV> success(SV value)
     {
         return new Success(value);
     }
