@@ -1,129 +1,104 @@
 package org.saltations.mre.core.outcomes;
+
+import jakarta.validation.constraints.NotNull;
+
 import static java.util.Objects.requireNonNull;
+
+/**
+ * Construction factory for outcomes
+ * <p>
+ * Provides methods to construct successful and failed outcomes from various actions and data
+ */
 
 public class Outcomes
 {
     /**
-     * Construct a successful result with a Boolean value of true
+     * Provides a success outcome with a success value of {@code Boolean.TRUE}
      *
-     * @param <FV> class of the contained failure
-     * @param <SV> class of the contained success value
-     *
-     * @return An XSuccess result of {@code XResult<XFail,Boolean>}
+     * @return A Success result of {@code Outcome<FV,Boolean>}
      *
      * <p>
      * <b>Example:</b>
-     * <pre>{@code
-     *   return XResults.succeed();
+     * <pre>{@snippet :
+     *   var success = XResults.success();
      * }
      * </pre>
-     *
      */
 
-    public static <FV extends Fail, SV> Outcome<FV,SV> succeed()
+    public static <FV extends FailureParticulars, SV> Outcome<FV,SV> success()
     {
         return (Outcome<FV, SV>) new Success<>(Boolean.TRUE);
     }
 
     /**
-     * Construct a successful result with given value
+     * Provides a success outcome with a given success value
      *
      * @param <FV> class of the contained failure
      * @param <SV> class of the contained success value
      *
-     * @return An XSuccess result of {@code XResult<XFail,SV>}
+     * @return A Success result of {@code Outcome<FV,SV>}
      *
      * <p>
      * <b>Example:</b>
      * <pre>{@code
-     *   return XResults.succeed("Success!");
+     *   var success = Outcomes.success("Success!");
      * }
      * </pre>
-     *
      */
-    public static <FV extends Fail, SV> Outcome<FV,SV> succeed(SV value)
-    {
-        requireNonNull(value, "Result must have a non-null value to return");
 
+    public static <FV extends FailureParticulars, SV> Outcome<FV,SV> success(@NotNull SV value)
+    {
         return new Success(value);
     }
 
     /**
-     * Construct a successful result with given value
+     * Provides a failure outcome with a basic failure type and generic failure title and details
      *
-     * @param <FV> class of the contained failure
-     * @param <SV> class of the contained success value
-     *
-     * @return An XSuccess result of {@code XResult<XFail,SV>}
+     * @return A Failure result of {@code Failure<FailureParticulars, SV>}
      *
      * <p>
      * <b>Example:</b>
-     * <pre>{@code
-     *   return XResults.succeed("Success!");
-     * }
-     * </pre>
-     *
-     */
-    public static <FV extends Fail, SV> Outcome<FV,SV> partialSucceed(FV failureValue , SV successValue)
-    {
-        requireNonNull(successValue, "Result must have a non-null success value to return");
-        requireNonNull(failureValue, "Result must have a non-null failure value to return");
-
-        return new PartialSuccess<>(failureValue, successValue);
-    }
-
-    /**
-     * Construct a failed generic result
-     *
-     * @param <FV> class of the contained failure
-     * @param <SV> class of the contained success value
-     *
-     * @return An XFailure result of {@code XFailure<XFail,SV>}
-     *
-     * <p>
-     * <b>Example:</b>
-     * <pre>{@code
-     *   return XResults.fail();
+     * <pre>{@snippet :
+     *   var failure = Outcomes.failure();
      * }
      * </pre>
      */
-    public static <FV extends Fail, SV> Outcome<FV,SV> fail()
+    public static <FV extends FailureParticulars, SV> Outcome<FV,SV> fail()
     {
-        var type = Fail.GenericFail.GENERIC;
+        var type = BasicFailureType.GENERIC;
 
-        return new Failure(Fail.of()
+        return new Failure(FailureParticulars.of()
                 .type(type)
                 .build());
     }
 
-
     /**
-     * Construct a failed result with details from the given template and arguments
+     * Provides a basic failure outcome with details derived from the given template and detail arguments
      *
      * @param template Message template composed using {@link org.slf4j.helpers.MessageFormatter} format strings
-     * @param args arguments used to expand the given template
+     * @param args     arguments used to expand the given template
      *
-     * @param <FV> class of the contained failure
-     * @param <SV> class of the contained success value
+     * @param <FV>     class of the contained failure
+     * @param <SV>     class of the contained success value
      *
-     * @return An XFailure result of {@code XFailure<XFail,SV>} with type {@code XFail.GenericFail.GENERIC} and a
+     * @return A failure result of {@code Failure<FV,SV>} with failure type {@code BasicFailureType.GENERIC} and a
      * detail message derived from the template and arguments
      *
      * <p>
      * <b>Example:</b>
-     * <pre>{@code
-     *   return XResults.failWithDetails("Ouch ! That {}", "hurt a lot.");
-     * }
+     * <pre> {@snippet :
+     *   return Outcomes.failureWith("Ouch ! That {}", "hurt a lot.");
+     *}
      * </pre>
      */
 
-    public static <FV extends Fail, SV> Outcome<FV,SV> failWithDetails(String template, Object...args)
+    public static <FV extends FailureParticulars, SV> Failure<FV, SV> failureWith(@NotNull String template, Object...args)
     {
         requireNonNull(template, "Failure needs a non-null template");
 
-        var failureType = Fail.GenericFail.GENERIC;
+        var failureType = BasicFailureType.GENERIC;
 
-        var fail = Fail.of()
+        var fail = FailureParticulars.of()
                 .type(failureType)
                 .template(template)
                 .args(args)
@@ -134,25 +109,30 @@ public class Outcomes
 
 
     /**
-     * Construct a failed titled result.
+     * Provides a basic failure outcome with the given title
      *
-     * @param <FV> class of the contained failure
-     * @param <SV> class of the contained success value
+     * @param title    Title for the failure
      *
-     * @return An XFailure result of {@code XFailure<XFail,SV>}
+     * @param <FV>     class of the contained failure
+     * @param <SV>     class of the contained success value
+     *
+     * @return A failure result of {@code Failure<FV,SV>} with failure type {@code BasicFailureType.GENERIC} and the given title
      *
      * <p>
      * <b>Example:</b>
-     * <pre>{@code
-     *   return XResults.titledFail("just-plain-dumb");
-     * }
+     * <pre> {@snippet :
+     *   return Outcomes.titledFailure("Completely avoidable failure.");
+     *}
      * </pre>
      */
-    public static <FV extends Fail, SV> Outcome<FV,SV> titledFail(String title)
-    {
-        var failureType = Fail.GenericFail.GENERIC;
 
-        var fail = Fail.of()
+    public static <FV extends FailureParticulars, SV> Outcome<FV,SV> titledFailure(String title)
+    {
+        requireNonNull(title, "Failure needs a non-null title");
+
+        var failureType = BasicFailureType.GENERIC;
+
+        var fail = FailureParticulars.of()
                 .type(failureType)
                 .title(title)
                 .build();
@@ -160,27 +140,35 @@ public class Outcomes
         return new Failure(fail);
     }
 
-
     /**
-     * Construct a failed result with title and expanded details
+     * Provides a basic failure outcome with details derived from the given template and detail arguments
      *
-     * @param <FV> class of the contained failure
-     * @param <SV> class of the contained success value
+     * @param title    Title for the failure. Not null.
+     * @param template Message template composed using {@link org.slf4j.helpers.MessageFormatter} format strings. Not null.
+     * @param args     arguments used to expand the given template
      *
-     * @return An XFailure result of {@code XFailure<XFail,SV>}
+     * @param <FV>     class of the contained failure
+     * @param <SV>     class of the contained success value
+     *
+     * @return A failure result of {@code Failure<FV,SV>} with failure type {@code BasicFailureType.GENERIC} and a
+     * detail message derived from the template and arguments
      *
      * <p>
      * <b>Example:</b>
-     * <pre>{@code
-     *   return XResults.fail();
-     * }
+     * <pre> {@snippet :
+     *   return Outcomes.titledFailureWith("pretty-bad-error", "Ouch ! That {}", "hurt a lot.");
+     *}
      * </pre>
      */
-    public static <FV extends Fail, SV> Outcome<FV,SV> titledFailWithDetails(String title, String template, Object...args)
-    {
-        var failureType = Fail.GenericFail.GENERIC;
 
-        var fail = Fail.of()
+    public static <FV extends FailureParticulars, SV> Outcome<FV,SV> titledFailureWith(String title, String template, Object...args)
+    {
+        requireNonNull(title, "Failure needs a non-null title");
+        requireNonNull(template, "Failure needs a non-null template");
+
+        var failureType = BasicFailureType.GENERIC;
+
+        var fail = FailureParticulars.of()
                 .type(failureType)
                 .title(title)
                 .template(template)
@@ -191,11 +179,32 @@ public class Outcomes
     }
 
 
-    public static <FV extends Fail, SV> Outcome<FV,SV> typedFail(FailType failureType, Object...args)
+    /**
+     * Provides a failure with title and template from the FailureType details from the template and given arguments
+     *
+     * @param failureType  Type of the failure to be created
+     * @param args     arguments used to expand the failureType's template
+     *
+     * @param <FV>     class of the contained failure
+     * @param <SV>     class of the contained success value
+     *
+     * @return A failure result of {@code Failure<FV,SV>} with given failure type, derived title and template and expanded
+     * detail message
+     *
+     * <p>
+     * <b>Example:</b>
+     * <pre> {@snippet :
+     *   return Outcomes.typedFailure(SpecializedFailureType.SPECIAL_ERROR_1, "argument 1", "argument 2");
+     *}
+     * </pre>
+     */
+
+
+    public static <FV extends FailureParticulars, SV> Outcome<FV,SV> typedFailure(FailureType failureType, Object...args)
     {
         requireNonNull(failureType, "Failure needs a non-null failure type");
 
-        var builder = Fail.of().type(failureType);
+        var builder = FailureParticulars.of().type(failureType);
 
         if (failureType.templateParameterCount() == 0 && args.length == 1)
         {
@@ -210,12 +219,33 @@ public class Outcomes
         return new Failure(fail);
     }
 
+    /**
+     * Provides a failure with title from the FailureType, using the given template and arguments for the detail message
+     *
+     * @param failureType  Type of the failure to be created
+     * @param args     arguments used to expand the failureType's template
+     *
+     * @param <FV>     class of the contained failure
+     * @param <SV>     class of the contained success value
+     *
+     * @return A failure result of {@code Failure<FV,SV>} with given failure type, derived title and template and expanded
+     * detail message
+     *
+     * <p>
+     * <b>Example:</b>
+     * <pre> {@snippet :
+     *   return Outcomes.typedFailWith(SpecializedFailureType.SPECIAL_ERROR_1, "Special details : {} happened {}", "This Oopsie", "once");
+     *}
+     * </pre>
+     */
 
-    public static <FV extends Fail, SV> Outcome<FV,SV> typedFailWithDetails(FailType failureType, String template, Object...args)
+    public static <FV extends FailureParticulars, SV> Outcome<FV,SV> typedFailWith(FailureType failureType, String template, Object...args)
     {
         requireNonNull(failureType, "Failure needs a non-null failure type");
+        requireNonNull(template, "Failure needs a non-null template");
 
-        var fail = Fail.of()
+
+        var fail = FailureParticulars.of()
                 .type(failureType)
                 .template(template)
                 .args(args)
@@ -224,11 +254,29 @@ public class Outcomes
         return new Failure(fail);
     }
 
-    public static <FV extends Fail, SV> Outcome<FV,SV> causedFail(Exception cause)
-    {
-        var failureType = Fail.GenericFail.GENERIC;
+    /**
+     * Provides a basic `caused` failure with the given cause and generic title and message and
+     *
+     * @param cause    the cause of this failure
+     *
+     * @param <FV>     class of the contained failure
+     * @param <SV>     class of the contained success value
+     *
+     * @return A failure result of {@code Failure<FV,SV>} with a cause and generic failure type amd title
+     *
+     * <p>
+     * <b>Example:</b>
+     * <pre> {@snippet :
+     *   return Outcomes.causedFailure(e);
+     *}
+     * </pre>
+     */
 
-        var fail = Fail.of()
+    public static <FV extends FailureParticulars, SV> Outcome<FV,SV> causedFailure(Exception cause)
+    {
+        var failureType = BasicFailureType.GENERIC;
+
+        var fail = FailureParticulars.of()
                 .type(failureType)
                 .cause(cause)
                 .build();
@@ -236,11 +284,68 @@ public class Outcomes
         return new Failure(fail);
     }
 
-    public static <FV extends Fail, SV> Outcome<FV,SV> causedFail(Exception cause, FailType failureType, Object...args)
+    /**
+     * Provides a `caused` failure with using the given template and arguments for the detail message
+     *
+     * @param cause    the cause of this failure
+     * @param template Message template composed using {@link org.slf4j.helpers.MessageFormatter} format strings
+     * @param args     arguments used to expand the given template
+     *
+     * @param <FV>     class of the contained failure
+     * @param <SV>     class of the contained success value
+     *
+     * @return A failure result of {@code Failure<FV,SV>} with given failure type, derived title and template and expanded
+     * detail message
+     *
+     * <p>
+     * <b>Example:</b>
+     * <pre> {@snippet :
+     *   return Outcomes.causedFailureWith(SpecializedFailureType.SPECIAL_ERROR_1, "Special details : {} happened {}", "This Oopsie", "once");
+     *}
+     * </pre>
+     */
+
+    public static <FV extends FailureParticulars, SV> Outcome<FV,SV> causedFailureWith(Exception cause, String template, Object...args)
+    {
+        requireNonNull(template, "Failure needs a non-null template");
+
+        var failureType = BasicFailureType.GENERIC;
+
+        var fail = FailureParticulars.of()
+                .type(failureType)
+                .cause(cause)
+                .template(template)
+                .args(args)
+                .build();
+
+        return new Failure(fail);
+    }
+
+    /**
+     * Provides typed `caused` failure with the given cause and given failure type
+     *
+     * @param cause    the cause of this failure
+     * @param failureType  Type of the failure to be created
+     * @param args     arguments used to expand the failureType's template
+     *
+     * @param <FV>     class of the contained failure
+     * @param <SV>     class of the contained success value
+     *
+     * @return A failure result of {@code Failure<FV,SV>} with a cause and generic failure type amd title
+     *
+     * <p>
+     * <b>Example:</b>
+     * <pre> {@snippet :
+     *   return Outcomes.causedFailure(e,SpecializedFailureType.SPECIAL_ERROR_1, "argument 1", "argument 2");
+     *}
+     * </pre>
+     */
+
+    public static <FV extends FailureParticulars, SV> Outcome<FV,SV> causedFailure(Exception cause, FailureType failureType, Object...args)
     {
         requireNonNull(failureType, "Failure needs a non-null failure type");
 
-        var builder = Fail.of().type(failureType).cause(cause);
+        var builder = FailureParticulars.of().type(failureType).cause(cause);
 
         if (failureType.templateParameterCount() == 0 && args.length == 1)
         {
@@ -251,20 +356,6 @@ public class Outcomes
         }
 
         var fail = builder.build();
-
-        return new Failure(fail);
-    }
-
-    public static <FV extends Fail, SV> Outcome<FV,SV> causedFailWithDetails(Exception cause, String template, Object...args)
-    {
-        var failureType = Fail.GenericFail.GENERIC;
-
-        var fail = Fail.of()
-                .type(failureType)
-                .cause(cause)
-                .template(template)
-                .args(args)
-                .build();
 
         return new Failure(fail);
     }

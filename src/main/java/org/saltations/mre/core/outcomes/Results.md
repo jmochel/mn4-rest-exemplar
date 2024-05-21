@@ -1,54 +1,30 @@
+# Operation Result Pattern (aka Outcomes)
 
-# What is a Monad?
+Intention is to identify success or failure of an operation in a compact, and hopefully typesafe representation that allows us to
 
-A monad is defined as any class (data type), which represents a specific calculation 
-* Yes, it encapsulated a mechanism for performing actions on results of either success or failure safely without 
-causing a null pointer exception It must implement at least these two functions:
-
-* A function to wrap any basic value, creating a new monad. Also called the return function.  ofThrowable()
-* And a function that allows you to perform operations on a wrapped data type (monad). Also called the bind function. (flatMap)
-
-
-# Operation Result Pattern
-
-Intention is to identify success or failure of an operation is a compact, and hopefully typsesafe,
-representation that allows us to
-
-* Create exceptions with some strong domain level typing when useful
-  *  Wrap and invoke functions that might blow up and catch their errors
-* easy access to the values returned including complex results
-* Creating successes or failures from methods that throw exceptions 
 * Handle both success and failure whenever we want
-* Transform a failure in the called operation to a success in our current operations
 * Be able to map from one success type to another across data boundaries, ie from domain to presentation
-  * Transform a success in the called operation to a failure in our current operations
+* Transform a success in the called operation to a failure in our current operations
+* Transform a failure in the called operation to a success in our current operations
 * Be able to map errors from one type to another, perhaps converting a Throwable to something more useful to the presentation layer
+* Be able to map from one success type to another across data boundaries, ie from domain to presentation
+* Transform a success in the called operation to a failure in our current operations
 * Play well with code that uses java Exceptions as part of their flow control.
 * Ideally, we’d be able to chain or combine a bunch of these operations together, and only handle the error state at the end of the computation
 
-
-A failure in any result that is not a success in the context of the method.  
-
-. If your not sure if something should be an exception or a failure you could ask yourself “Would the user understand what to do with this failure message?” 
-Typically a user doesn’t know what to do with exception messages, they are intended for a technical person to do a more in depth troubleshooting of
-the problem. Business failure messages however, could be interpreted by a person and they should be able to act on them.
-
-
-# Success, Failure and Errors
+# Success, Failure and Errors 
 
 Outcomes in apis can be broken up into Successes, Failures, and Error.
 
 * Success - Mechanism worked; We got what we wanted
 * Failure -  Mechanism worked; We did not get what we wanted
 * Error - Mechanism failed
-  * Potentially Recoverable - Network dropped, Server didn’t answer , etc..
+  * Potentially Recoverable - Network dropped, Server did not answer, etc.
   * Unrecoverable - JVM Ran out of RAM, hardware failed..
 
-Wrap and invoke functions that might blow up and catch their errors
-Be able to map from one success type to another across data boundaries, ie from domain to presentation
-Be able to map errors from one type to another, perhaps converting a Throwable to something more useful to the presentation layer
-Handle both success and failure whenever we want
-Ideally, we’d be able to chain or combine a bunch of these operations together, and only handle the error state at the end of the computation
+If you are not sure if something should be an exception or a failure you could ask yourself “Would the user understand what to do with this failure message?”
+Typically, a user does not know what to do with exception messages, they are intended for a technical person to do a more in depth troubleshooting of
+the problem. Business failure messages however, could be interpreted by a person and they should be able to act on them.
 
 
 # We want a model that is
@@ -67,19 +43,6 @@ Ideally, we’d be able to chain or combine a bunch of these operations together
 
 # Operation Result Pattern
 
-Return a Union of an OK Result (success or failure without error) OR an error result.
-
-OK, fulfilled.
-
-accomplishment
-achievement
-realization
-success
-attainment
-consummation
-actualization
-fruition
-
 Should provide 
 
 * filter
@@ -90,7 +53,6 @@ Should provide
 * flatMap
   * flatMapSuccess -  transforms a successful result into a different one
   * flatMapError - transforms a failed result into a different one.
-
 
 
 Creating Result Objects

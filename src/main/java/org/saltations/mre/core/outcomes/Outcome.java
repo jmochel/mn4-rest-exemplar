@@ -1,148 +1,149 @@
 package org.saltations.mre.core.outcomes;
-import javax.naming.OperationNotSupportedException;
+
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import javax.naming.OperationNotSupportedException;
+
+import jakarta.validation.constraints.NotNull;
 
 /**
- * A generic interface for outcomes of operations.
+ * A generic interface for outcomes of an operation. Outcomes can be success or failure
+ * <p>
+ * A success outcome contains a value of type {@code SV} and no failure information
+ * A failure outcome contains a value of type {@code FV} and failure information
  *
- * TODO Summary(ends with '.',third person[gets the X, not Get X],do not use @link) ${NAME} represents xxx OR ${NAME} does xxxx.
+ * @param <FV> Failure payload class. Accessible in failures.
+ * @param <SV> Success payload class. Accessible in successes
  *
- * <p>TODO Description(1 lines sentences,) References generic parameters with {@code <T>} and uses 'b','em', dl, ul, ol tags
- *
- * @param <FV> Failure payload class. Accessible in failures and partial successes
- * @param <SV> Success payload class. Accessible in successes and partial successes.  
+ * @implSpec A null success value held by a success my never be retrieved. If you can return null, use a failure.
+ * .Description of what it means to be a valid default implementation (or an overridable implementation in a class), such as "throws UOE." Similarly this is where we'd describe what the default for putIfAbsent does. It is from this box that the would-be-implementer gets enough information to make a sensible decision as to whether or not to override.
+ * @ImplNote This interface is sealed and permits only the {@link Failure} and {@link Success} classes to implement it.
+ * The only methods that should be added to thii interface are those that are common to both success and failure
+ * outcomes and can be formed with the data contained in success or failure.
  */
 
-public sealed interface Outcome<FV extends Fail, SV> permits Failure, Success, PartialSuccess
+public sealed interface Outcome<FV extends FailureParticulars, SV> permits Failure, Success
 {
     boolean hasSuccessValue();
-
     boolean hasFailureValue();
 
     /**
-     * Return the success value or throw an exception if this does not have a success value
+     * Return the contained success value or throw an exception if this is a failure outcome
      *
      * @return value associated with the success. May be null
-     *
-     * @throws OperationNotSupportedException if there is no success value available
+     * @throws OperationNotSupportedException if this is a failure outcome
      *
      * <p>
      * <b>Example:</b>
-     * <pre>{@code
+     * <pre>{@snippet :
      *      return outcome.get();
      * }
      * </pre>
+     *
+     * @apiNote - Commentary, rationale, or examples pertaining to the API.
+     *
+     * @implSpec - Description of what it means to be a valid default implementation (or an overridable implementation in a class), such as "throws UOE." Similarly this is where we'd describe what the default for putIfAbsent does. It is from this box that the would-be-implementer gets enough information to make a sensible decision as to whether or not to override.
+     *
+     * @implNote - Informative notes about the implementation, such as performance characteristics that are specific to the implementation in this class in this JDK in this version, and might change. These things are allowed to vary across platforms, vendors and versions.
      */
 
     SV get();
 
     /**
-     * If this outcome is a success (or partial success) retunr the supplied outcome
+     * Provide a new outcome if there is an existing success.
      *
      * @param supplier function that supplies a new outcome. Not null
-     *
-     * @return populated XSuccess is success, XFailure if failure.
-     *
-     * <p><b>Example:</b>
-     * {@snippet :
-     *   var newOutcome = outcome.ifSuccess(() -> Outcomes.succeed(21));
-     * }
-     *
-     */
-
-    Outcome<FV,SV> ifSuccess(Supplier<Outcome<FV,SV>> supplier);
-
-    /**
-     * If this outcome is a success (or partial success) apply the transform
-     *
-     * @param transform function that supplies a new outcome from an existing outcome. Not null
-     *
-     * @return transformed XSuccess if success, XFailure if failure.
+     * @return new Outcome or the existing outcome (on success).
      *
      * <p><b>Example:</b>
      * {@snippet :
-     *   var newOutcome = outcome.ifSuccessApply(this::outcomeTransform);
-     * }
-     *
+     *   var newOutcome = outcome.ifSuccess(() -> Outcomes.success(21));
+     *}
      */
 
-    Outcome<FV,SV> ifSuccessTransform(Function<Outcome<FV,SV>, Outcome<FV,SV>> transform);
+    Outcome<FV,SV> ifSuccess(@NotNull Supplier<Outcome<FV,SV>> supplier);
 
     /**
-     * If this outcome is a success (or partial success) apply the given action
+     * Provide a new outcome if there is an existing failure
+     *
+     * @param supplier function that supplies a new outcome. Not null
+     * @return new Outcome or the existing outcome (on failure).
+     *
+     * <p><b>Example:</b>
+     * {@snippet :
+     *   var newOutcome = outcome.ifFailure(() -> Outcomes.success(21));
+     *}
+     */
+
+    Outcome<FV,SV> ifFailure(@NotNull Supplier<Outcome<FV,SV>> supplier);
+
+    /**
+     * Provide an outcome based on an existing success.
+     *
+     * @param transform function that turns an existing success into a new outcome. Not null
+     * @return new outcome based on existing success or existing outcome if failure.
+     *
+     * <p><b>Example:</b>
+     * {@snippet :
+     *   var newOutcome = outcome.ifSuccess(this::outcomeTransform);
+     * }
+     */
+
+    Outcome<FV,SV> ifSuccess(@NotNull Function<Success<FV, SV>, Outcome<FV, SV>> transform);
+
+    /**
+     * Provide an outcome based on an existing failure.
+     *
+     * @param transform function that turns an existing failure into a new outcome. Not null
+     * @return new outcome based on existing failure or existing outcome if success.
+     *
+     * <p><b>Example:</b>
+     * {@snippet :
+     *   var newOutcome = outcome.ifFailure(this::outcomeTransform);
+     * }
+     */
+
+    Outcome<FV,SV> ifFailure(@NotNull Function<Failure<FV, SV>, Outcome<FV, SV>> transform);
+
+    /**
+     * Takes action based on an existing success, nothing if a failure
      *
      * @param action function that takes action based on success. Not null
      *
      * <p><b>Example:</b>
      * {@snippet :
-     *   var newOutcome = outcome.ifSuccess(x -> log.info("{}", x.get()));
+     *   var newOutcome = outcome.onSuccess(x -> log.info("{}", x.get()));
      * }
-     *
      */
 
-    void onSuccess(Consumer<Outcome<FV,SV>> action);
+    void onSuccess(@NotNull Consumer<Success<FV, SV>> action);
 
     /**
-     * If this outcome is a failure return the supplied outcome
-     *
-     * @param supplier function that supplies a new outcome. Not null
-     *
-     * @return existing XSuccess if success, new Outcome if failure.
-     *
-     * <p><b>Example:</b>
-     * {@snippet :
-     *   var newOutcome = outcome.ifFailure(() -> Outcomes.succeed(21));
-     * }
-     *
-     */
-
-    Outcome<FV,SV> ifFailure(Supplier<Outcome<FV,SV>> supplier);
-
-    /**
-     * If this outcome is a failure apply the transform
-     *
-     * @param transform function that supplies a new outcome from an existing outcome. Not null
-     *
-     * @return  existing XSuccess if success, new Outcome if failure.
-     *
-     * <p><b>Example:</b>
-     * {@snippet :
-     *   var newOutcome = outcome.ifFailureApply(this::outcomeTransform);
-     * }
-     *
-     */
-
-    Outcome<FV,SV> ifFailureTransform(Function<Outcome<FV,SV>, Outcome<FV,SV>> transform);
-
-    /**
-     * If this outcome is a failure apply the given action
+     * Takes action based on an existing failure, nothing if a success
      *
      * @param action function that takes action based on failure. Not null
      *
      * <p><b>Example:</b>
      * {@snippet :
-     *   var newOutcome = outcome.ifFailure(x -> log.info("{}", x.get()));
+     *   var newOutcome = outcome.onFailure(x -> log.info("{}", x.get()));
      * }
-     *
      */
 
-    void onFailure(Consumer<Outcome<FV,SV>> action);
+    void onFailure(@NotNull Consumer<Failure<FV, SV>> action);
 
     /**
+     * Takes action based on an existing success or failure
      *
-     * If this outcome is a failure apply the failure action, if success apply the success action. If partial success apply both
-     *
-     * @param successAction action to execute if this is a success or partial success
-     * @param failureAction action to execute if this is a failure or partial success
+     * @param successAction function that takes action based on success. Not null
+     * @param failureAction function that takes action based on failure. Not null
      *
      * <p><b>Example:</b>
      * {@snippet :
-     *   var newOutcome = outcome.ifFailure(x -> log.info("{}", x.get()));
+     *   var newOutcome = outcome.on(x -> log.info("{}", x.get()), x -> log.error("{}", x.getDetails()));
      * }
      */
 
-    void on(Consumer<Outcome<FV,SV>> successAction, Consumer<Outcome<FV,SV>> failureAction);
+    void on(@NotNull Consumer<Success<FV, SV>> successAction, @NotNull Consumer<Failure<FV, SV>> failureAction);
 
 }

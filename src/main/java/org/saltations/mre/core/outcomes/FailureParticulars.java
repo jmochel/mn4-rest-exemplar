@@ -7,14 +7,19 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.helpers.MessageFormatter;
 
+/**
+ * A record of the particulars of a failure. This includes the type of failure, a title, a detail message and an
+ * optional cause.
+ */
+
 @Slf4j
 @Data
 @Getter
 @Setter
 @AllArgsConstructor
-public class Fail
+public class FailureParticulars
 {
-    private FailType type;
+    private FailureType type;
     private String title;
     private String detail;
     private Exception cause;
@@ -24,21 +29,10 @@ public class Fail
         return cause != null;
     }
 
-    @Getter
-    @AllArgsConstructor
-    public enum GenericFail implements FailType
-    {
-        GENERIC("generic-failure", "");
-
-        private final String title;
-        private final String template;
-    }
-
     public String getTotalMessage()
     {
         return title + "-" + detail;
     }
-
 
     public static Builder of()
     {
@@ -49,7 +43,7 @@ public class Fail
     {
         // Final values that get passed into the XFail.
 
-        private FailType type = GenericFail.GENERIC;
+        private FailureType type = BasicFailureType.GENERIC;
         private Exception cause;
 
         // Additional fields input for building
@@ -62,14 +56,14 @@ public class Fail
         {
         }
 
-        private Builder(Fail initialData)
+        private Builder(FailureParticulars initialData)
         {
             this.type = initialData.type;
             this.title = initialData.title;
             this.cause = initialData.cause;
         }
 
-        public Builder type(FailType type)
+        public Builder type(FailureType type)
         {
             this.type = type;
 
@@ -110,9 +104,9 @@ public class Fail
             return this;
         }
 
-        public Fail build()
+        public FailureParticulars build()
         {
-            return new Fail(type, title, MessageFormatter.basicArrayFormat(template, args), cause);
+            return new FailureParticulars(type, title, MessageFormatter.basicArrayFormat(template, args), cause);
         }
     }
 }

@@ -5,14 +5,16 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import jakarta.validation.constraints.NotNull;
+
 /**
- * Represents the full failure of an operation. Carries information about the failure.
+ * A failure outcome contains a value of type {@code FV} and no success information.
  *
- * @param <FV>
- * @param <SV>
+ * @param <FV> Failure payload class. Accessible in failures.
+ * @param <SV> Success payload class. Accessible in successes
  */
 
-public record Failure<FV extends Fail, SV>(FV fail) implements Outcome<FV, SV>
+public record Failure<FV extends FailureParticulars, SV>(FV fail) implements Outcome<FV, SV>
 {
     @Override
     public boolean hasSuccessValue()
@@ -32,7 +34,7 @@ public record Failure<FV extends Fail, SV>(FV fail) implements Outcome<FV, SV>
         throw new IllegalStateException(fail.getTotalMessage());
     }
 
-    public FailType getType()
+    public FailureType getType()
     {
         return fail.getType();
     }
@@ -59,13 +61,13 @@ public record Failure<FV extends Fail, SV>(FV fail) implements Outcome<FV, SV>
     }
 
     @Override
-    public Outcome<FV, SV> ifSuccessTransform(Function<Outcome<FV, SV>, Outcome<FV, SV>> transform)
+    public Outcome<FV, SV> ifSuccess(Function<Success<FV, SV>, Outcome<FV, SV>> transform)
     {
         return this;
     }
 
     @Override
-    public void onSuccess(Consumer<Outcome<FV, SV>> action)
+    public void onSuccess(@NotNull Consumer<Success<FV, SV>> action)
     {
         // Do Nothing
     }
@@ -77,19 +79,19 @@ public record Failure<FV extends Fail, SV>(FV fail) implements Outcome<FV, SV>
     }
 
     @Override
-    public Outcome<FV, SV> ifFailureTransform(Function<Outcome<FV, SV>, Outcome<FV, SV>> transform)
+    public Outcome<FV, SV> ifFailure(@NotNull Function<Failure<FV, SV>, Outcome<FV, SV>> transform)
     {
         return transform.apply(this);
     }
 
     @Override
-    public void onFailure(Consumer<Outcome<FV, SV>> action)
+    public void onFailure(@NotNull Consumer<Failure<FV, SV>> action)
     {
         action.accept(this);
     }
 
     @Override
-    public void on(Consumer<Outcome<FV, SV>> successAction, Consumer<Outcome<FV, SV>> failureAction)
+    public void on(@NotNull Consumer<Success<FV, SV>> successAction, @NotNull Consumer<Failure<FV, SV>> failureAction)
     {
         failureAction.accept(this);
     }

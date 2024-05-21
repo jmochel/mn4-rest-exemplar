@@ -1,5 +1,28 @@
 # Micronaut Exemplar
 
+
+Functional Requirements
+=======================
+
+Acceptance Criteria
+-------------------
+Acceptance Criteria are a way of describing your functional requirements in a Given/When/Then format.
+
+1. Directly translate into Given/When/Then format:
+   * When: A candidate Requests an ability to be assessed
+   * Then: The candidates ability is assessed
+2. Scrutinize the pre-conditions - After this first round of interrogation, this will immediately flesh out the happy path to look like this.
+   * Given: There is an expert to assess Ability ‘A’
+   * And: There is a pre-registered candidate ‘123’
+   * When: Candidate ‘123’ requests to be assessed in Ability ‘A’
+   * Then: He is assessed by the ‘expert’ randomly generating a number between 0–10
+  These then fan out to additional ACs
+3. Scrutinize the outcomes
+4. Bring it to the team
+5. Estimation
+6. Move to your implementation board.
+
+
 The Hard Thing : Naming 
 ========================
 
@@ -45,6 +68,123 @@ A function
 * Executes a task and returns the result
 
 Make your code short, concise and read as interesting stories
+
+Packaging by Feature
+====================
+* The packaging by feature approach structures the project so that each feature has its own package
+
+Under each source folder
+
+```text
+/com
+  /exemplar
+    /app
+        App.java
+    /feature
+        /feature1
+            Feature1Controller.java
+            Feature1Service.java
+            Feature1Repo.java
+        /feature2
+            Feature2Controller.java
+            Feature2Service.java
+            Feature2Repo.java
+```
+
+CA Layers 
+From the inside to he outside 
+
+Entities encapsulate Enterprise wide business rules and data
+
+Use Case this layer contains application specific business rules
+
+Interface Adapters The software in this layer is a set of adapters that convert data from the format most convenient for the use cases and entities, 
+to the format most convenient for some external agency such as the Database or the Web
+
+Frameworks and Drivers.composed of frameworks and tools such as the Database, the Web Framework, etc. 
+Generally you don’t write much code in this layer other than glue code that communicates to the next circle inwards
+
+Source code dependencies always point inwards. As you move inwards the level of abstraction increases. The outermost circle is low level concrete detail. 
+As you move inwards the software grows more abstract, and encapsulates higher level policies. The innermost circle is the most general
+
+What gets composed into this 
+----------------------------
+
+Advantages of Proper Architecture
+* Testable
+* Maintainable
+* Changeable
+* Easy to Develop
+* Easy to Deploy
+* Independent 
+    
+
+
+Key elements of the Clean Architecture are: Separation of concerns, Dependency Rule, and Boundaries
+* Each part of the application should be independent of each other
+* The Dependency Rule: Source code dependencies must point inwards only
+* Boundaries: The software is separated into layers with each layer having a specific responsibility
+
+* Entities - least subject to changes when the application evolves 
+* Use Cases - contains application specific business rules
+* Interface Adapters - contains the adapters that convert data from the format most convenient for the use cases and entities, to the format most convenient for some external agency such as the Database or the Web
+
+Controllers, Presenters, Views, and Gateways are all examples of Interface Adapters.
+They are the input and output mechanisms of the use cases and entities.
+
+Controller is an adapter that converts HTTP requests and responses to method calls, and vice versa.
+
+
+
+```text
+/com
+  /exemplar
+    /core
+    /infrastructure
+    
+        /app
+            App.java
+        /feature
+            /feature1
+                Feature1Controller.java
+                Feature1Service.java
+                Feature1Repo.java
+            /feature2
+                Feature2Controller.java
+                Feature2Service.java
+                Feature2Repo.java
+    /app
+        App.java
+    /feature
+        /feature1
+            Feature1Controller.java
+            Feature1Service.java
+            Feature1Repo.java
+        /feature2
+            Feature2Controller.java
+            Feature2Service.java
+            Feature2Repo.java
+```
+
+Clean Architecture Structure
+
+```text
+/src
+    /main
+        /java
+          /com
+            /exemplar
+                /somapp
+                    /core   -- hexagon inside. Should not depend on infrastructure
+                        /model
+                            /person -- aggregate root
+                            /place  -- aggregate root
+                        /port
+                        /usecase    
+                    /infrastructure -- hexagon outside
+```
+
+
 
 
 Layers
@@ -165,8 +305,6 @@ The service layer is responsible for
   6. X Find many by ids
   7. Find many by criteria
   7. X Delete by id
-  8. Delete by entity
-  8. Delete by entities
   9. X Delete by ids
   10. X Delete all
 
@@ -223,10 +361,6 @@ The following are the common error code returns
   * 200 if collection empty
   * 404 if collection does not exist (for named collections)
 
-
-
-
-
 ## To Do 
 
 * Example of GUIDs as resource ids.
@@ -235,11 +369,15 @@ The following are the common error code returns
 * Add example of POST of multiple elements returning a 207  [zalando](https://opensource.zalando.com/restful-api-guidelines/#http-requests)
 * Add example of Async GET call
 * Add example Async POST creation call
+  * Examples of POST and POLL
+  * POST and Callback
+  * 
 * Add example Async PUT call
 * Add example Async PATCH call
 * Add example PATCH using [JSON Patch](https://tools.ietf.org/html/rfc6902)
 * Add example sophisticated query , filter and search
 * Add swagger or other does for Standard client and server errors, e.g. 401 (unauthenticated), 403 (unauthorized), 404 (not found), 500 (internal server error), or 503 (service unavailable)
+* Add example 7807 problem display controller , including languages
 * 
 
 # Micronaut 4.3.0 Documentation
