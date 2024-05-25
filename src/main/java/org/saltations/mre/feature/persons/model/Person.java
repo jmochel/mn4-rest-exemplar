@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import org.saltations.mre.domain.core.annotations.StdEmailAddress;
+import org.saltations.mre.core.annotations.StdEmailAddress;
 
 /**
  * Interface with the core attributes describing a person.

@@ -13,11 +13,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.saltations.mre.fixtures.ReplaceBDDCamelCase;
-import org.saltations.mre.domain.services.service.CannotCreateEntity;
-import org.saltations.mre.domain.services.service.CannotDeleteEntity;
-import org.saltations.mre.domain.services.service.CannotFindEntity;
-import org.saltations.mre.domain.services.service.CannotPatchEntity;
-import org.saltations.mre.domain.services.service.CannotUpdateEntity;
+import org.saltations.mre.domain.services.CannotCreateEntity;
+import org.saltations.mre.domain.services.CannotDeleteEntity;
+import org.saltations.mre.domain.services.CannotFindEntity;
+import org.saltations.mre.domain.services.CannotPatchEntity;
+import org.saltations.mre.domain.services.CannotUpdateEntity;
 
 import java.io.IOException;
 
@@ -38,7 +38,7 @@ public class PlaceServiceTest
     private PlaceMapper modelMapper;
 
     @Inject
-    private PlaceService service;
+    private PlaceCRUDService service;
 
     @Test
     @Order(2)

@@ -1,84 +1,166 @@
 # Micronaut Exemplar
 
-Crosscutting concerns
-==================
+Wardley's Strategy Cycle
+------------------------
+* Purpose: what is the problem being solved / goal to be achieved in our domain(s) of interest?
+* Landscape: what is the current state of the domain(s) we are interested in
+* Climate: what forces are acting on the domain(s) and how are they likely to evolve
+* Doctrine: universally good practices we should apply
+* Leadership: what is our solution… what changes are we going to make in existing and new domain(s)
+
+Building Blocks
+---------------
+Pretty much based on DDD 
+
+In the descriptions below domains and subdomains and bounded contexts
+are groupings of the set of non-mutually exclusive, arbitrary concepts in the universe of discourse about 
+the business or the solutions that enable the operations of the business
+
+**Domain** 
+: Logical grouping _(defined in the problem space)_ of the set of concepts invoked by the business domain. 
+Typically expressed as _the_ problem the business is trying to solve. 
+
+> Fixing patients' teeth is the domain of a dentist.
+
+**Subdomain**
+: Logical area within a domain that represents _a specific_ problem the business is trying to solve. 
+
+> For a dentist, a subdomain would be making appointments for patients
+
+**Bounded Context**
+: Logical boundary _(typically `languaged` in the solution space)_ around/or within the subdomain defined by the language of the responsibilities within that context. 
+: A bounded context is a specific area within a domain/subdomain where a specific set of concepts, terms, and rules apply, and where a specific language is used to communicate.
+In other words, a bounded context is a boundary within which a domain model is defined and applied. 
+It represents a specific area of the domain where a specific team, department, or business unit has a clear and distinct responsibility. Each bounded context has its own models, entities, and operations,
+and may have different interpretations of the same concepts compared to other bounded contexts within the same domain/subdomain.
+
+> For a dentist, some bounded contexts within the subdomain of billing 
+> could be patients accounts receivable and another 
+> could be insurance billing
+
+**Entity**
+: A trackable object in the domain that is defined by its identity.
+
+**Value Object**
+: An object That has no identity and is defined by its attributes 
+
+**Domain Event**
+: An event that represents a change in the domain
+
+**Aggregate/Aggregate Root**
+: A cluster of domain objects (entities and value objects) that can be treated as a single unit based on rules for
+consistency. It typically encapsulates the group of objects and manages their behavior. Access to internal objects is 
+typically only possible through the aggregate route in order to ensure the integrity and consistency of the data.
+
+**Service**
+: An object that perform a specific task for the application. What distinguishes the different types of services are the roles and the language. 
+
+Questions to ask are:
+* If we remove this, will it affect the execution of my domain model? If yes, it is Probably a domain service
+* If we remove this, will it affect the execution of my application? If yes, it is Probably an infrastructure service
+* If we remove this, will the customer be able to talk to us? If no, it is an application service.
+
+
+**Infrastructure Service**
+: An object that embodies (typically as verbs) activities that fulfill the infrastructure concerns, such as sending emails and logging meaningful data
+
+A good example is a notification service implementation. An infrastructure service does not make business decisions. In the domain layer,
+you define an interface with actions we want to have such as `sendEmailAboutLoan` and in the service we implement it. 
+
+Crosscutting concerns that often involve infrastructure services
 
 * [ ] Logging
 * [ ] Configuration
 * [ ] Security
 * [ ] Monitoring
 * [ ] Tracing
-* [ ] Testing
-* [ ] Deployment
-* [ ] Documentation
-* [ ] Code Quality
-* [ ] Performance
-* [ ] Scalability
 * [ ] Resilience
-* [ ] Observability
-* [ ] Maintainability
-* [ ] Extensibility
 
-Building Blocks
----------------
+**Domain Service**
+:  A stateless object that embodies (typically as verbs) and/or operates upon domain concepts. Common examples of domain services are `Use Cases`
 
-* Domains - Logical area that defines the problem you want to solve
-  * Bounded contexts - logical boundary that represents a solution for the problem within a domain. Defined with a single ubiquitous language vocabulary
-  * Subdomains - A logical area within a domain that represents a specific problem
-    * Aggregates - A cluster of domain objects that can be treated as a single unit
-    * Entity - An trackable object that is defined by its identity
-    * Value Object - An object that is defined by its attributes
-    * Factories - An object that creates other objects. Answers the question how do I make this?
-    * Domain Event - An event that represents a change in the domain
-    * Services - An object that performs a specific task
-      * Application Services - An object that performs a specific task for the application
-      * Domain Services - An object that performs a specific task for the domain
-      * Infrastructure Services - An object that performs a specific task for the infrastructure
-      * External Services - An object that performs a specific task for an external service
-      * Repositories - An object that stores and retrieves domain objects
-      * Controllers - An object that handles HTTP requests
-      * Presenters - An object that formats data for the view
+Domain services tend to be very granular. They contain domain logic (business decisions) that can't naturally be placed in
+an entity or value object. Domain service methods can have other domain elements as parameters and return values. Domain service
+implementations can also have infrastructure services as parameters or part of their construction.  Domain services should be used
+cautiously as they can lead to an anemic domain model.
+
+> When a significant process or verb in the domain is not the natural responsibility of an Aggregate, Entity or Value Object
+> add an operation to the model as a standalone interface declared as a Service. Define the interface in terms of the language
+> of the model and make sure the operation name is part of the ubiquitous language. Make the Service stateless.
+
+**Application Service**
+: A service that provides a hosting environment for the execution of domain logic and serves as a gateway to expose the 
+functionality of the domain to clients as an API. 
+
+* Operates on scalar types or DTOs, transforming them into domain types.
+* Application service objects are "command" objects (GET, PUT, etc..)
+* Typically responsible for fetching input data from outside of the domain
+* Returns information about a result of the action, listens for an answer and decides if an event or  message should be sent.
+* Application services declared dependencies on infrastructure services required to execute domain logic. 
+
+**Factory** 
+: A domain service that handles the beginning of a domain object's life. Answers the question: How do I make this? 
+
+> Whenever there is **exposed complexity** in creating or reconstituting an object from another medium, the factory is a likely option
+
+**Repository** 
+: A domain service that handles the persistence of domain objects. Answers the question: How do I store and retrieve this?
+
+This really is a domain service. The interface is defined within the domain.
+
+**Controller**
+: An application service that handles HTTP requests and responses.
+
+**Presenters**
+: An object that formats data for the view
+
+You can notice a pattern in most code bases that adhere to such a guideline. Their execution flow goes as follows:
+
+Prepare all information needed for a business operation: load participating entities from the database and retrieve any required data from other external sources.
+
+Execute the operation. The operation consists of one or more business decisions made by the domain model. Those decisions result in either changing the model’s state, generating some artifacts (amountWithCommission value in the sample above), or both.
+
+Apply the results of the operation to the outside world.
 
 
-Treat Features as if they mapped to subdomains
+The question to ask is - is sending an email an important domain concept? Is Email an entity in your domain? If so, you may have an interface for an email sender defined in your domain layer, with a separated implementation in the infrastructure layer,
 
-To be sorted and organized.
 
-* Datatypes used in the domain model
-* Algorithms and Datastructures used in the domain model
-* Scaffolding used to support the domain model services, repos, factories, etc
-* Use Cases that represent the business logic?
-* Domain Model objects
-* Resources like images, css, etc
+
+Project structure
+-----------------
+A mixture of package by feature and package by layer
 
 ```text
 /src/../java/main/../
-    /scaffolding
     /domain
         /model
+            EntityBase and/or IEntity
+            FactoryBase and/or IFactory
+            RepositoryBase and/or IRepository
+            MapperBase and/or IMapper
         /service
-        /factory
+            ServiceBase and/or IService
+            UseCaseBase and/or IUseCase
         /event
-        /repository
+            EventBase and/or IEvent
+    /layer
+        /controller
+        /presenter            
     /feature
-        /xx
+        /feature1
             /model
-            XXService
-            XXFactory
-            XXEvent
-            XXRepository
-            XXController
-            XXUseCase1
-            XXUseCase2
-    /assets
-        /images
-        /css
-        /js        
+                Feature1Entity
+                Feature1Factory
+                Feature1Repository
+            Feature1Service
+            Feature1Factory
+            Feature1Event1
+            Feature1Event2
+            Feature1Controller
+            Feature1UseCase1
+            Feature1UseCase2       
 ```
-
-
-
-
 
 Functional Requirements
 =======================
@@ -123,7 +205,6 @@ A “FUNCTIONAL NAME” describes an object’s purpose and tends to create a me
 
 In the case of naming, clarity is more important than shortness
 
-
 A name should clearly without ambiguity indicate what the object is or what a function does
 Variables are nouns
 
@@ -148,27 +229,6 @@ A function
 
 Make your code short, concise and read as interesting stories
 
-Packaging by Feature
-====================
-* The packaging by feature approach structures the project so that each feature has its own package
-
-Under each source folder
-
-```text
-/com
-  /exemplar
-    /app
-        App.java
-    /feature
-        /feature1
-            Feature1Controller.java
-            Feature1Service.java
-            Feature1Repo.java
-        /feature2
-            Feature2Controller.java
-            Feature2Service.java
-            Feature2Repo.java
-```
 
 CA Layers 
 From the inside to he outside 

@@ -35,22 +35,18 @@ public class ArchitectureTest
             "io.swagger.."
     );
 
-    private final DescribedPredicate<JavaClass> areCore = resideInAnyPackage("org.saltations.mre.domain.core..");
+    private final DescribedPredicate<JavaClass> areCore = resideInAnyPackage("org.saltations.mre.core..");
 
     private final DescribedPredicate<JavaClass> areDomainScaffolding = resideInAnyPackage("org.saltations.mre.domain..");
 
     private final DescribedPredicate<JavaClass> areDomainModelScaffolding = resideInAnyPackage("org.saltations.mre.domain.model..");
     private final DescribedPredicate<JavaClass> areDomainServicesScaffolding = resideInAnyPackage("org.saltations.mre.domain.services..");
 
-    private final DescribedPredicate<JavaClass> areDomainRepoScaffolding = resideInAnyPackage("org.saltations.mre.domain.services.repo..");
-    private final DescribedPredicate<JavaClass> areDomainServiceScaffolding = resideInAnyPackage("org.saltations.mre.domain.services.service..");
-    private final DescribedPredicate<JavaClass> areDomainControllerScaffolding = resideInAnyPackage("org.saltations.mre.domain.services.controller..");
-
+    private final DescribedPredicate<JavaClass> areDomainServiceScaffolding = resideInAnyPackage("org.saltations.mre.domain.services..");
+    private final DescribedPredicate<JavaClass> areDomainControllerScaffolding = resideInAnyPackage("org.saltations.mre.application..");
 
     private final DescribedPredicate<JavaClass> areDomainModelScaffoldingOrBelow = areDomainModelScaffolding.or(areCore).or(areStandard);
-
-    private final DescribedPredicate<JavaClass> areDomainRepoScaffoldingOrBelow = areDomainRepoScaffolding.or(areDomainModelScaffoldingOrBelow);
-    private final DescribedPredicate<JavaClass> areDomainServiceScaffoldingOrBelow = areDomainServiceScaffolding.or(areDomainRepoScaffoldingOrBelow);
+    private final DescribedPredicate<JavaClass> areDomainServiceScaffoldingOrBelow = areDomainServiceScaffolding.or(areDomainModelScaffoldingOrBelow);
     private final DescribedPredicate<JavaClass> areDomainControllerScaffoldingOrBelow = areDomainControllerScaffolding.or(areDomainServiceScaffoldingOrBelow);
 
     private final DescribedPredicate<JavaClass> areFeatures = resideInAnyPackage("org.saltations.mre.feature..");
@@ -100,17 +96,6 @@ public class ArchitectureTest
     @Test
     @Order(10)
     void scaffolding_should_depend_from_controller_to_service_to_repo_to_model() {
-        noClasses()
-                .that(areDomainModelScaffolding)
-                .should()
-                .dependOnClassesThat(areDomainRepoScaffolding.or(areDomainServiceScaffolding).or(areDomainControllerScaffolding))
-                .check(classes);
-
-        classes()
-                .that(areDomainRepoScaffolding)
-                .should()
-                .dependOnClassesThat(areDomainRepoScaffoldingOrBelow)
-                .check(classes);
 
         classes()
                 .that(areDomainServiceScaffolding)
@@ -147,11 +132,11 @@ public class ArchitectureTest
 
     @Test
     @Order(16)
-    void feature_repos_depend_on_repo_scaffolding_or_below() {
+    void feature_repos_depend_on_model_scaffolding_or_below() {
         classes()
                 .that(resideInAnyPackage("org.saltations.mre.feature..")).and().haveSimpleNameEndingWith("Service")
                 .should()
-                .dependOnClassesThat(areDomainRepoScaffoldingOrBelow)
+                .dependOnClassesThat(areDomainModelScaffoldingOrBelow)
                 .check(classes);
     }
 
