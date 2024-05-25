@@ -1,5 +1,84 @@
 # Micronaut Exemplar
 
+Crosscutting concerns
+==================
+
+* [ ] Logging
+* [ ] Configuration
+* [ ] Security
+* [ ] Monitoring
+* [ ] Tracing
+* [ ] Testing
+* [ ] Deployment
+* [ ] Documentation
+* [ ] Code Quality
+* [ ] Performance
+* [ ] Scalability
+* [ ] Resilience
+* [ ] Observability
+* [ ] Maintainability
+* [ ] Extensibility
+
+Building Blocks
+---------------
+
+* Domains - Logical area that defines the problem you want to solve
+  * Bounded contexts - logical boundary that represents a solution for the problem within a domain. Defined with a single ubiquitous language vocabulary
+  * Subdomains - A logical area within a domain that represents a specific problem
+    * Aggregates - A cluster of domain objects that can be treated as a single unit
+    * Entity - An trackable object that is defined by its identity
+    * Value Object - An object that is defined by its attributes
+    * Factories - An object that creates other objects. Answers the question how do I make this?
+    * Domain Event - An event that represents a change in the domain
+    * Services - An object that performs a specific task
+      * Application Services - An object that performs a specific task for the application
+      * Domain Services - An object that performs a specific task for the domain
+      * Infrastructure Services - An object that performs a specific task for the infrastructure
+      * External Services - An object that performs a specific task for an external service
+      * Repositories - An object that stores and retrieves domain objects
+      * Controllers - An object that handles HTTP requests
+      * Presenters - An object that formats data for the view
+
+
+Treat Features as if they mapped to subdomains
+
+To be sorted and organized.
+
+* Datatypes used in the domain model
+* Algorithms and Datastructures used in the domain model
+* Scaffolding used to support the domain model services, repos, factories, etc
+* Use Cases that represent the business logic?
+* Domain Model objects
+* Resources like images, css, etc
+
+```text
+/src/../java/main/../
+    /scaffolding
+    /domain
+        /model
+        /service
+        /factory
+        /event
+        /repository
+    /feature
+        /xx
+            /model
+            XXService
+            XXFactory
+            XXEvent
+            XXRepository
+            XXController
+            XXUseCase1
+            XXUseCase2
+    /assets
+        /images
+        /css
+        /js        
+```
+
+
+
+
 
 Functional Requirements
 =======================

@@ -13,11 +13,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.saltations.mre.fixtures.ReplaceBDDCamelCase;
-import org.saltations.mre.layer.CannotCreateEntity;
-import org.saltations.mre.layer.CannotDeleteEntity;
-import org.saltations.mre.layer.CannotFindEntity;
-import org.saltations.mre.layer.CannotPatchEntity;
-import org.saltations.mre.layer.CannotUpdateEntity;
+import org.saltations.mre.domain.services.service.CannotCreateEntity;
+import org.saltations.mre.domain.services.service.CannotDeleteEntity;
+import org.saltations.mre.domain.services.service.CannotFindEntity;
+import org.saltations.mre.domain.services.service.CannotPatchEntity;
+import org.saltations.mre.domain.services.service.CannotUpdateEntity;
 
 import java.io.IOException;
 

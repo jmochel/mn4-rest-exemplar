@@ -2,7 +2,11 @@ package org.saltations.mre.feature.places;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import org.saltations.mre.layer.EntityOracleBase;
+import org.saltations.mre.feature.places.model.Place;
+import org.saltations.mre.feature.places.model.PlaceCore;
+import org.saltations.mre.feature.places.model.PlaceEntity;
+import org.saltations.mre.feature.places.model.USState;
+import org.saltations.mre.services.EntityOracleBase;
 
 import java.util.UUID;
 

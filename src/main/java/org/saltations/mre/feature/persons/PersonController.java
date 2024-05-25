@@ -6,8 +6,11 @@ import io.micronaut.web.router.RouteBuilder;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
-import org.saltations.mre.layer.EntityControllerBase;
-import org.saltations.mre.core.annotations.StdController;
+import org.saltations.mre.feature.persons.model.Person;
+import org.saltations.mre.feature.persons.model.PersonCore;
+import org.saltations.mre.feature.persons.model.PersonEntity;
+import org.saltations.mre.domain.services.controller.EntityControllerBase;
+import org.saltations.mre.domain.core.annotations.StdController;
 
 /**
  * Provides REST access to the Person entity

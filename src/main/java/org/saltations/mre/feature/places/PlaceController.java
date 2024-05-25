@@ -6,8 +6,11 @@ import io.micronaut.web.router.RouteBuilder;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
-import org.saltations.mre.layer.EntityControllerBase;
-import org.saltations.mre.core.annotations.StdController;
+import org.saltations.mre.feature.places.model.Place;
+import org.saltations.mre.feature.places.model.PlaceCore;
+import org.saltations.mre.feature.places.model.PlaceEntity;
+import org.saltations.mre.domain.services.controller.EntityControllerBase;
+import org.saltations.mre.domain.core.annotations.StdController;
 
 import java.util.UUID;
 

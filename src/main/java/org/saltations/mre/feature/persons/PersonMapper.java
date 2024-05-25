@@ -1,14 +1,16 @@
 package org.saltations.mre.feature.persons;
 
+import java.util.List;
+
 import jakarta.inject.Singleton;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
-import org.saltations.mre.layer.EntityMapper;
-
-import java.util.List;
+import org.saltations.mre.feature.persons.model.PersonCore;
+import org.saltations.mre.feature.persons.model.PersonEntity;
+import org.saltations.mre.domain.model.EntityMapper;
 
 
 @Singleton

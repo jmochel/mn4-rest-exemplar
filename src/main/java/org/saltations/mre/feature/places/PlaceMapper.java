@@ -1,14 +1,16 @@
 package org.saltations.mre.feature.places;
 
+import java.util.List;
+
 import jakarta.inject.Singleton;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
-import org.saltations.mre.layer.EntityMapper;
-
-import java.util.List;
+import org.saltations.mre.feature.places.model.PlaceCore;
+import org.saltations.mre.feature.places.model.PlaceEntity;
+import org.saltations.mre.domain.model.EntityMapper;
 
 
 @Singleton
