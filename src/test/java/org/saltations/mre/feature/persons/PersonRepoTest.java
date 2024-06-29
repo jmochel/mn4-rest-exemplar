@@ -9,6 +9,7 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.saltations.mre.feature.persons.outport.PersonRepo;
 import org.saltations.mre.fixtures.ReplaceBDDCamelCase;
 
 import java.util.stream.Collectors;

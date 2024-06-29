@@ -12,12 +12,13 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.saltations.mre.feature.persons.model.PersonCRUDService;
 import org.saltations.mre.fixtures.ReplaceBDDCamelCase;
-import org.saltations.mre.domain.services.CannotCreateEntity;
-import org.saltations.mre.domain.services.CannotDeleteEntity;
-import org.saltations.mre.domain.services.CannotFindEntity;
-import org.saltations.mre.domain.services.CannotPatchEntity;
-import org.saltations.mre.domain.services.CannotUpdateEntity;
+import org.saltations.mre.shared.domain.services.CannotCreateEntity;
+import org.saltations.mre.shared.domain.services.CannotDeleteEntity;
+import org.saltations.mre.shared.domain.services.CannotFindEntity;
+import org.saltations.mre.shared.domain.services.CannotPatchEntity;
+import org.saltations.mre.shared.domain.services.CannotUpdateEntity;
 
 import java.io.IOException;
 

@@ -12,6 +12,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestClassOrder;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.saltations.mre.fixtures.ReplaceBDDCamelCase;
+import org.saltations.mre.shared.core.outcomes.BasicFailureType;
+import org.saltations.mre.shared.core.outcomes.Failure;
+import org.saltations.mre.shared.core.outcomes.FailureParticulars;
+import org.saltations.mre.shared.core.outcomes.FailureType;
+import org.saltations.mre.shared.core.outcomes.Outcome;
+import org.saltations.mre.shared.core.outcomes.Outcomes;
+import org.saltations.mre.shared.core.outcomes.Success;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;

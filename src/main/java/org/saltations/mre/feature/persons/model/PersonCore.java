@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
-import org.saltations.mre.core.annotations.StdEmailAddress;
+import org.saltations.mre.shared.core.annotations.StdEmailAddress;
 
 /**
  * Core object for a Person

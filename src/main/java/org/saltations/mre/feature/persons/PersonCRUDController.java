@@ -7,10 +7,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.saltations.mre.feature.persons.model.Person;
+import org.saltations.mre.feature.persons.model.PersonCRUDService;
 import org.saltations.mre.feature.persons.model.PersonCore;
 import org.saltations.mre.feature.persons.model.PersonEntity;
-import org.saltations.mre.application.EntityCRUDControllerBase;
-import org.saltations.mre.core.annotations.StdController;
+import org.saltations.mre.feature.persons.outport.PersonRepo;
+import org.saltations.mre.shared.app.EntityCRUDControllerBase;
+import org.saltations.mre.shared.core.annotations.StdController;
 
 /**
  * Provides REST access to the Person entity

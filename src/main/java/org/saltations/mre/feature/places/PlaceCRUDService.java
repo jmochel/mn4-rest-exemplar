@@ -6,7 +6,7 @@ import jakarta.inject.Singleton;
 import org.saltations.mre.feature.places.model.Place;
 import org.saltations.mre.feature.places.model.PlaceCore;
 import org.saltations.mre.feature.places.model.PlaceEntity;
-import org.saltations.mre.domain.services.EntityCRUDServiceBase;
+import org.saltations.mre.shared.domain.services.EntityCRUDServiceBase;
 
 import java.util.UUID;
 

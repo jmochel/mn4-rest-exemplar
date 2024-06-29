@@ -14,7 +14,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.With;
 import lombok.experimental.SuperBuilder;
-import org.saltations.mre.domain.model.Entity;
+import org.saltations.mre.shared.domain.model.Entity;
 
 import java.time.OffsetDateTime;
 

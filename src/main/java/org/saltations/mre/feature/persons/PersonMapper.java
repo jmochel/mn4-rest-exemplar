@@ -10,7 +10,7 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.saltations.mre.feature.persons.model.PersonCore;
 import org.saltations.mre.feature.persons.model.PersonEntity;
-import org.saltations.mre.domain.model.EntityMapper;
+import org.saltations.mre.shared.domain.model.EntityMapper;
 
 
 @Singleton
