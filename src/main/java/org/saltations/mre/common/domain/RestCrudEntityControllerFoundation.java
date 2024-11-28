@@ -28,7 +28,7 @@ import org.saltations.mre.common.core.errors.DomainProblemBase;
 import org.saltations.mre.common.core.errors.ProblemSchema;
 import org.saltations.mre.common.domain.model.Entity;
 import org.saltations.mre.common.domain.model.EntityMapper;
-import org.saltations.mre.common.domain.outport.CrudEntityRepo;
+import org.saltations.mre.common.domain.gateway.CrudEntityRepo;
 import org.saltations.mre.common.domain.logic.CannotFindEntity;
 import org.saltations.mre.common.domain.logic.CannotPatchEntity;
 import org.saltations.mre.common.domain.logic.CrudEntityService;

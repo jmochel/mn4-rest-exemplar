@@ -2,7 +2,7 @@ package org.saltations.mre.common.domain;
 
 import org.saltations.mre.common.domain.model.Entity;
 import org.saltations.mre.common.domain.model.EntityMapper;
-import org.saltations.mre.common.domain.outport.CrudEntityRepo;
+import org.saltations.mre.common.domain.gateway.CrudEntityRepo;
 import org.saltations.mre.common.domain.logic.CrudEntityService;
 
 /**

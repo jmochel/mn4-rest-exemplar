@@ -13,7 +13,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.saltations.mre.common.domain.model.Entity;
 import org.saltations.mre.common.domain.model.EntityMapper;
-import org.saltations.mre.common.domain.outport.CrudEntityRepo;
+import org.saltations.mre.common.domain.gateway.CrudEntityRepo;
 
 /**
  * Foundation (provides some default functionality) service for creating, finding, replacing, patching and deleting <em>entities</em>

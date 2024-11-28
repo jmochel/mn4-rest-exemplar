@@ -1,4 +1,4 @@
-package org.saltations.mre.common.domain.outport;
+package org.saltations.mre.common.domain.gateway;
 
 import io.micronaut.data.repository.CrudRepository;
 import org.saltations.mre.common.domain.model.Entity;

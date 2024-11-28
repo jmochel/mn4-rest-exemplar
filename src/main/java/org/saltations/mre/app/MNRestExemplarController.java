@@ -6,6 +6,7 @@ import io.micronaut.http.annotation.Get;
 @Controller("/mn-rest-exemplar")
 public class MNRestExemplarController
 {
+    @SuppressWarnings("SameReturnValue")
     @Get(produces = "text/json")
     public String index()
     {

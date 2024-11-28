@@ -11,7 +11,7 @@ import org.saltations.mre.domain.people.logic.PersonCRUDService;
 import org.saltations.mre.domain.people.model.PersonCore;
 import org.saltations.mre.domain.people.model.PersonEntity;
 import org.saltations.mre.domain.people.model.PersonMapper;
-import org.saltations.mre.domain.people.outport.PersonRepo;
+import org.saltations.mre.domain.people.gateway.PersonRepo;
 import org.saltations.mre.common.domain.RestCrudEntityControllerFoundation;
 import org.saltations.mre.common.core.annotations.StdController;
 

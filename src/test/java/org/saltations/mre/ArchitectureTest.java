@@ -45,7 +45,6 @@ public class ArchitectureTest
     private final DescribedPredicate<JavaClass> areCommonCore = resideInAnyPackage(ROOT_PACKAGE + ".common.core..");
     private final DescribedPredicate<JavaClass> areCommonDomain = resideInAnyPackage(ROOT_PACKAGE + ".common.domain..");
 
-    private final DescribedPredicate<JavaClass> areCommon = areCommonCore.or(areCommonDomain);
     private final DescribedPredicate<JavaClass> areCommonOrStandard = areCommonCore.or(areCommonDomain).or(areStandard);
 
 
@@ -114,16 +113,16 @@ public class ArchitectureTest
     @Order(12)
     @ParameterizedTest(name ="{index} =>  {0} domain logic depends on itself and its internal model")
     @MethodSource("getDomainNames")
-    void domain_logic_depends_on_itself_and_its_model_and_outports(String domainName) {
+    void domain_logic_depends_on_itself_and_its_model_and_gateways(String domainName) {
 
         var areDomainLogic = resideInAnyPackage(ROOT_PACKAGE + ".domain." + domainName + ".logic" );
         var areDomainModel = resideInAnyPackage(ROOT_PACKAGE + ".domain." + domainName + ".model");
-        var areDomainOutputs = resideInAnyPackage(ROOT_PACKAGE + ".domain." + domainName + ".outport");
+        var areDomainGateways = resideInAnyPackage(ROOT_PACKAGE + ".domain." + domainName + ".outport");
 
         classes()
                 .that(areDomainLogic)
                 .should()
-                .dependOnClassesThat(areDomainLogic.or(areDomainModel).or(areCommonOrStandard))
+                .dependOnClassesThat(areDomainLogic.or(areDomainModel).or(areDomainGateways).or(areCommonOrStandard))
                 .check(classes);
     }
 
