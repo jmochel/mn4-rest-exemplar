@@ -1,0 +1,47 @@
+@startuml
+interface Place {
+    + String getName()
+    + void setName(String name)
+    + String getCountry()
+    + void setCountry(String country)
+    + String getCity()
+    + void setCity(String city)
+    + String getStreet()
+    + void setStreet(String street)
+    + String getZip()
+    + void setZip(String zip)
+    + String getNumber()
+    + void setNumber(String number)
+}
+@enduml
+
+@startuml
+title Success Scenario
+participant Subscriber as sub
+participant Publisher as pub
+sub -> pub: subscribe()
+pub -> sub: onSubscribe()
+sub -> pub: request(n)
+pub -> sub: onNext(1)
+pub -> sub: onNext(2)
+pub -> sub: onNext(n)
+pub -> sub: onComplete()
+@enduml
+
+@startuml
+title Error Scenario
+participant Subscriber as sub
+participant Publisher as pub
+sub -> pub: subscribe()
+pub -> sub: onSubscribe()
+sub -> pub: request(n)
+pub -> sub: onError()
+@enduml
+
+@startuml
+title Project Reactor
+participant Flux
+participant Mono
+Flux -> Subscriber: subscribe()
+Mono -> Subscriber: subscribe()
+@enduml
