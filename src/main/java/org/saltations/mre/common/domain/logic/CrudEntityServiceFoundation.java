@@ -11,6 +11,9 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import org.saltations.mre.common.core.outcomes.FailureParticulars;
+import org.saltations.mre.common.core.outcomes.Outcome;
+import org.saltations.mre.common.core.outcomes.Outcomes;
 import org.saltations.mre.common.domain.model.Entity;
 import org.saltations.mre.common.domain.model.EntityMapper;
 import org.saltations.mre.common.domain.gateway.CrudEntityRepo;
@@ -78,7 +81,7 @@ public abstract class CrudEntityServiceFoundation<ID, IC, C extends IC, E extend
 
     @Transactional(Transactional.TxType.REQUIRED)
     @Override
-    public E create(@NotNull @Valid C prototype) throws CannotCreateEntity
+    public Outcome<FailureParticulars, E> create(@NotNull @Valid C prototype)
     {
         E created;
 
@@ -90,10 +93,10 @@ public abstract class CrudEntityServiceFoundation<ID, IC, C extends IC, E extend
         }
         catch (Exception e)
         {
-            throw new CannotCreateEntity(e, getEntityName(), prototype.toString());
+            return Outcomes.causedFailure(e, CrudFailure.CANNOT_CREATE, getEntityName(), prototype);
         }
 
-        return created;
+        return Outcomes.success(created);
     }
 
     @Transactional(Transactional.TxType.REQUIRED)

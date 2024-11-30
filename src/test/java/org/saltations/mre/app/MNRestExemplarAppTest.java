@@ -1,5 +1,8 @@
 package org.saltations.mre.app;
 
+import java.time.ZonedDateTime;
+import java.util.List;
+
 import io.micronaut.http.HttpStatus;
 import io.micronaut.runtime.EmbeddedApplication;
 import io.micronaut.serde.annotation.Serdeable;
@@ -17,11 +20,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestClassOrder;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.saltations.mre.fixtures.ReplaceBDDCamelCase;
-
-import java.time.ZonedDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -66,24 +64,6 @@ class MNRestExemplarAppTest
                 then().
                 statusCode(HttpStatus.OK.getCode()).
                 extract().asString();
-    }
-
-    @Test
-    @Order(6)
-    final void suppliesRefresh(RequestSpecification spec)
-    {
-        Map<String, String> parms = new HashMap<>();
-        parms.put("\"force\"","true");
-
-        var result = spec.
-            when().
-                body(parms).
-                post("/refresh").
-            then().
-                statusCode(HttpStatus.OK.getCode()).
-                extract().asString();
-
-        assertNotEquals("", result, "Response should be non-null");
     }
 
     @Test

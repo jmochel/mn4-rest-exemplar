@@ -336,7 +336,7 @@ public class OutcomesTest
         @Order(4)
         void canShowFailure()
         {
-            assertEquals("XFailure[GENERIC:generic-failure:]", Outcomes.fail().toString());
+            assertEquals("Failure[GENERIC:generic-failure:]", Outcomes.fail().toString());
         }
     }
 

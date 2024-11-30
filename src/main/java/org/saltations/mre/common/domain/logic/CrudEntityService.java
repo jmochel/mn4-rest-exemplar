@@ -6,9 +6,11 @@ import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import io.micronaut.core.annotation.NonNull;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
+import org.saltations.mre.common.core.outcomes.FailureParticulars;
+import org.saltations.mre.common.core.outcomes.Outcome;
+import org.saltations.mre.common.domain.gateway.CrudEntityRepo;
 import org.saltations.mre.common.domain.model.Entity;
 import org.saltations.mre.common.domain.model.EntityMapper;
-import org.saltations.mre.common.domain.gateway.CrudEntityRepo;
 
 /**
  * Minimum contract for the business logic (service) that provides CRUD operations on entities of type E
@@ -61,7 +63,7 @@ public interface CrudEntityService<ID, IC, C extends IC, E extends Entity<ID>,
      */
 
     @Transactional(Transactional.TxType.REQUIRED)
-    E create(C prototype) throws CannotCreateEntity;
+    Outcome<FailureParticulars, E> create(C prototype);
 
     /**
      * Updates an entity of type E with the contents of the given entity.

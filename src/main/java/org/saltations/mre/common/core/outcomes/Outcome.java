@@ -150,7 +150,7 @@ public sealed interface Outcome<FV extends FailureParticulars, SV> permits Failu
      * }
      */
 
-    void onFailure(@NotNull Consumer<Failure<FV, SV>> action);
+    void onFailure(@NotNull ExceptionalConsumer<Failure<FV, SV>> action);
 
     /**
      * Takes action based on an existing success or failure
@@ -165,5 +165,12 @@ public sealed interface Outcome<FV extends FailureParticulars, SV> permits Failu
      */
 
     void on(@NotNull Consumer<Success<FV, SV>> successAction, @NotNull Consumer<Failure<FV, SV>> failureAction);
+
+    /**
+     * Convert this outcome to a success outcome
+     */
+
+    Success<FV, SV> asSuccess();
+
 
 }

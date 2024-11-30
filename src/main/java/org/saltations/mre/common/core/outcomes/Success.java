@@ -73,7 +73,7 @@ public record Success<FV extends FailureParticulars, SV>(SV value) implements Ou
     }
 
     @Override
-    public void onFailure(@NotNull Consumer<Failure<FV, SV>> action)
+    public void onFailure(@NotNull ExceptionalConsumer<Failure<FV, SV>> action)
     {
         // Do Nothing
     }
@@ -82,6 +82,12 @@ public record Success<FV extends FailureParticulars, SV>(SV value) implements Ou
     public void on(@NotNull Consumer<Success<FV, SV>> successAction, @NotNull Consumer<Failure<FV, SV>> failureAction)
     {
         successAction.accept(this);
+    }
+
+    @Override
+    public Success<FV, SV> asSuccess()
+    {
+        return this;
     }
 
     public String toString()

@@ -1,6 +1,7 @@
 package org.saltations.mre.common.domain;
 
 import java.net.URI;
+import java.util.UUID;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -24,15 +25,21 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.saltations.mre.common.core.errors.DomainException;
 import org.saltations.mre.common.core.errors.DomainProblemBase;
 import org.saltations.mre.common.core.errors.ProblemSchema;
-import org.saltations.mre.common.domain.model.Entity;
-import org.saltations.mre.common.domain.model.EntityMapper;
+import org.saltations.mre.common.core.outcomes.Failure;
+import org.saltations.mre.common.core.outcomes.FailureParticulars;
+import org.saltations.mre.common.core.outcomes.FailureType;
 import org.saltations.mre.common.domain.gateway.CrudEntityRepo;
 import org.saltations.mre.common.domain.logic.CannotFindEntity;
 import org.saltations.mre.common.domain.logic.CannotPatchEntity;
 import org.saltations.mre.common.domain.logic.CrudEntityService;
+import org.saltations.mre.common.domain.logic.CrudFailure;
+import org.saltations.mre.common.domain.model.Entity;
+import org.saltations.mre.common.domain.model.EntityMapper;
 import org.zalando.problem.Problem;
+import org.zalando.problem.Status;
 import org.zalando.problem.ThrowableProblem;
 import reactor.core.publisher.Mono;
 
@@ -120,20 +127,67 @@ public class RestCrudEntityControllerFoundation<ID,IC,
             description = "Malformed request could not be understood by the server due to malformed syntax. The client SHOULD NOT repeat the request without modifications.",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_PROBLEM, schema = @Schema(allOf = ProblemSchema.class))
     )
-    public Mono<MutableHttpResponse<E>> create(@NotNull @Valid @Body final C toBeCreated)
+    public Mono<MutableHttpResponse<E>> create(@NotNull @Valid @Body final C toBeCreated) throws ThrowableProblem
     {
-        E created;
+        // Part of the service contract is to return only and outcome , so no exceptions are thrown
+        var result = entityService.create(toBeCreated);
 
-        try
-        {
-            created = entityService.create(toBeCreated);
-        }
-        catch (DomainProblemBase e)
-        {
-            throw createThrowableProblem(e);
-        }
+        result.onFailure(failure -> log.error("Failure: {}", failure));
 
-        return Mono.just(HttpResponse.ok(created));
+        return Mono.just(created((E) result.asSuccess().value()));
+    }
+
+    private Status convert(FailureType failureType)
+    {
+        return switch ( (CrudFailure) failureType)
+        {
+            case CANNOT_CREATE -> Status.BAD_REQUEST;
+            case GENERAL -> Status.INTERNAL_SERVER_ERROR;
+        };
+    }
+
+    private void logAndThrowFailure(Failure<FailureParticulars,E> failure) throws ThrowableProblem
+    {
+        var status = convert(failure.getType());
+
+        if (failure.getCause() == null)
+        {
+            var traceId = UUID.randomUUID().toString();
+
+            log.error("Failure: {} [trace id : {}]", failure, traceId);
+
+            throw Problem.builder()
+                         .withTitle(failure.getTitle())
+                         .withDetail(failure.getDetail())
+                         .withStatus(status)
+                         .with("traceId", traceId)
+                         .build();
+        }
+        else if (failure.getCause() instanceof DomainException)
+        {
+            var type = resolveLocationWith("problems/" + ((Enum) failure.getType()).name());
+
+            throw Problem.builder()
+                         .withType(type)
+                         .withTitle(failure.getTitle())
+                         .withDetail(failure.getDetail())
+                         .withStatus(status)
+                         .with("traceId", ((DomainException) failure.getCause()).getTraceId())
+                         .build();
+        }
+        else
+        {
+            var traceId = UUID.randomUUID().toString();
+
+            log.error("Failure: {} [trace id : {}]", failure, traceId);
+
+            throw Problem.builder()
+                         .withTitle(failure.getTitle())
+                         .withDetail(failure.getDetail())
+                         .withStatus(status)
+                         .with("traceId", traceId)
+                         .build();
+        }
     }
 
     /**
@@ -237,19 +291,26 @@ public class RestCrudEntityControllerFoundation<ID,IC,
     private MutableHttpResponse<E> created(@NonNull E entity) {
         return HttpResponse
                 .created(entity)
-                .headers(headers -> headers.location(location(entity.getId())));
+                .headers(headers -> headers.location(resolveLocationWithID(entity.getId())));
     }
 
-    private URI location(ID id)
+    private URI resolveLocationWithID(ID id)
     {
         var base = uriNaming.resolveUri(this.getClass());
 
         return URI.create(base + "/" + id);
     }
 
-    private URI location(E entity)
+    private URI resolveLocationWith(String suffix)
     {
-        return location(entity.getId());
+        var base = uriNaming.resolveUri(this.getClass());
+
+        return URI.create(base + "/" + suffix);
+    }
+
+    private URI resolveLocationWithID(E entity)
+    {
+        return resolveLocationWithID(entity.getId());
     }
 
     public ThrowableProblem createThrowableProblem(@NotNull DomainProblemBase e)

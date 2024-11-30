@@ -92,7 +92,7 @@ public record Failure<FV extends FailureParticulars, SV>(FV fail) implements Out
     }
 
     @Override
-    public void onFailure(@NotNull Consumer<Failure<FV, SV>> action)
+    public void onFailure(@NotNull ExceptionalConsumer<Failure<FV, SV>> action)
     {
         action.accept(this);
     }
@@ -104,9 +104,15 @@ public record Failure<FV extends FailureParticulars, SV>(FV fail) implements Out
     }
 
     @Override
+    public Success<FV, SV> asSuccess()
+    {
+        throw new UnsupportedOperationException("Cannot convert a failure to a success");
+    }
+
+    @Override
     public String toString()
     {
-        return new StringBuffer("XFailure").append("[")
+        return new StringBuffer("Failure").append("[")
                                            .append(getType().toString())
                                            .append(":")
                                            .append(getTitle())

@@ -51,7 +51,7 @@ endpoints:
     enabled: true
     sensitive: false              # TODO Change to make secure
   refresh:
-    enabled: true
+    enabled: false
     sensitive: false              # TODO Change to make secure
   loggers:
     enabled: true

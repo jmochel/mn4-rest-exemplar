@@ -61,7 +61,7 @@ public class Model1PlaceCRUDControllerTest
                 body(protoPayload).
                 post(RESOURCE_ENDPOINT).
             then().
-                statusCode(HttpStatus.OK.getCode()).
+                statusCode(HttpStatus.CREATED.getCode()).
                 extract().as(ENTITY_CLASS);
 
 
@@ -124,7 +124,7 @@ public class Model1PlaceCRUDControllerTest
                     body(protoPayload).
                     post(RESOURCE_ENDPOINT).
                 then().
-                    statusCode(HttpStatus.OK.getCode()).
+                    statusCode(HttpStatus.CREATED.getCode()).
                     extract().as(ENTITY_CLASS);
 
         assertNotNull(created);
@@ -214,7 +214,7 @@ public class Model1PlaceCRUDControllerTest
                     body(protoPayload).
                     post(RESOURCE_ENDPOINT).
                 then().
-                    statusCode(HttpStatus.OK.getCode()).
+                    statusCode(HttpStatus.CREATED.getCode()).
                     extract().as(ENTITY_CLASS);
 
         // Replace

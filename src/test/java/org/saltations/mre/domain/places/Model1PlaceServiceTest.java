@@ -47,7 +47,9 @@ public class Model1PlaceServiceTest
         // Save
 
         var prototype = oracle.coreExemplar();
-        var saved = service.create(prototype);
+        var result = service.create(prototype);
+        var saved = result.rawSuccessValue();
+
         assertNotNull(saved);
         assertNotNull(saved.getId());
         oracle.hasSameCoreContent(prototype, saved);
@@ -84,7 +86,9 @@ public class Model1PlaceServiceTest
         // Save
 
         var prototype = oracle.coreExemplar();
-        var saved = service.create(prototype);
+        var result = service.create(prototype);
+        var saved = result.rawSuccessValue();
+
         assertNotNull(saved);
         assertNotNull(saved.getId());
         oracle.hasSameCoreContent(prototype, saved);
