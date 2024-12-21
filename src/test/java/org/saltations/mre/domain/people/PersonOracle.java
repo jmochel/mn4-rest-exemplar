@@ -2,10 +2,10 @@ package org.saltations.mre.domain.people;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import org.saltations.mre.domain.people.model.PersonMapper;
-import org.saltations.mre.domain.people.model.Person;
-import org.saltations.mre.domain.people.model.PersonCore;
-import org.saltations.mre.domain.people.model.PersonEntity;
+import org.saltations.mre.people.PersonMapper;
+import org.saltations.mre.domain.Person;
+import org.saltations.mre.domain.PersonCore;
+import org.saltations.mre.domain.PersonEntity;
 import org.saltations.mre.fixtures.EntityOracleBase;
 
 /**

@@ -4,11 +4,11 @@ import java.util.UUID;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import org.saltations.mre.domain.places.model.PlaceMapper;
-import org.saltations.mre.domain.places.model.Place;
-import org.saltations.mre.domain.places.model.PlaceCore;
-import org.saltations.mre.domain.places.model.PlaceEntity;
-import org.saltations.mre.domain.places.model.USState;
+import org.saltations.mre.places.PlaceMapper;
+import org.saltations.mre.domain.Place;
+import org.saltations.mre.domain.PlaceCore;
+import org.saltations.mre.domain.PlaceEntity;
+import org.saltations.mre.domain.USState;
 import org.saltations.mre.fixtures.EntityOracleBase;
 
 /**

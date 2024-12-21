@@ -11,8 +11,8 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.saltations.mre.domain.places.model.PlaceMapper;
-import org.saltations.mre.domain.places.outport.PlaceRepo;
+import org.saltations.mre.places.PlaceMapper;
+import org.saltations.mre.places.PlaceRepo;
 import org.saltations.mre.fixtures.ReplaceBDDCamelCase;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

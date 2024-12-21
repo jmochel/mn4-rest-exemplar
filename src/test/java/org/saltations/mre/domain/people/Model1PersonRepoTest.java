@@ -12,8 +12,8 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.saltations.mre.domain.people.model.PersonMapper;
-import org.saltations.mre.domain.people.gateway.PersonRepo;
+import org.saltations.mre.people.PersonMapper;
+import org.saltations.mre.people.PersonRepo;
 import org.saltations.mre.fixtures.ReplaceBDDCamelCase;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
