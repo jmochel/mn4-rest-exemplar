@@ -1,4 +1,4 @@
-package org.saltations.mre.people;
+package org.saltations.mre.domain;
 
 import java.util.List;
 
@@ -9,49 +9,47 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.saltations.mre.common.domain.EntityMapper;
-import org.saltations.mre.domain.PersonCore;
-import org.saltations.mre.domain.PersonEntity;
 
 
 @Singleton
 @Mapper(componentModel = "jsr330")
-public interface PersonMapper extends EntityMapper<PersonCore, PersonEntity>
+public interface PlaceMapper extends EntityMapper<PlaceCore, PlaceEntity>
 {
     /**
-     * Creates a copy of a PersonCore
+     * Creates a copy of a PlaceCore
      *
      * @param source <em>core object</em> to be copied
      *
-     * @return Valid PersonCore
+     * @return Valid PlaceCore
      */
 
-    PersonCore copyCore(PersonCore source);
+    PlaceCore copyCore(PlaceCore source);
 
     /**
-     * Maps a (PersonCore) prototype to an entity.
+     * Maps a (PlaceCore) prototype to an entity.
      *
-     * @param proto prototype with core attributes to create an PersonEntity.
+     * @param proto prototype with core attributes to create an PlaceEntity.
      *
-     * @return Valid PersonEntity
+     * @return Valid PlaceEntity
+     */
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "created",  ignore = true)
+    @Mapping(target = "updated",  ignore = true)
+    PlaceEntity createEntity(PlaceCore proto);
+
+    /**
+     * Maps a list of (PlaceCore) prototypes to a list of entities.
+     *
+     * @param protos prototypes with core attributes to create an PlaceEntity.
+     *
+     * @return List of valid PlaceEntity
      */
 
     @Mapping(target = "id",  ignore = true)
     @Mapping(target = "created",  ignore = true)
     @Mapping(target = "updated",  ignore = true)
-    PersonEntity createEntity(PersonCore proto);
-
-    /**
-     * Maps a list of (PersonCore) prototypes to a list of entities.
-     *
-     * @param protos prototypes with core attributes to create an PersonEntity.
-     *
-     * @return List of valid PersonEntity
-     */
-
-    @Mapping(target = "id",  ignore = true)
-    @Mapping(target = "created",  ignore = true)
-    @Mapping(target = "updated",  ignore = true)
-    List<PersonEntity> createEntities(List<PersonCore> protos);
+    List<PlaceEntity> createEntities(List<PlaceCore> protos);
 
     /**
      * Patches the <em>entity</em> with non-null values from the patch object
@@ -69,6 +67,6 @@ public interface PersonMapper extends EntityMapper<PersonCore, PersonEntity>
     @Mapping(target = "withCreated",  ignore = true)
     @Mapping(target = "withUpdated",  ignore = true)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    PersonEntity patchEntity(PersonCore patch, @MappingTarget PersonEntity entity);
+    PlaceEntity patchEntity(PlaceCore patch, @MappingTarget PlaceEntity entity);
 
 }

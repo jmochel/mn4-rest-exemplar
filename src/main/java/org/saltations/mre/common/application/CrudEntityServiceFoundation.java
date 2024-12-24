@@ -4,11 +4,9 @@ import java.util.Optional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.validation.validator.Validator;
 import jakarta.transaction.Transactional;
-import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.saltations.mre.common.core.outcomes.FailureParticulars;
@@ -109,39 +107,6 @@ public abstract class CrudEntityServiceFoundation<ID, IC, C extends IC, E extend
         catch (Exception e)
         {
             throw new CannotUpdateEntity(e, getEntityName(), update);
-        }
-    }
-
-    @Transactional(Transactional.TxType.REQUIRED)
-    @Override
-    public E patch(@NotNull ID id, @NotNull JsonMergePatch mergePatch) throws CannotPatchEntity
-    {
-        try
-        {
-            var retrieved = entityRepo.findById(id).orElseThrow();
-
-            var retrievedAsString = jacksonMapper.writeValueAsString(retrieved);
-            var retrievedAsJsonNode = jacksonMapper.readTree(retrievedAsString);
-
-            var patchedAsJsonNode = mergePatch.apply(retrievedAsJsonNode);
-            var patchedAsString = jacksonMapper.writeValueAsString(patchedAsJsonNode);
-
-            var patched = jacksonMapper.readValue(patchedAsString, entityClass);
-
-            // Because update does not require a valid POJO We validate it ahead of time
-
-            var violations = validator.validate(patched);
-
-            if (!violations.isEmpty())
-            {
-                throw new ConstraintViolationException(violations);
-            }
-
-            return entityRepo.update(patched);
-        }
-        catch (Exception e)
-        {
-            throw new CannotPatchEntity(e, getEntityName(), id);
         }
     }
 

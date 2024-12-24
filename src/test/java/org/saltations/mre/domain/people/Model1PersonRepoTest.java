@@ -12,7 +12,7 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.saltations.mre.people.PersonMapper;
+import org.saltations.mre.domain.PersonMapper;
 import org.saltations.mre.people.PersonRepo;
 import org.saltations.mre.fixtures.ReplaceBDDCamelCase;
 

@@ -2,17 +2,21 @@ package org.saltations.mre.common.application;
 
 import java.util.Optional;
 
-import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import io.micronaut.core.annotation.NonNull;
 import jakarta.transaction.Transactional;
-import jakarta.validation.constraints.NotNull;
 import org.saltations.mre.common.core.outcomes.FailureParticulars;
 import org.saltations.mre.common.core.outcomes.Outcome;
 import org.saltations.mre.common.domain.Entity;
 import org.saltations.mre.common.domain.EntityMapper;
 
 /**
- * Minimum contract for the business logic (service) that provides CRUD operations on entities of type E
+ * Minimum contract for the application business logic (service) that provides CRUD operations on entities of type E
+ * <p>
+ * This is at the application layer so we use this CRUD style of service only when persisting business Creating, Reading and Updating
+ * an entity is part of the application business logic. For example, when the creation of the entity is part of an exposed API.
+ * <p>
+ * The primary reason for having the create , update and delete logic here is to maintain consistency for those operations and
+ * consistent transaction boundaries
  *
  * @param <ID> Type of the entity identifier .
  * @param <IC> Interface of the core business concept the entity represents
@@ -40,6 +44,19 @@ public interface CrudEntityService<ID, IC, C extends IC, E extends Entity<ID>,
      */
     @NonNull
     Boolean exists(ID id);
+
+    /**
+     * Checks non-existence of entity for a given id.
+     *
+     * @param id Identifier. Not null.
+     *
+     * @return the boolean result.
+     */
+    @NonNull
+    default Boolean doesNotExist(ID id)
+    {
+        return !exists(id);
+    }
 
     /**
      * Find the entity by its identifier
@@ -76,21 +93,6 @@ public interface CrudEntityService<ID, IC, C extends IC, E extends Entity<ID>,
 
     @Transactional(Transactional.TxType.REQUIRED)
     E update(E update) throws CannotUpdateEntity;
-
-    /**
-     * Patches an entity of type E with the contents of the given patch.
-     * TODO - Should this be at the business logic level ?
-     *
-     * @param id is the unique identifier for the entity
-     * @param mergePatch is the patch to apply to the entity. Valid and not null.
-     *
-     * @return patched entity.
-     *
-     * @throws CannotPatchEntity If the entity could not be patched for any reason
-     */
-
-    @Transactional(Transactional.TxType.REQUIRED)
-    E patch(ID id, @NotNull JsonMergePatch mergePatch) throws CannotPatchEntity;
 
     /**
      * Deletes an entity of type E with the given ID.

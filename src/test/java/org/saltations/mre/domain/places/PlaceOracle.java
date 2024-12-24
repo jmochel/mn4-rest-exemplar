@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import org.saltations.mre.places.PlaceMapper;
+import org.saltations.mre.domain.PlaceMapper;
 import org.saltations.mre.domain.Place;
 import org.saltations.mre.domain.PlaceCore;
 import org.saltations.mre.domain.PlaceEntity;

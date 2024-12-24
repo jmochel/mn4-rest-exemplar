@@ -2,7 +2,7 @@ package org.saltations.mre.domain.people;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import org.saltations.mre.people.PersonMapper;
+import org.saltations.mre.domain.PersonMapper;
 import org.saltations.mre.domain.Person;
 import org.saltations.mre.domain.PersonCore;
 import org.saltations.mre.domain.PersonEntity;

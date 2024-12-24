@@ -1,7 +1,7 @@
 Structure and Design 
 ---------------------
 
-# 0. Problem Domain
+# 0. Problem Domain 
 
 ## Events
 
@@ -15,74 +15,80 @@ Structure and Design
 * get current class list
 * remove person from course
 * change person from auditor to student
-* change person from student to order auditor
+* change person from student to auditor
 * add course
 * remove course
 
 ## Date Model: Entities and VOs
 
-Each course is an entity, and it is composed of one of more sessions. Each curse, of course, has associated with it. People who are participating in the course, and each session has associated with the people who participated in the course. Each person has is composed of a set of points of contact.
+Each course is an entity, and it is composed of one of more sessions.
+Each course, of course, has associated with it people who are participating in the course,
+and each session has associated people who participated in the course. 
+Each person has is composed of a set of points of contact.
+
+# 1. Project Structure
+
+The Separation of concerns and naming of layers is intended to be consistent with Clean Architecture
+
+```text
+/src/java/
+    /main/org/../mre/
+      /app - Application wide classes, such as the actual app or micro-service entry points
+      /common - Common code in classes for the entire application or micro-service 
+          /core - core classes used everywhere (exceptions, values) and not specific to the business domain
+          /domain - common classes used in modeling entities,, aggregates, and value objects
+          /application - common classes used in modeling application specific business logic, such as use cases, services, etc.
+          /infrastructure - common classes used in modeling infrastructure, such as identity management, logging, etc.
+          /presentation - common classes used in modeling entry points into the system, such as controllers and event handlers           
+      /domain - project wide business domain objects (entities, aggregates, value objects)
+      /feature1
+            Feature1Factory
+            Feature1Service
+            Feature1Event1
+            Feature1Event2
+            Feature1Controller
+            Feature1UseCase1
+            Feature1UseCase2       
+```
+
+# Implementation Notes
+
+## Domain modeling
+
+Domain package contains the entities, aggregates, and value objects make up the 
+data and basic business aggregates. 
+
+Entities are modeled using a pattern that has an interface for the concept being modeled, a core class that 
+implements that interface and an entity that inherits from that core class and adds the entity identity and other specific 
+metadata to the entity.
+
+For example:
+```text
+  Course (interface)
+    String getName
+    void setName(String name)
+    String getDescription
+    void setDescription(String description)
+
+  CourseCore implements Course
+    - name : string
+    - description: string
+
+  CourseEntity extends CourseCore
+    - id : uuid
+    - createdAt : datetime
+    - updatedAt : datetime
+```
+
+This allows CourseCore to be used as an input object for a controller while being easily
+mapped to an entity and back again.
 
 
-## Naming 
-
-* IXxxx - Interface (I explicitly name interfaces with  an 'I' prefix) simply because, as ugly as it is, it does allow for quick identification.
-* 
-
-
-
-# 1. Modeling
-
-## References
-
-https://deviq.com/principles/tell-dont-ask
-https://www.thoughtworks.com/en-us/insights/blog/agile-project-management/domain-modeling-what-you-need-to-know-before-coding
-https://medium.com/@aboutcoding/rich-domain-models-22f176ad6f1b
-https://java-design-patterns.com/patterns/domain-model/
 
 
 
 
-# 2. Structure (Outside In)
 
-## References
-
-Synthesis of Clean Architecture and Domain Driven Design
-
-[Comments by Uncle Bob](https://groups.google.com/g/clean-code-discussion/c/oEFEWq8qdFQ/m/i0gsi3eU5VoJ)
-
-There are several architectures that have similar characteristics. 
-
-* DDD (Domain Driven Design) - Eric Evans
-* Hexagonal Architecture - Steve Freeman and Nat Pryce.
-  * Ports and Adapters Architecture
-  * Synthesised on Onion Architecture - Jeffrey Palermo
-* DCI (Data Context Interaction) - Trygve Reenskaug
-* Clean Architecture - Uncle Bob 
-  * Synthesised on Hexagonal Architecture, Onion Architecture, and several other models. Including BCE (Boundary Control Entity) - Ivar Jacobson
-
-|                               | Clean                    | Hexagonal            | DDD                             | DCI                                                         ||
-|-------------------------------|--------------------------|----------------------|---------------------------------|-------------------------------------------------------------|---|
-| **Seperations**               | UI, DB, Use Case, Domain | UI, Mid-tier, Domain | Domain Model, Commands,Queries. | Models (Domain objects), Interactions (Use cases), Contexts |
-| **Core Technical Mechanisms** | DI (poly and interfaces) | DI (emphasize mocks) | Unspecified (for the most part) | inheritance and traits                                                   |
-
-
-Clean DDD is an approach to modeling that combines DDD with Clean Architecture. This is not the one true way. It is a decent way.
-
-[Looking at Clean with DDD](https://medium.com/unil-ci-software-engineering/clean-domain-driven-design-2236f5430a05)
-[Canon DDD vs  Clean DDD](https://medium.com/unil-ci-software-engineering/comparing-canonical-ddd-and-clean-ddd-34e807f4e336)
-
-https://tbuss.de/posts/2023/9-how-to-do-the-package-structure-in-a-ports-and-adapter-architecture/
-https://github.com/citerus/dddsample-core
-https://medium.com/unil-ci-software-engineering/clean-domain-driven-design-2236f5430a05
-
-https://wkrzywiec.medium.com/ports-adapters-architecture-on-example-19cab9e93be7
-https://www.oreilly.com/library/view/functional-and-reactive/9781617292736/OEBPS/Text/Chapter_1.xhtml
-
-https://medium.com/unil-ci-software-engineering/enchilada-pattern-by-uncle-bob-0e5fb6b3c5a8
-https://wkrzywiec.medium.com/ports-adapters-architecture-on-example-19cab9e93be7
-
-## REST controllers, Message Consumers
 
 ### REST Controllers
 
@@ -136,34 +142,6 @@ For review
 [Night Config](https://github.com/TheElectronWill/night-config/wiki/Configurations)
 
 [Try Paradigm](https://blog.softwaremill.com/exceptions-no-just-try-them-off-497984eb470d)
-
-
-Design Building Blocks (DDD)
-----------------------------
-In the descriptions below domains and subdomains and bounded contexts are groupings of the set of non-mutually exclusive, arbitrary concepts in the universe of conversations about
-the business or the solutions that enable the operations of the business
-
-**Domain**
-: Logical grouping _(defined in the problem space)_ of the set of concepts invoked by the business domain.
-Typically expressed as _the_ problem the business is trying to solve.
-
-> Fixing patients' teeth is the domain of a dentist.
-
-**Subdomain**
-: Logical area within a domain that represents _a specific_ problem the business is trying to solve.
-
-> For a dentist, a subdomain would be making appointments for patients
-
-**Bounded Context**
-: Logical boundary _(typically `languaged` in the solution space)_ around/or within the subdomain defined by the language of the responsibilities within that context.
-: A bounded context is a specific area within a domain/subdomain where a specific set of concepts, terms, and rules apply, and where a specific language is used to communicate.
-In other words, a bounded context is a boundary within which a domain model is defined and applied.
-It represents a specific area of the domain where a specific team, department, or business unit has a clear and distinct responsibility. Each bounded context has its own models, entities, and operations,
-and may have different interpretations of the same concepts compared to other bounded contexts within the same domain/subdomain.
-
-> For a dentist, some bounded contexts within the subdomain of billing
-> could be patients accounts receivable and another
-> could be insurance billing
 
 **Entity**
 : A trackable object in the domain that is defined by its identity.
@@ -272,37 +250,6 @@ Pros
 * And much more reusable modules.
 
 
-
-```text
-/src/../java/main/../
-    /domain
-        /model
-            EntityBase and/or IEntity
-            FactoryBase and/or IFactory
-            RepositoryBase and/or IRepository
-            MapperBase and/or IMapper
-        /service
-            ServiceBase and/or IService
-            UseCaseBase and/or IUseCase
-        /event
-            EventBase and/or IEvent
-    /layer
-        /controller
-        /presenter            
-    /feature
-        /feature1
-            /model
-                Feature1Entity
-                Feature1Factory
-                Feature1Repository
-            Feature1Service
-            Feature1Factory
-            Feature1Event1
-            Feature1Event2
-            Feature1Controller
-            Feature1UseCase1
-            Feature1UseCase2       
-```
 
 Functional Requirements
 =======================
@@ -660,7 +607,7 @@ The following are the common error code returns
     
 ### 2. Error handling
 
-References
+References+
 
 https://gaetanopiazzolla.github.io/java/2023/03/05/java-exception-patterns.html
 https://www.freecodecamp.org/news/write-better-java-code-pattern-matching-sealed-classes/

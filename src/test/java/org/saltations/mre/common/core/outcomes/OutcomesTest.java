@@ -1,4 +1,4 @@
-package org.saltations.mre.common.outcomes;
+package org.saltations.mre.common.core.outcomes;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

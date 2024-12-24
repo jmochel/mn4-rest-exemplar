@@ -16,10 +16,12 @@ import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.Patch;
 import io.micronaut.http.annotation.Post;
 import io.micronaut.http.annotation.Put;
+import io.micronaut.validation.validator.Validator;
 import io.micronaut.web.router.RouteBuilder;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -27,7 +29,6 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.saltations.mre.common.core.errors.DomainException;
 import org.saltations.mre.common.core.errors.DomainProblemBase;
-import org.saltations.mre.common.core.errors.ProblemSchema;
 import org.saltations.mre.common.core.outcomes.Failure;
 import org.saltations.mre.common.core.outcomes.FailureParticulars;
 import org.saltations.mre.common.core.outcomes.FailureType;
@@ -73,16 +74,27 @@ public class RestCrudEntityControllerFoundation<ID,IC,
     private final ES entityService;
 
     @Getter
-    private final ObjectMapper jacksonMapper;
+    private final ER entityRepo;
 
-    public RestCrudEntityControllerFoundation(RouteBuilder.UriNamingStrategy uriNaming, Class<E> entityClass, ES entityService)
+    @Getter
+    private final EM entityMapper;
+
+    private final Validator validator;
+
+    @Getter
+    private final ObjectMapper jsonMapper;
+
+    public RestCrudEntityControllerFoundation(RouteBuilder.UriNamingStrategy uriNaming, Class<E> entityClass, ES entityService, ER entityRepo, EM entityMapper, Validator validator)
     {
         this.uriNaming = uriNaming;
         this.entityClass = entityClass;
         this.entityService = entityService;
+        this.entityRepo = entityRepo;
+        this.entityMapper = entityMapper;
+        this.validator = validator;
 
-        this.jacksonMapper = new ObjectMapper();
-        this.jacksonMapper.registerModule(new JavaTimeModule());
+        this.jsonMapper = new ObjectMapper();
+        this.jsonMapper.registerModule(new JavaTimeModule());
     }
 
     /**
@@ -244,14 +256,28 @@ public class RestCrudEntityControllerFoundation<ID,IC,
 
         try
         {
-            if (!entityService.exists(id))
+            if (entityService.doesNotExist(id))
             {
                 throw new CannotFindEntity(getEntityName(), id);
             }
 
-            var mergePatch = jacksonMapper.readValue(mergePatchAsString, JsonMergePatch.class);
+            // Take the incoming patch and overlay it on top of the retrieved entity.
 
-            patched = entityService.patch(id, mergePatch);
+            var mergePatch = jsonMapper.readValue(mergePatchAsString, JsonMergePatch.class);
+            var retrieved = entityRepo.findById(id).orElseThrow();
+            var retrievedAsJsonNode = jsonMapper.readTree(jsonMapper.writeValueAsString(retrieved));
+            var updatedEntityAsString = jsonMapper.writeValueAsString(mergePatch.apply(retrievedAsJsonNode));
+
+            patched = jsonMapper.readValue(updatedEntityAsString, entityClass);
+
+            // We will not save the updated entity if the patch puts it into an invalid state
+
+            var violations = validator.validate(patched);
+
+            if (!violations.isEmpty())
+            {
+                throw new ConstraintViolationException(violations);
+            }
         }
         catch (DomainProblemBase e)
         {

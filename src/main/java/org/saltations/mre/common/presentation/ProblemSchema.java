@@ -1,4 +1,4 @@
-package org.saltations.mre.common.core.errors;
+package org.saltations.mre.common.presentation;
 
 import java.net.URI;
 import java.util.UUID;

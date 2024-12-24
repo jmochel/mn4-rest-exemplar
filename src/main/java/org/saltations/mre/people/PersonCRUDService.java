@@ -7,6 +7,7 @@ import org.saltations.mre.domain.Person;
 import org.saltations.mre.domain.PersonCore;
 import org.saltations.mre.domain.PersonEntity;
 import org.saltations.mre.common.application.CrudEntityServiceFoundation;
+import org.saltations.mre.domain.PersonMapper;
 
 @Singleton
 public class PersonCRUDService extends CrudEntityServiceFoundation<Long, Person, PersonCore, PersonEntity, PersonRepo, PersonMapper>
