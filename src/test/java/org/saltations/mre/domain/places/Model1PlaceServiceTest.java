@@ -42,7 +42,7 @@ public class Model1PlaceServiceTest
 
         var prototype = oracle.coreExemplar();
         var result = service.create(prototype);
-        var saved = result.rawSuccessValue();
+        var saved = result.get();
 
         assertNotNull(saved);
         assertNotNull(saved.getId());

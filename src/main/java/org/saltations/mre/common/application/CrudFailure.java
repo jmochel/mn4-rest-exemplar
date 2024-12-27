@@ -1,11 +1,10 @@
 package org.saltations.mre.common.application;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.experimental.Accessors;
-import org.saltations.mre.common.core.outcomes.FailureType;
+import org.saltations.endeavour.FailureType;
 
-@Getter
+
 @Accessors(fluent = true)
 @AllArgsConstructor
 public enum CrudFailure implements FailureType
@@ -15,4 +14,16 @@ public enum CrudFailure implements FailureType
 
     private final String title;
     private final String template;
+
+    @Override
+    public String getTitle()
+    {
+        return title;
+    }
+
+    @Override
+    public String getTemplate()
+    {
+        return template;
+    }
 }

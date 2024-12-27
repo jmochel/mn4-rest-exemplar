@@ -1,7 +1,6 @@
 package org.saltations.mre.common.presentation;
 
 import java.net.URI;
-import java.util.UUID;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -27,16 +26,15 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.saltations.mre.common.core.errors.DomainException;
-import org.saltations.mre.common.core.errors.DomainProblemBase;
-import org.saltations.mre.common.core.outcomes.Failure;
-import org.saltations.mre.common.core.outcomes.FailureParticulars;
-import org.saltations.mre.common.core.outcomes.FailureType;
-import org.saltations.mre.common.application.CrudEntityRepo;
+import org.saltations.endeavour.Failure;
+import org.saltations.endeavour.FailureAssay;
+import org.saltations.endeavour.FailureType;
 import org.saltations.mre.common.application.CannotFindEntity;
 import org.saltations.mre.common.application.CannotPatchEntity;
+import org.saltations.mre.common.application.CrudEntityRepo;
 import org.saltations.mre.common.application.CrudEntityService;
 import org.saltations.mre.common.application.CrudFailure;
+import org.saltations.mre.common.core.errors.DomainProblemBase;
 import org.saltations.mre.common.domain.Entity;
 import org.saltations.mre.common.domain.EntityMapper;
 import org.zalando.problem.Problem;
@@ -146,8 +144,10 @@ public class RestCrudEntityControllerFoundation<ID,IC,
 
         result.onFailure(failure -> log.error("Failure: {}", failure));
 
-        return Mono.just(created((E) result.asSuccess().value()));
+        return Mono.just(created((E) result.get()));
     }
+
+
 
     private Status convert(FailureType failureType)
     {
@@ -158,48 +158,50 @@ public class RestCrudEntityControllerFoundation<ID,IC,
         };
     }
 
-    private void logAndThrowFailure(Failure<FailureParticulars,E> failure) throws ThrowableProblem
+
+
+    private void logAndThrowFailure(Failure<FailureAssay,E> failure) throws ThrowableProblem
     {
-        var status = convert(failure.getType());
-
-        if (failure.getCause() == null)
-        {
-            var traceId = UUID.randomUUID().toString();
-
-            log.error("Failure: {} [trace id : {}]", failure, traceId);
-
-            throw Problem.builder()
-                         .withTitle(failure.getTitle())
-                         .withDetail(failure.getDetail())
-                         .withStatus(status)
-                         .with("traceId", traceId)
-                         .build();
-        }
-        else if (failure.getCause() instanceof DomainException)
-        {
-            var type = resolveLocationWith("problems/" + ((Enum) failure.getType()).name());
-
-            throw Problem.builder()
-                         .withType(type)
-                         .withTitle(failure.getTitle())
-                         .withDetail(failure.getDetail())
-                         .withStatus(status)
-                         .with("traceId", ((DomainException) failure.getCause()).getTraceId())
-                         .build();
-        }
-        else
-        {
-            var traceId = UUID.randomUUID().toString();
-
-            log.error("Failure: {} [trace id : {}]", failure, traceId);
-
-            throw Problem.builder()
-                         .withTitle(failure.getTitle())
-                         .withDetail(failure.getDetail())
-                         .withStatus(status)
-                         .with("traceId", traceId)
-                         .build();
-        }
+//        var status = convert(failure.getType());
+//
+//        if (failure.getCause() == null)
+//        {
+//            var traceId = UUID.randomUUID().toString();
+//
+//            log.error("Failure: {} [trace id : {}]", failure, traceId);
+//
+//            throw Problem.builder()
+//                         .withTitle(failure.getTitle())
+//                         .withDetail(failure.getDetail())
+//                         .withStatus(status)
+//                         .with("traceId", traceId)
+//                         .build();
+//        }
+//        else if (failure.getCause() instanceof DomainException)
+//        {
+//            var type = resolveLocationWith("problems/" + ((Enum) failure.getType()).name());
+//
+//            throw Problem.builder()
+//                         .withType(type)
+//                         .withTitle(failure.getTitle())
+//                         .withDetail(failure.getDetail())
+//                         .withStatus(status)
+//                         .with("traceId", ((DomainException) failure.getCause()).getTraceId())
+//                         .build();
+//        }
+//        else
+//        {
+//            var traceId = UUID.randomUUID().toString();
+//
+//            log.error("Failure: {} [trace id : {}]", failure, traceId);
+//
+//            throw Problem.builder()
+//                         .withTitle(failure.getTitle())
+//                         .withDetail(failure.getDetail())
+//                         .withStatus(status)
+//                         .with("traceId", traceId)
+//                         .build();
+//        }
     }
 
     /**
@@ -219,7 +221,7 @@ public class RestCrudEntityControllerFoundation<ID,IC,
 
         try
         {
-            if (!entityService.exists(id))
+            if (entityService.doesNotExist(id))
             {
                 throw new CannotFindEntity(getEntityName(), id);
             }

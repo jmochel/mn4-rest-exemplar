@@ -4,8 +4,8 @@ import java.util.Optional;
 
 import io.micronaut.core.annotation.NonNull;
 import jakarta.transaction.Transactional;
-import org.saltations.mre.common.core.outcomes.FailureParticulars;
-import org.saltations.mre.common.core.outcomes.Outcome;
+import org.saltations.endeavour.FailureAssay;
+import org.saltations.endeavour.Outcome;
 import org.saltations.mre.common.domain.Entity;
 import org.saltations.mre.common.domain.EntityMapper;
 
@@ -79,7 +79,7 @@ public interface CrudEntityService<ID, IC, C extends IC, E extends Entity<ID>,
      */
 
     @Transactional(Transactional.TxType.REQUIRED)
-    Outcome<FailureParticulars, E> create(C prototype);
+    Outcome<FailureAssay, E> create(C prototype);
 
     /**
      * Updates an entity of type E with the contents of the given entity.

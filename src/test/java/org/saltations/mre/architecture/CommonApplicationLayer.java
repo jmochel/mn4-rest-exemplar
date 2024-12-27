@@ -23,7 +23,8 @@ public class CommonApplicationLayer
     );
 
     static final DescribedPredicate<JavaClass> areCommonApplicationDependencies = resideInAnyPackage(
-            "com.fasterxml.jackson.."
+            "com.fasterxml.jackson..",
+            "org.saltations.endeavour"
     );
 
     static final DescribedPredicate<JavaClass> areCommonApplicationAndBelow = areCommonApplication

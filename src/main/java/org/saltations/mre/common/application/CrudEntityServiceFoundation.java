@@ -9,9 +9,9 @@ import io.micronaut.validation.validator.Validator;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import org.saltations.mre.common.core.outcomes.FailureParticulars;
-import org.saltations.mre.common.core.outcomes.Outcome;
-import org.saltations.mre.common.core.outcomes.Outcomes;
+import org.saltations.endeavour.FailureAssay;
+import org.saltations.endeavour.Outcome;
+import org.saltations.endeavour.Outcomes;
 import org.saltations.mre.common.domain.Entity;
 import org.saltations.mre.common.domain.EntityMapper;
 
@@ -78,7 +78,7 @@ public abstract class CrudEntityServiceFoundation<ID, IC, C extends IC, E extend
 
     @Transactional(Transactional.TxType.REQUIRED)
     @Override
-    public Outcome<FailureParticulars, E> create(@NotNull @Valid C prototype)
+    public Outcome<FailureAssay, E> create(@NotNull @Valid C prototype)
     {
         E created;
 
@@ -90,10 +90,10 @@ public abstract class CrudEntityServiceFoundation<ID, IC, C extends IC, E extend
         }
         catch (Exception e)
         {
-            return Outcomes.causedFailure(e, CrudFailure.CANNOT_CREATE, getEntityName(), prototype);
+            return Outcomes.causedFail(e, CrudFailure.CANNOT_CREATE, getEntityName(), prototype);
         }
 
-        return Outcomes.success(created);
+        return Outcomes.succeed(created);
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
