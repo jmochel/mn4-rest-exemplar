@@ -36,9 +36,15 @@ public class Model1PersonCRUDControllerTest
     @Inject
     private PersonMapper modelMapper;
 
+    @Inject
+    private RequestSpecification spec;
+    
+    @Inject 
+    private ObjectMapper objMapper;
+
     @Test
     @Order(2)
-    void canCreateReadReplaceAndDelete(RequestSpecification spec, ObjectMapper objMapper)
+    void canCreateReadReplaceAndDelete()
             throws Exception
     {
         //@formatter:off
@@ -103,7 +109,7 @@ public class Model1PersonCRUDControllerTest
 
     @Test
     @Order(4)
-    void canPatch(RequestSpecification spec, ObjectMapper objMapper) throws Exception
+    void canPatch() throws Exception
     {
         //@formatter:off
         // Create
@@ -163,7 +169,7 @@ public class Model1PersonCRUDControllerTest
 
     @Test
     @Order(20)
-    void whenCreatingResourceWithIncorrectInputReturnsValidProblemDetails(RequestSpecification spec)
+    void whenCreatingResourceWithIncorrectInputReturnsValidProblemDetails()
     {
         //@formatter:off
         var created = spec.
@@ -180,7 +186,7 @@ public class Model1PersonCRUDControllerTest
 
     @Test
     @Order(22)
-    void whenGettingNonexistentResourceReturnsProblemDetails(RequestSpecification spec)
+    void whenGettingNonexistentResourceReturnsProblemDetails()
     {
         //@formatter:off
         var retrieved = spec.
@@ -195,7 +201,7 @@ public class Model1PersonCRUDControllerTest
 
     @Test
     @Order(24)
-    void whenReplacingResourceWithIncorrectInputReturnsValidProblemDetails(RequestSpecification spec, ObjectMapper objMapper) throws Exception
+    void whenReplacingResourceWithIncorrectInputReturnsValidProblemDetails() throws Exception
     {
         //@formatter:off
         // Create

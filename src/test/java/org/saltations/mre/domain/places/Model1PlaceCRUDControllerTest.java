@@ -38,6 +38,12 @@ public class Model1PlaceCRUDControllerTest
     @Inject
     private PlaceMapper modelMapper;
 
+    @Inject
+    private RequestSpecification spec;
+    
+    @Inject
+    private ObjectMapper objMapper;
+
 
     /**
      * Confirms that the patched resource matches the {@code VALID_JSON_MERGE_PATCH_STRING}
@@ -46,7 +52,7 @@ public class Model1PlaceCRUDControllerTest
 
     @Test
     @Order(2)
-    void canCreateReadReplaceAndDelete(RequestSpecification spec, ObjectMapper objMapper)
+    void canCreateReadReplaceAndDelete()
             throws Exception
     {
         //@formatter:off
@@ -110,7 +116,7 @@ public class Model1PlaceCRUDControllerTest
 
     @Test
     @Order(4)
-    void canPatch(RequestSpecification spec, ObjectMapper objMapper) throws Exception
+    void canPatch() throws Exception
     {
         //@formatter:off
         // Create
@@ -166,7 +172,7 @@ public class Model1PlaceCRUDControllerTest
 
     @Test
     @Order(20)
-    void whenCreatingResourceWithIncorrectInputReturnsValidProblemDetails(RequestSpecification spec)
+    void whenCreatingResourceWithIncorrectInputReturnsValidProblemDetails()
     {
         //@formatter:off
         var created = spec.
@@ -183,7 +189,7 @@ public class Model1PlaceCRUDControllerTest
 
     @Test
     @Order(22)
-    void whenGettingNonexistentResourceReturnsProblemDetails(RequestSpecification spec)
+    void whenGettingNonexistentResourceReturnsProblemDetails()
     {
         var id = new UUID(11111L,22222L);
 
@@ -200,7 +206,7 @@ public class Model1PlaceCRUDControllerTest
 
     @Test
     @Order(24)
-    void whenReplacingResourceWithIncorrectInputReturnsValidProblemDetails(RequestSpecification spec, ObjectMapper objMapper) throws Exception
+    void whenReplacingResourceWithIncorrectInputReturnsValidProblemDetails() throws Exception
     {
         //@formatter:off
         // Create

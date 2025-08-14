@@ -4,7 +4,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 
 import io.micronaut.http.HttpStatus;
-import io.micronaut.runtime.EmbeddedApplication;
+import io.micronaut.context.ApplicationContext;
 import io.micronaut.serde.annotation.Serdeable;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import io.restassured.common.mapper.TypeRef;
@@ -26,25 +26,28 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@MicronautTest
+@MicronautTest(application = MNRestExemplarApp.class)
 @DisplayNameGeneration(ReplaceBDDCamelCase.class)
 @TestClassOrder(ClassOrderer.OrderAnnotation.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class MNRestExemplarAppTest
 {
     @Inject
-    EmbeddedApplication<?> app;
+    ApplicationContext applicationContext;
+    
+    @Inject
+    RequestSpecification spec;
 
     @Test
     @Order(1)
     void isRunning()
     {
-        assertTrue(app.isRunning());
+        assertTrue(applicationContext.isRunning());
     }
 
     @Test
     @Order(2)
-    final void isHealthy(RequestSpecification spec)
+    final void isHealthy()
     {
         spec.
                 when().
@@ -56,7 +59,7 @@ class MNRestExemplarAppTest
 
     @Test
     @Order(3)
-    final void suppliesInfo(RequestSpecification spec)
+    final void suppliesInfo()
     {
         var result = spec.
                 when().
@@ -68,7 +71,7 @@ class MNRestExemplarAppTest
 
     @Test
     @Order(7)
-    final void suppliesRoutes(RequestSpecification spec)
+    final void suppliesRoutes()
     {
         var result = spec.
                 when().
@@ -82,7 +85,7 @@ class MNRestExemplarAppTest
 
     @Test
     @Order(8)
-    final void suppliesLoggers(RequestSpecification spec)
+    final void suppliesLoggers()
     {
         var result = spec.
                 when().
@@ -96,7 +99,7 @@ class MNRestExemplarAppTest
 
     @Test
     @Order(10)
-    final void canCheckSpecificLoggers(RequestSpecification spec)
+    final void canCheckSpecificLoggers()
     {
         spec.
                 when().
@@ -108,7 +111,7 @@ class MNRestExemplarAppTest
 
     @Test
     @Order(12)
-    final void canChangeLoggers(RequestSpecification spec)
+    final void canChangeLoggers()
     {
         spec.
                 when().
@@ -129,7 +132,7 @@ class MNRestExemplarAppTest
 
     @Test
     @Order(20)
-    final void canCheckLiquibaseChangelog(RequestSpecification spec)
+    final void canCheckLiquibaseChangelog()
     {
         var result = spec.
                 when().
