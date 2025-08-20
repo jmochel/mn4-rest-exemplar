@@ -180,13 +180,10 @@
       <version>32.1.3-jre</version>
     </dependency>
     
-    <!-- Local JAR -->
     <dependency>
-      <groupId>org.saltations</groupId>
+      <groupId>org.saltations.endeavour</groupId>
       <artifactId>endeavour</artifactId>
-      <version>1.0-SNAPSHOT</version>
-      <scope>system</scope>
-      <systemPath>${project.basedir}/libs/endeavour-1.0-SNAPSHOT.jar</systemPath>
+      <version>1.0.0-SNAPSHOT</version>
     </dependency>
 
     <!-- Test Dependencies -->

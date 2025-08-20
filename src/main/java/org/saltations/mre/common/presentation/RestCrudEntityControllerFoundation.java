@@ -27,7 +27,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.saltations.endeavour.Failure;
-import org.saltations.endeavour.FailureAssay;
+import org.saltations.endeavour.FailureDescription;
 import org.saltations.endeavour.FailureType;
 import org.saltations.mre.common.application.CannotFindEntity;
 import org.saltations.mre.common.application.CannotPatchEntity;
@@ -160,7 +160,7 @@ public class RestCrudEntityControllerFoundation<ID,IC,
 
 
 
-    private void logAndThrowFailure(Failure<FailureAssay,E> failure) throws ThrowableProblem
+    private void logAndThrowFailure(Failure<FailureDescription,E> failure) throws ThrowableProblem
     {
 //        var status = convert(failure.getType());
 //

@@ -24,7 +24,7 @@ public interface Person
 
     @Schema(description = "The first name of the person", example = "James")
     String getFirstName();
-
+    
     void setFirstName(@NotNull @NotBlank @Size(max = 50) String firstName);
 
     @Schema(description = "The last name of the person", example = "Cricket")

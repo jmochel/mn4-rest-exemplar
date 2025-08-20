@@ -9,7 +9,7 @@ import io.micronaut.validation.validator.Validator;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import org.saltations.endeavour.FailureAssay;
+import org.saltations.endeavour.FailureDescription;
 import org.saltations.endeavour.Outcome;
 import org.saltations.endeavour.Outcomes;
 import org.saltations.mre.common.domain.Entity;
@@ -78,7 +78,7 @@ public abstract class CrudEntityServiceFoundation<ID, IC, C extends IC, E extend
 
     @Transactional(Transactional.TxType.REQUIRED)
     @Override
-    public Outcome<FailureAssay, E> create(@NotNull @Valid C prototype)
+    public Outcome<FailureDescription, E> create(@NotNull @Valid C prototype)
     {
         E created;
 
